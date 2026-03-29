@@ -186,6 +186,18 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
 .google-btn:disabled{opacity:0.6;cursor:not-allowed}
 .login-error{color:var(--nok);margin-top:12px;font-size:0.85rem;display:none}
 
+/* ── Pending approval ── */
+.pending-container{display:flex;align-items:center;justify-content:center;height:100vh;background:linear-gradient(135deg,var(--surface) 0%,var(--bg) 100%)}
+.pending-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:36px;max-width:420px;width:90%;box-shadow:var(--shadow);text-align:center}
+.pending-icon{font-size:3rem;margin-bottom:12px}
+.pending-card h2{margin-bottom:8px;font-size:1.4rem}
+.pending-card p{color:var(--text2);font-size:0.9rem;margin-bottom:20px;line-height:1.6}
+.status-btn-active{outline:3px solid rgba(255,255,255,0.55)!important;outline-offset:2px;transform:scale(1.06);z-index:1;position:relative}
+.pending-badge{display:inline-block;padding:2px 7px;border-radius:8px;font-size:0.72rem;font-weight:700;vertical-align:middle;margin-left:6px}
+.badge-pending{background:#f59e0b20;color:#f59e0b}
+.badge-approved{background:#22c55e20;color:#22c55e}
+.badge-rejected{background:#ef444420;color:#ef4444}
+
 /* ── Print ── */
 @media print {
   .topbar,.sidebar,.tabs,.btn-row,.btn,.modal,.toast,.hamburger,.sidebar-overlay{display:none!important}
@@ -237,6 +249,18 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
       Se connecter avec Google
     </button>
     <p class="login-error" id="login-error"></p>
+  </div>
+</div>
+
+<!-- PENDING APPROVAL -->
+<div id="pending-panel" style="display:none">
+  <div class="pending-container">
+    <div class="pending-card">
+      <div class="pending-icon">⏳</div>
+      <h2>Accès en attente</h2>
+      <p>Votre compte <strong id="pending-email"></strong> est en attente de validation par un administrateur.<br><br>Vous recevrez l'accès dès qu'un admin aura approuvé votre demande.</p>
+      <button class="google-btn" onclick="doLogout()" style="margin-top:8px">↩ Se déconnecter</button>
+    </div>
   </div>
 </div>
 
@@ -403,7 +427,7 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
 
           <div class="settings-section" id="users-section" style="display:none">
             <h3>Utilisateurs</h3>
-            <p style="color:var(--text2);font-size:0.82rem;margin-bottom:10px">Les utilisateurs se connectent avec leur compte Google.</p>
+            <p style="color:var(--text2);font-size:0.82rem;margin-bottom:10px">Les utilisateurs se connectent avec Google. Les nouveaux comptes doivent être approuvés par un admin.</p>
             <div id="users-list"></div>
           </div>
 
@@ -613,20 +637,45 @@ auth.onAuthStateChanged(async (fbUser) => {
       let snap = await db.collection('users').doc(fbUser.uid).get();
       if (!snap.exists) {
         const isAdmin = fbUser.email === 'thibaut.celaudoux@gmail.com';
-        const profile = { uid: fbUser.uid, email: fbUser.email, name: fbUser.displayName || fbUser.email.split('@')[0], role: isAdmin ? 'admin' : 'auditor', photoURL: fbUser.photoURL || '', createdAt: new Date().toISOString() };
+        const profile = { uid: fbUser.uid, email: fbUser.email, name: fbUser.displayName || fbUser.email.split('@')[0], role: isAdmin ? 'admin' : 'auditor', status: isAdmin ? 'approved' : 'pending', photoURL: fbUser.photoURL || '', createdAt: new Date().toISOString() };
         await db.collection('users').doc(fbUser.uid).set(profile);
         currentUser = profile;
       } else {
         currentUser = { uid: fbUser.uid, ...snap.data() };
+        // backward compat: existing users without status field get approved automatically
+        if (!currentUser.status) {
+          currentUser.status = 'approved';
+          db.collection('users').doc(fbUser.uid).update({ status: 'approved' }).catch(()=>{});
+        }
       }
-      document.getElementById('login-panel').style.display = 'none';
-      document.getElementById('app-panel').style.display = 'block';
+
+      const showPanel = (id) => {
+        ['login-panel','pending-panel','app-panel'].forEach(p =>
+          document.getElementById(p).style.display = p === id ? (id === 'app-panel' ? 'block' : '') : 'none'
+        );
+      };
+
+      if (currentUser.status === 'pending') {
+        showPanel('pending-panel');
+        document.getElementById('pending-email').textContent = currentUser.email;
+        return;
+      }
+      if (currentUser.status === 'rejected') {
+        showPanel('login-panel');
+        const errEl = document.getElementById('login-error');
+        errEl.textContent = '⛔ Accès refusé. Contactez un administrateur.';
+        errEl.style.display = 'block';
+        await auth.signOut();
+        return;
+      }
+
+      showPanel('app-panel');
       applyRoleUI();
       await initApp();
     } catch (e) { console.error('Auth error:', e); }
   } else {
+    ['pending-panel','app-panel'].forEach(p => document.getElementById(p).style.display = 'none');
     document.getElementById('login-panel').style.display = '';
-    document.getElementById('app-panel').style.display = 'none';
   }
 });
 
@@ -852,10 +901,11 @@ let createAuditItemEl = (sectionId, item) => {
   const itemBody = document.createElement('div');
   itemBody.className = 'item-body'; itemBody.id = `item-body-${item.id}`;
   const statusRow = document.createElement('div'); statusRow.className = 'status-row';
+  const cur = item.status || 'na';
   statusRow.innerHTML = `
-    <button class="btn btn-sm" style="background:var(--ok);color:#0d1117;flex:1" onclick="setStatus(${item.id},'ok')">✓ OK</button>
-    <button class="btn btn-sm" style="background:var(--nok);color:#fff;flex:1" onclick="setStatus(${item.id},'nok')">✗ NOK</button>
-    <button class="btn btn-sm" style="background:var(--na);color:#fff;flex:1" onclick="setStatus(${item.id},'na')">— N/A</button>
+    <button id="sbtn-ok-${item.id}" class="btn btn-sm ${cur==='ok'?'status-btn-active':''}" style="background:var(--ok);color:#0d1117;flex:1;transition:all 150ms" onclick="setStatus(${item.id},'ok')">✓ OK</button>
+    <button id="sbtn-nok-${item.id}" class="btn btn-sm ${cur==='nok'?'status-btn-active':''}" style="background:var(--nok);color:#fff;flex:1;transition:all 150ms" onclick="setStatus(${item.id},'nok')">✗ NOK</button>
+    <button id="sbtn-na-${item.id}" class="btn btn-sm ${cur==='na'?'status-btn-active':''}" style="background:var(--na);color:#fff;flex:1;transition:all 150ms" onclick="setStatus(${item.id},'na')">— N/A</button>
   `;
   itemBody.appendChild(statusRow);
   const commentInput = document.createElement('textarea');
@@ -893,6 +943,11 @@ let setStatus = (itemId, status) => {
   item.status = status;
   const btn = document.getElementById(`item-${itemId}`);
   if (btn) btn.className = 'item-btn ' + status;
+  // Highlight selected status button in the expanded form
+  ['ok','nok','na'].forEach(s => {
+    const sb = document.getElementById(`sbtn-${s}-${itemId}`);
+    if (sb) sb.classList.toggle('status-btn-active', s === status);
+  });
   // Update section score badge
   const section = currentAudit.sections.find(s => s.items.some(i => i.id === itemId));
   if (section) {
@@ -1232,17 +1287,50 @@ let saveGeneralSettings = async () => {
 // ─── Users ────────────────────────────────────────────────────────────────────
 let renderUsersList = () => {
   const list = document.getElementById('users-list'); list.innerHTML = '';
-  allUsers.forEach(u => {
+  const sorted = [...allUsers].sort((a,b) => {
+    const o = {pending:0,approved:1,rejected:2};
+    return (o[a.status||'approved']||1)-(o[b.status||'approved']||1);
+  });
+  const pendingCount = allUsers.filter(u=>(u.status||'approved')==='pending').length;
+  if (pendingCount > 0) {
+    const notice = document.createElement('div');
+    notice.style.cssText = 'background:#f59e0b15;border:1px solid #f59e0b40;border-radius:var(--radius);padding:8px 12px;margin-bottom:12px;color:#f59e0b;font-size:0.85rem;font-weight:600';
+    notice.textContent = `⏳ ${pendingCount} utilisateur(s) en attente d\'approbation`;
+    list.appendChild(notice);
+  }
+  sorted.forEach(u => {
+    const st = u.status || 'approved';
+    const badge = `<span class="pending-badge badge-${st}">${st==='pending'?'⏳ En attente':st==='approved'?'✓ Approuvé':'✗ Refusé'}</span>`;
     const div = document.createElement('div'); div.className = 'user-row';
     div.innerHTML = `
       <div class="row-info">
-        <div class="row-name">${u.photoURL ? `<img src="${u.photoURL}" style="width:20px;height:20px;border-radius:50%;vertical-align:middle;margin-right:6px">` : ''}${u.name || u.email}</div>
+        <div class="row-name">${u.photoURL?`<img src="${u.photoURL}" style="width:20px;height:20px;border-radius:50%;vertical-align:middle;margin-right:6px">`:''}${u.name||u.email}${badge}</div>
         <div class="row-sub">${u.email} — <strong>${u.role}</strong></div>
       </div>
-      <div class="row-actions"><button class="btn btn-secondary btn-sm" onclick="openEditUserModal('${u.uid}')">Rôle</button></div>
+      <div class="row-actions">
+        ${st==='pending'?`<button class="btn btn-success btn-sm" onclick="approveUser('${u.uid}')">✓ Approuver</button><button class="btn btn-danger btn-sm" onclick="rejectUser('${u.uid}')">✗ Refuser</button>`:''}
+        <button class="btn btn-secondary btn-sm" onclick="openEditUserModal('${u.uid}')">Rôle</button>
+      </div>
     `;
     list.appendChild(div);
   });
+};
+
+let approveUser = async (uid) => {
+  try {
+    await db.collection('users').doc(uid).update({ status: 'approved' });
+    const u = allUsers.find(u=>u.uid===uid); if (u) u.status = 'approved';
+    renderUsersList(); showToast('✅ Utilisateur approuvé');
+  } catch (e) { showAlert('Erreur : '+e.message); }
+};
+
+let rejectUser = async (uid) => {
+  if (!confirm('Refuser l\'accès à cet utilisateur ?')) return;
+  try {
+    await db.collection('users').doc(uid).update({ status: 'rejected' });
+    const u = allUsers.find(u=>u.uid===uid); if (u) u.status = 'rejected';
+    renderUsersList(); showToast('Accès refusé');
+  } catch (e) { showAlert('Erreur : '+e.message); }
 };
 
 let openEditUserModal = (uid) => {
