@@ -1,79 +1,1615 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; connect-src 'self'">
-    <title>Site not found &middot; GitHub Pages</title>
-    <style type="text/css" media="screen">
-      body {
-        background-color: #f1f1f1;
-        margin: 0;
-        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-      }
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SQYouest — Audit Manager</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:15px;scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:#0d1117;color:#e2e8f0;min-height:100vh;overflow-x:hidden}
+input,textarea,select,button{font-family:inherit}
+:root{
+--bg:#0d1117;--surface:#161b27;--surface2:#1e2433;--border:#2a3044;
+--accent:#f97316;--accent2:#fb923c;--ok:#22c55e;--nok:#ef4444;--na:#64748b;
+--text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;--radius:10px;--shadow:0 4px 24px rgba(0,0,0,.4);
+}
+body{background-color:var(--bg);color:var(--text)}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between}
+.topbar-left{display:flex;align-items:center;gap:20px}
+.topbar-title{font-weight:700;font-size:1.2rem;letter-spacing:-0.5px}
+.topbar-info{display:flex;gap:20px;align-items:center;font-size:0.9rem}
+.topbar-info>div{display:flex;gap:8px;align-items:center}
+.topbar-info small{color:var(--text2)}
+.topbar-right{display:flex;gap:12px;align-items:center}
+.sync-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:12px;font-size:0.75rem;font-weight:600}
+.sync-badge.cloud{background:#10b98120;color:#22c55e}
+.sync-badge.local{background:#64748b20;color:var(--text3)}
+.container{display:flex;height:100vh}
+.sidebar{background:var(--surface);border-right:1px solid var(--border);width:200px;overflow-y:auto;padding:15px}
+.sidebar-item{display:block;width:100%;text-align:left;padding:10px;margin:8px 0;border-radius:var(--radius);background:var(--surface2);border:1px solid transparent;color:var(--text2);cursor:pointer;transition:all 150ms;font-size:0.9rem}
+.sidebar-item:hover{background:var(--border);color:var(--text)}
+.sidebar-item.active{background:var(--accent);color:#0d1117;font-weight:600;border-color:var(--accent2)}
+.main{flex:1;display:flex;flex-direction:column}
+.tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border);padding:12px 20px;gap:20px;overflow-x:auto}
+.tab{padding:8px 16px;border:none;background:0;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent;transition:all 150ms;font-weight:500;white-space:nowrap}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.content{flex:1;overflow-y:auto;padding:20px}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+.form-group{display:flex;flex-direction:column;gap:8px}
+label{color:var(--text2);font-size:0.9rem;font-weight:500}
+input,textarea,select{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:10px;border-radius:var(--radius);transition:all 150ms}
+input:focus,textarea:focus,select:focus{outline:0;border-color:var(--accent);background:var(--surface)}
+textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem}
+.btn{padding:10px 16px;border:none;border-radius:var(--radius);cursor:pointer;font-weight:500;transition:all 150ms;font-size:0.9rem}
+.btn-primary{background:var(--accent);color:#0d1117}
+.btn-primary:hover{background:var(--accent2)}
+.btn-secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border)}
+.btn-secondary:hover{background:var(--border)}
+.btn-danger{background:var(--nok);color:#fff}
+.btn-danger:hover{background:#dc2626}
+.btn-success{background:var(--ok);color:#0d1117}
+.btn-success:hover{background:#16a34a}
+.section{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:20px}
+.section-header{display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;padding:12px;background:var(--border);border-radius:var(--radius);font-weight:600;transition:all 150ms}
+.section-header:hover{background:#3a4556}
+.section-header .toggle{transition:transform 150ms}
+.section-header .toggle.open{transform:rotate(180deg)}
+.section-body{margin-top:12px;display:none}
+.section-body.open{display:block}
+.section-body.hidden{display:none}
+.item-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:12px}
+.item-btn{padding:12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);cursor:pointer;transition:all 150ms;font-weight:500;font-size:0.85rem;text-align:center}
+.item-btn:hover{border-color:var(--accent);background:var(--surface2)}
+.item-btn.ok{background:var(--ok)20;border-color:var(--ok);color:var(--ok)}
+.item-btn.nok{background:var(--nok)20;border-color:var(--nok);color:var(--nok)}
+.item-btn.na{background:var(--na)20;border-color:var(--na);color:var(--na)}
+.item-body{margin-top:10px;padding:12px;background:var(--surface);border-radius:var(--radius);display:none}
+.item-body.open{display:block}
+.input-row{display:flex;gap:10px;margin-top:10px}
+.input-row input{flex:1}
+.modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center}
+.modal.open{display:flex}
+.modal-content{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto}
+.modal-header{font-size:1.1rem;font-weight:700;margin-bottom:16px}
+.modal-footer{display:flex;gap:10px;margin-top:20px;justify-content:flex-end}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px;margin-top:12px}
+.gallery-item{position:relative;border-radius:var(--radius);overflow:hidden;cursor:pointer;border:1px solid var(--border)}
+.gallery-item img{width:100%;height:80px;object-fit:cover}
+.gallery-item .delete-btn{position:absolute;top:4px;right:4px;background:var(--nok);color:#fff;border:none;border-radius:4px;padding:4px;cursor:pointer;font-size:0.75rem}
+.lightbox{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.9);z-index:2000;align-items:center;justify-content:center}
+.lightbox.open{display:flex}
+.lightbox img{max-width:90%;max-height:90%;border-radius:var(--radius)}
+.lightbox .close{position:absolute;top:20px;right:20px;background:var(--nok);color:#fff;border:none;border-radius:var(--radius);padding:10px 15px;cursor:pointer;font-size:1rem}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px}
+.stat-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:16px}
+.stat-label{color:var(--text2);font-size:0.9rem;margin-bottom:8px}
+.stat-value{font-size:2rem;font-weight:700;color:var(--accent)}
+.stat-details{color:var(--text3);font-size:0.85rem;margin-top:8px}
+.history-item{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:12px;cursor:pointer;transition:all 150ms}
+.history-item:hover{border-color:var(--accent);background:var(--border)}
+.history-item.selected{background:var(--accent)20;border-color:var(--accent)}
+.history-item-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.history-item-title{font-weight:600;color:var(--text)}
+.history-item-date{color:var(--text3);font-size:0.85rem}
+.history-item-meta{color:var(--text2);font-size:0.85rem}
+.kpi-table{width:100%;border-collapse:collapse;margin-top:12px}
+.kpi-table th,.kpi-table td{border:1px solid var(--border);padding:10px;text-align:left;background:var(--surface2)}
+.kpi-table th{background:var(--border);font-weight:600;color:var(--text)}
+.kpi-table td{background:var(--surface)}
+.kpi-table input{width:100%;padding:4px;background:var(--surface2)}
+.toast{position:fixed;bottom:20px;right:20px;background:var(--accent);color:#0d1117;padding:12px 16px;border-radius:var(--radius);font-weight:500;z-index:3000;animation:slideIn 300ms ease-out}
+@keyframes slideIn{from{transform:translateX(400px);opacity:0}to{transform:translateX(0);opacity:1}}
+.alert-box{background:var(--nok)20;border:1px solid var(--nok);color:var(--nok);padding:12px;border-radius:var(--radius);margin:12px 0}
+.login-container{display:flex;align-items:center;justify-content:center;height:100vh;background:linear-gradient(135deg,var(--surface) 0%,var(--bg) 100%)}
+.login-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:40px;max-width:400px;width:90%;box-shadow:var(--shadow)}
+.login-card h1{margin-bottom:30px;color:var(--text);text-align:center;font-size:1.5rem}
+.login-card .form-group{margin-bottom:16px}
+.login-card .btn{width:100%;margin-top:10px}
+.report-section{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:20px}
+.report-header{font-weight:600;font-size:1.1rem;margin-bottom:12px;color:var(--text)}
+.settings-section{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:20px}
+.settings-section h3{margin:16px 0 12px 0;color:var(--text);font-weight:600;font-size:1rem}
+.settings-input{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:10px;border-radius:var(--radius)}
+.user-row{display:flex;justify-content:space-between;align-items:center;background:var(--surface);padding:12px;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px}
+.user-row-info{flex:1}
+.user-row-name{font-weight:600;color:var(--text)}
+.user-row-role{color:var(--text2);font-size:0.85rem}
+.user-row-actions{display:flex;gap:8px}
+.user-row-actions button{padding:6px 10px;font-size:0.8rem}
+.editor-item{background:var(--surface);padding:12px;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.editor-item-info{flex:1}
+.editor-item-id{font-weight:600;color:var(--text)}
+.editor-item-label{color:var(--text2);font-size:0.85rem}
+.editor-item-actions{display:flex;gap:8px}
+.editor-item-actions button{padding:6px 10px;font-size:0.8rem}
+.editor-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.editor-fields input{padding:8px;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:var(--radius)}
+.chart-container{position:relative;height:300px;margin-top:20px}
+.tabs-secondary{display:flex;gap:10px;margin-bottom:20px;border-bottom:1px solid var(--border);padding-bottom:12px}
+.tabs-secondary-item{padding:8px 12px;border-radius:var(--radius);background:var(--surface2);color:var(--text2);cursor:pointer;transition:all 150ms;font-weight:500;font-size:0.85rem}
+.tabs-secondary-item:hover{background:var(--border);color:var(--text)}
+.tabs-secondary-item.active{background:var(--accent);color:#0d1117}
+.file-input-wrapper{position:relative;display:inline-block}
+.file-input-wrapper input[type="file"]{display:none}
+.file-input-label{display:inline-block;padding:10px 16px;background:var(--accent);color:#0d1117;border-radius:var(--radius);cursor:pointer;font-weight:500;transition:all 150ms}
+.file-input-label:hover{background:var(--accent2)}
+</style>
+</head>
+<body>
+<div id="login-panel" class="login-container">
+  <div class="login-card">
+    <h1>🔐 Audit Manager</h1>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="text" id="login-email" placeholder="exemple@sqyouest.fr">
+    </div>
+    <div class="form-group">
+      <label>Mot de passe</label>
+      <input type="password" id="login-password" placeholder="••••••••">
+    </div>
+    <button class="btn btn-primary" onclick="doLogin()">Se connecter</button>
+  </div>
+</div>
 
-      .container { margin: 50px auto 40px auto; width: 600px; text-align: center; }
+<div id="app-panel" style="display:none;height:100vh;display:flex;flex-direction:column">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-title">🔍 SQYouest Audit</div>
+      <div class="topbar-info">
+        <div id="topbar-site">
+          <small>Site:</small>
+          <span id="site-display">—</span>
+        </div>
+        <div id="topbar-week">
+          <small>Semaine:</small>
+          <span id="week-display">—</span>
+        </div>
+        <div id="topbar-user">
+          <small>Auditeur:</small>
+          <span id="user-display">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="sync-badge local" id="sync-badge">💾 Local</div>
+      <button class="btn btn-secondary" onclick="doLogout()">Déconnexion</button>
+    </div>
+  </div>
 
-      a { color: #4183c4; text-decoration: none; }
-      a:hover { text-decoration: underline; }
+  <div class="container">
+    <div class="sidebar">
+      <button class="sidebar-item active" onclick="switchTab('audit')">📋 Audit</button>
+      <button class="sidebar-item" onclick="switchTab('history')">📊 Historique</button>
+      <button class="sidebar-item" onclick="switchTab('report')">📈 Rapport</button>
+      <button class="sidebar-item" onclick="switchTab('kpi')">📉 KPI</button>
+      <button class="sidebar-item" onclick="switchTab('settings')">⚙️ Paramètres</button>
+    </div>
 
-      h1 { width: 800px; position:relative; left: -100px; letter-spacing: -1px; line-height: 60px; font-size: 60px; font-weight: 100; margin: 0px 0 50px 0; text-shadow: 0 1px 0 #fff; }
-      p { color: rgba(0, 0, 0, 0.5); margin: 20px 0; line-height: 1.6; }
-
-      ul { list-style: none; margin: 25px 0; padding: 0; }
-      li { display: table-cell; font-weight: bold; width: 1%; }
-
-      .logo { display: inline-block; margin-top: 35px; }
-      .logo-img-2x { display: none; }
-      @media
-      only screen and (-webkit-min-device-pixel-ratio: 2),
-      only screen and (   min--moz-device-pixel-ratio: 2),
-      only screen and (     -o-min-device-pixel-ratio: 2/1),
-      only screen and (        min-device-pixel-ratio: 2),
-      only screen and (                min-resolution: 192dpi),
-      only screen and (                min-resolution: 2dppx) {
-        .logo-img-1x { display: none; }
-        .logo-img-2x { display: inline-block; }
-      }
-
-      #suggestions {
-        margin-top: 35px;
-        color: #ccc;
-      }
-      #suggestions a {
-        color: #666666;
-        font-weight: 200;
-        font-size: 14px;
-        margin: 0 10px;
-      }
-
-    </style>
-  </head>
-  <body>
-
-    <div class="container">
-
-      <h1>404</h1>
-      <p><strong>There isn't a GitHub Pages site here.</strong></p>
-
-      <p>
-        If you're trying to publish one,
-        <a href="https://help.github.com/pages/">read the full documentation</a>
-        to learn how to set up <strong>GitHub Pages</strong>
-        for your repository, organization, or user account.
-      </p>
-
-      <div id="suggestions">
-        <a href="https://githubstatus.com">GitHub Status</a> &mdash;
-        <a href="https://twitter.com/githubstatus">@githubstatus</a>
+    <div class="main">
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('audit')">Audit</button>
+        <button class="tab" onclick="switchTab('history')">Historique</button>
+        <button class="tab" onclick="switchTab('report')">Rapport</button>
+        <button class="tab" onclick="switchTab('kpi')">KPI</button>
+        <button class="tab" onclick="switchTab('settings')">Paramètres</button>
       </div>
 
-      <a href="/" class="logo logo-img-1x">
-        <img width="32" height="32" title="" alt="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpFMTZCRDY3REIzRjAxMUUyQUQzREIxQzRENUFFNUM5NiIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpFMTZCRDY3RUIzRjAxMUUyQUQzREIxQzRENUFFNUM5NiI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkUxNkJENjdCQjNGMDExRTJBRDNEQjFDNEQ1QUU1Qzk2IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkUxNkJENjdDQjNGMDExRTJBRDNEQjFDNEQ1QUU1Qzk2Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+SM9MCAAAA+5JREFUeNrEV11Ik1EY3s4+ddOp29Q5b0opCgKFsoKoi5Kg6CIhuwi6zLJLoYLopq4qsKKgi4i6CYIoU/q5iDAKs6syoS76IRWtyJ+p7cdt7sf1PGOD+e0c3dygAx/67ZzzPM95/877GYdHRg3ZjMXFxepQKNS6sLCwJxqNNuFpiMfjVs4ZjUa/pmmjeD6VlJS8NpvNT4QQ7mxwjSsJiEQim/1+/9lgMHgIr5ohuxG1WCw9Vqv1clFR0dCqBODElV6v90ogEDjGdYbVjXhpaendioqK07CIR7ZAqE49PT09BPL2PMgTByQGsYiZlQD4uMXtdr+JxWINhgINYhGT2MsKgMrm2dnZXgRXhaHAg5jEJodUAHxux4LudHJE9RdEdA+i3Juz7bGHe4mhE9FNrgwBCLirMFV9Okh5eflFh8PR5nK5nDabrR2BNJlKO0T35+Li4n4+/J+/JQCxhmu5h3uJoXNHPbmWZAHMshWB8l5/ipqammaAf0zPDDx1ONV3vurdidqwAQL+pEc8sLcAe1CCvQ3YHxIW8Pl85xSWNC1hADDIv0rIE/o4J0k3kww4xSlwIhcq3EFFOm7KN/hUGOQkt0CFa5WpNJlMvxBEz/IVQAxg/ZRZl9wiHA63yDYieM7DnLP5CiAGsC7I5sgtYKJGWe2A8seFqgFJrJjEPY1Cn3pJ8/9W1e5VWsFDTEmFrBcoDhZJEQkXuhICMyKpjhahqN21hRYATKfUOlDmkygrR4o4C0VOLGJKrOITKB4jijzdXygBKixyC5TDQdnk/Pz8qRw6oOWGlsTKGOQW6OH6FBWsyePxdOXLTgxiyebILZCjz+GLgMIKnXNzc49YMlcRdHXcSwxFVgTInQhC9G33UhNoJLuqq6t345p9y3eUy8OTk5PjAHuI9uo4b07FBaOhsu0A4Unc+T1TU1Nj3KsSSE5yJ65jqF2DDd8QqWYmAZrIM2VlZTdnZmb6AbpdV9V6ec9znf5Q7HjYumdRE0JOp3MjitO4SFa+cZz8Umqe3TCbSLvdfkR/kWDdNQl5InuTcysOcpFT35ZrbBxx4p3JAHlZVVW1D/634VRt+FvLBgK/v5LV9WS+10xMTEwtRw7XvqOL+e2Q8V3AYIOIAXQ26/heWVnZCVfcyKHg2CBgTpmPmjYM8l24GyaUHyaIh7XwfR9ErE8qHoDfn2LTNAVC0HX6MFcBIP8Bi+6F6cdW/DICkANRfx99fEYFQ7Nph5i/uQiA214gno7K+guhaiKg9gC62+M8eR7XsBsYJ4ilam60Fb7r7uAj8wFyuwM1oIOWgfmDy6RXEEQzJMPe23DXrVS7rtyD3Df8z/FPgAEAzWU5Ku59ZAUAAAAASUVORK5CYII=">
-      </a>
+      <div class="content">
+        <!-- AUDIT TAB -->
+        <div id="audit-tab" class="tab-panel active">
+          <div style="display:flex;gap:10px;margin-bottom:20px">
+            <select id="site-dropdown" class="form-group" style="padding:10px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface2);color:var(--text)">
+              <option value="">-- Sélectionner un site --</option>
+            </select>
+            <button class="btn btn-secondary" onclick="newBlankAudit()">Nouveau</button>
+            <button class="btn btn-success" onclick="saveCurrentAudit()">Enregistrer</button>
+            <button class="btn btn-secondary" onclick="resetAudit()">Réinitialiser</button>
+            <button class="btn btn-secondary" onclick="fillAllOK()">Tout OK</button>
+          </div>
+          <div id="audit-sections"></div>
+        </div>
 
-      <a href="/" class="logo logo-img-2x">
-        <img width="32" height="32" title="" alt="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpEQUM1QkUxRUI0MUMxMUUyQUQzREIxQzRENUFFNUM5NiIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpEQUM1QkUxRkI0MUMxMUUyQUQzREIxQzRENUFFNUM5NiI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkUxNkJENjdGQjNGMDExRTJBRDNEQjFDNEQ1QUU1Qzk2IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkUxNkJENjgwQjNGMDExRTJBRDNEQjFDNEQ1QUU1Qzk2Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+hfPRaQAAB6lJREFUeNrsW2mME2UYbodtt+2222u35QheoCCYGBQligIJgkZJNPzgigoaTEj8AdFEMfADfyABkgWiiWcieK4S+QOiHAYUj2hMNKgYlEujpNttu9vttbvdw+chU1K6M535pt3ubHCSyezR+b73eb73+t7vrfXsufOW4bz6+vom9/b23ovnNNw34b5xYGAgODg46Mbt4mesVmsWd1qSpHhdXd2fuP/Afcput5/A88xwymcdBgLqenp6FuRyuWV4zu/v759QyWBjxoz5t76+/gun09mK5xFyakoCAPSaTCazNpvNPoYVbh6O1YKGRF0u13sNDQ27QMzfpiAAKj0lnU6/gBVfAZW2WWpwwVzy0IgP3G73FpjI6REhAGA9qVRqA1b9mVoBVyIC2tDi8Xg24+dUzQiAbS/s7Ox8G2o/3mKCC+Zw0efzPQEfcVjYrARX3dbV1bUtHo8fMgt42f+Mp0yUTVQbdWsAHVsikdiHkHaPxcQXQufXgUBgMRxme9U0AAxfH4vFvjM7eF6UkbJS5qoQwEQGA57Ac5JllFyUVZZ5ckUEgMVxsK2jlSYzI+QXJsiyjzNEAJyJAzb/KQa41jJKL8pODMQiTEAymXw5n8/P0IjD3bh7Rgog59aanxiIRTVvV/oj0tnHca/WMrVwODwB3raTGxzkBg/gnZVapFV62Wy2n5AO70HM/5wbJ0QnXyQSaVPDIuNZzY0V3ntHMwxiwHA0Gj2Np7ecIBDgaDAYXKCQJM1DhrgJ3nhulcPbl8j4NmHe46X/g60fwbz3aewjkqFQaAqebWU1AOqyQwt8Id6qEHMc97zu7u7FGGsn7HAiVuosVw7P35C1nccdgSCxop1dHeZswmfHMnxBo6ZTk+jN8dl/vF7vWofDsa+MLN9oEUBMxOb3+1eoEsBVw6Zmua49r8YmhAKDiEPcMwBsxMiqQ+ixzPFxZyqRpXARG/YOr1ObFJ0gUskXBbamcR1OKmMUvDxHRAu8/LmY3jFLMUpFqz9HxG65smYJdyKyECOxDiEAe/p1gjF2oonivZAsxVgl2daa4EQWCW6J55qFAFFZiJWYLxNQy2qOSUzGRsyXCUDIeliwAHEO4WSlWQBRFoZakXcKmCXmyXAKs0Ve9vl8q42WoIYpJU4hV3hKcNs8m9gl7p/xQ73eF5kB4j5mNrWmTJRNwAzqiV1CxjVTZCIkEq+Z1bZFZSN2CenmVAFVy4Plz8xKAGWjjAKFk6lCBMDR/MJjLLMSQNm43xAiQKTaA+9/wewhDjL+JVI1kkTSSOTcKbMTwPqESAot6dn6Fr1gHwVJju6IRuyiByPuUUBAg5DGkAgBmxlvdgIEK9gDkohdY/BJo4CAG0R8miRSsGABkgVQs4KXu098IgUXSSRsFAoKZiVAVDY2WUiiPTjYRi41KwGisrGsLtlsth8Fiwnz2fBkQvWfRtlE3iF2yW63/yCacXZ1dW02GwGyTFaRd4idJnCKHRaCxYRHoG5LTKT6SyiToP1fJHbmAYPYRR0UnZQtMnA6s0zg+GZBlt0Gdo7EPHgpE3Q6nZ8YyLhc8Xj8MJh/aKTAY+5FPAKHLE7RdwuYJZmNwzyCMkBCYyKROJBMJl9B/PXXCjjmCmDOVzH3fiPpObEWGqoKe4EBl8v1hlqsdLvd23mkxHM9pc9kMpmno9HoeTii7ewbHEZPPx1ztLS1tV3AnGuMjiNjvbQFuHw6zDo5By7dTPAQNBgMLrRarTkSls1mnwT7uwp9virx9QzbW/HuV/j5d/b+6jniKlllP8lkeONJDk+dq9GsQTnC4fB1heO0K47Hwe7WdDr9nAKgXwOBwHI+C45Htj1d6sd429TUNEcmUdc+PRaLHcvn87dXW4ugzdsaGxufL94NFv9zi1J7GVbhlvb2dnaJ3SVrxfc+n2+NTsZ7/H7/Mr3g5XdSIHyJSH1PZ+7fToyl2+ErqilgZ4NaLYB9goVGaHjR93Hv1ZrU4XDsFT20kH3PObzbWk0CgG1jacVIUnAQb9F+VexyLMzkpcLv0IJV7AHQIOCAUYHx7v5qgScmYHtTqSAyZLEJTK22Bie4iq3xsqpm4SAf9Hq9a2DnJ4uLK3SEULcdRvp3i3zHySqpficxEdsQc1NrlYXXvR+O7qASSezXB+h1SuUomgg9LL8BUoV4749EIolKh+EiqWmqVEZlDgHks2pxHw7xTqUQw9J5NcAXOK10AGIoZ6Zli6JY6Z1Q461KoZ4NiKLHarW+KDsxlDUPHZ5zPQZqUVDPJsTqb5n9malbpAh8C2XXDLl62+WZIDFRUlNVOiwencnNU3aQEkL+cDMSoLvZo2fQB7AJssNAuFuvorlDVVkkg2I87+jo2K2QAVphDrfyViK5VqtO34OkaxXCp+7drdDBCAdubm6eidX+2WwqT5komwh4YQLk+H4aE93h8Xg2gvHekQZOGSgLZTLyDTLJ4Lx9/KZWKBSainT4Iy3FqQBfnUZR42PKQFksBr9QKVXCPusD3OiA/RkQ5kP8qV/Jl1WywAp/6+dcmPM2zL1UrUahe4JqfnWWKXIul3uUbfP8njAFLW1OFr3gdFtZ72cNH+PtQT7/brW+NXqJAHh0y9V8/U/A1U7AfwIMAD7mS3pCbuWJAAAAAElFTkSuQmCC">
-      </a>
+        <!-- HISTORY TAB -->
+        <div id="history-tab" class="tab-panel">
+          <div style="display:flex;gap:10px;margin-bottom:20px">
+            <button class="btn btn-secondary" onclick="renderHistory()">Rafraîchir</button>
+            <button class="btn btn-danger" onclick="clearHistory()">Supprimer tout</button>
+          </div>
+          <div id="history-list" style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+            <div id="history-items"></div>
+            <div id="history-detail" style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;min-height:300px"></div>
+          </div>
+        </div>
+
+        <!-- REPORT TAB -->
+        <div id="report-tab" class="tab-panel">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Site</label>
+              <select id="report-site" class="form-group">
+                <option value="">-- Tous --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Date début</label>
+              <input type="date" id="report-from">
+            </div>
+            <div class="form-group">
+              <label>Date fin</label>
+              <input type="date" id="report-to">
+            </div>
+            <div style="display:flex;align-items:flex-end">
+              <button class="btn btn-primary" onclick="renderReport()" style="width:100%">Générer</button>
+            </div>
+          </div>
+          <div id="report-content" style="margin-top:20px"></div>
+        </div>
+
+        <!-- KPI TAB -->
+        <div id="kpi-tab" class="tab-panel">
+          <div class="tabs-secondary">
+            <div class="tabs-secondary-item active" onclick="switchKpiTab('table')">📊 Tableau</div>
+            <div class="tabs-secondary-item" onclick="switchKpiTab('import')">📥 Import</div>
+            <div class="tabs-secondary-item" onclick="switchKpiTab('chart')">📈 Graphique</div>
+          </div>
+          <div id="kpi-table-tab" class="tab-panel active">
+            <button class="btn btn-secondary" onclick="addKpiRow()">+ Ligne</button>
+            <div id="kpi-table-container"></div>
+          </div>
+          <div id="kpi-import-tab" class="tab-panel">
+            <div class="form-group">
+              <label>Coller données CSV</label>
+              <textarea id="kpi-paste-area" placeholder="site,date,valeur&#10;Arcades,2025-01-15,1250"></textarea>
+            </div>
+            <button class="btn btn-primary" onclick="importKpiCsv()">Importer</button>
+            <button class="btn btn-secondary" onclick="downloadKpiTemplate()">Télécharger template</button>
+          </div>
+          <div id="kpi-chart-tab" class="tab-panel">
+            <div id="kpi-charts-container"></div>
+          </div>
+        </div>
+
+        <!-- SETTINGS TAB -->
+        <div id="settings-tab" class="tab-panel">
+          <div class="settings-section">
+            <h3>Paramètres généraux</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Nom du site</label>
+                <input class="settings-input" type="text" id="set-site" placeholder="SQYouest">
+              </div>
+              <div class="form-group">
+                <label>Type de site</label>
+                <select class="settings-input" id="set-type">
+                  <option value="">Standard</option>
+                  <option value="premium">Premium</option>
+                </select>
+              </div>
+            </div>
+            <button class="btn btn-primary" onclick="saveGeneralSettings()" style="margin-top:10px">Enregistrer</button>
+          </div>
+
+          <div class="settings-section">
+            <h3>Sites enregistrés</h3>
+            <button class="btn btn-secondary" onclick="openAddSiteModal()" style="margin-bottom:10px">+ Ajouter un site</button>
+            <div id="sites-list"></div>
+          </div>
+
+          <div class="settings-section">
+            <h3>Utilisateurs</h3>
+            <button class="btn btn-secondary" onclick="openAddUserModal()" style="margin-bottom:10px">+ Ajouter utilisateur</button>
+            <div id="users-list"></div>
+          </div>
+
+          <div class="settings-section">
+            <h3>Éléments d'audit</h3>
+            <button class="btn btn-secondary" onclick="switchTab('editor')">Éditeur d'éléments</button>
+          </div>
+
+          <div class="settings-section">
+            <h3>Données</h3>
+            <button class="btn btn-secondary" onclick="exportAllData()">Exporter données</button>
+            <div class="file-input-wrapper" style="display:inline-block;margin-left:10px">
+              <input type="file" id="import-file" accept=".json">
+              <label for="import-file" class="file-input-label">Importer données</label>
+            </div>
+            <button class="btn btn-danger" onclick="if(confirm('Êtes-vous sûr?')) clearAllData()" style="margin-left:10px">Supprimer tout</button>
+          </div>
+
+          <div class="settings-section" id="firebase-section" style="display:none">
+            <h3>☁️ Configuration Cloud</h3>
+            <div class="form-group">
+              <label>Config Firebase (JSON)</label>
+              <textarea id="firebase-config-textarea" placeholder='{"apiKey":"...","projectId":"..."}' style="font-family:'DM Mono',monospace;font-size:0.85rem"></textarea>
+            </div>
+            <button class="btn btn-primary" onclick="saveFirebaseConfig()">Enregistrer config</button>
+          </div>
+        </div>
+
+        <!-- EDITOR TAB (hidden in tabs, accessible via settings) -->
+        <div id="editor-tab" class="tab-panel">
+          <button class="btn btn-secondary" onclick="switchTab('settings')">← Retour aux paramètres</button>
+          <div style="margin-top:20px">
+            <div class="form-group">
+              <label>Sélectionner une section</label>
+              <select id="editor-section-select" onchange="renderItemEditor()">
+                <option value="">-- Choisir une section --</option>
+              </select>
+            </div>
+            <div id="editor-items-container" style="margin-top:20px"></div>
+            <button class="btn btn-secondary" onclick="addItemToSection()" style="margin-top:10px">+ Ajouter élément</button>
+            <button class="btn btn-secondary" onclick="resetItemsToDefault()" style="margin-top:10px">Réinitialiser par défaut</button>
+          </div>
+        </div>
+      </div>
     </div>
-  </body>
+  </div>
+</div>
+
+<!-- MODALS -->
+<div id="modal-add-user" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">Ajouter utilisateur</div>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="text" id="modal-user-email" placeholder="email@sqyouest.fr">
+    </div>
+    <div class="form-group">
+      <label>Rôle</label>
+      <select id="modal-user-role">
+        <option value="auditor">Auditeur</option>
+        <option value="manager">Manager</option>
+        <option value="admin">Admin</option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-add-user')">Annuler</button>
+      <button class="btn btn-primary" onclick="saveUserModal()">Ajouter</button>
+    </div>
+  </div>
+</div>
+
+<div id="modal-edit-user" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">Éditer utilisateur</div>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="text" id="modal-edit-email" disabled>
+    </div>
+    <div class="form-group">
+      <label>Rôle</label>
+      <select id="modal-edit-role">
+        <option value="auditor">Auditeur</option>
+        <option value="manager">Manager</option>
+        <option value="admin">Admin</option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger" onclick="deleteUser()">Supprimer</button>
+      <button class="btn btn-secondary" onclick="closeModal('modal-edit-user')">Annuler</button>
+      <button class="btn btn-primary" onclick="saveUserModal('edit')">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<div id="modal-add-site" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">Ajouter un site</div>
+    <div class="form-group">
+      <label>Nom du site</label>
+      <input type="text" id="modal-site-name" placeholder="SQYouest Paris">
+    </div>
+    <div class="form-group">
+      <label>Type</label>
+      <select id="modal-site-type">
+        <option value="">Standard</option>
+        <option value="premium">Premium</option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-add-site')">Annuler</button>
+      <button class="btn btn-primary" onclick="saveSiteModal()">Ajouter</button>
+    </div>
+  </div>
+</div>
+
+<div id="lightbox" class="lightbox">
+  <img id="lightbox-img">
+  <button class="close" onclick="closeLightbox()">✕</button>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<script>
+// Storage Wrapper
+const LS = {
+  get: (k, def = null) => { const v = localStorage.getItem(k); return v ? JSON.parse(v) : def; },
+  set: (k, v) => localStorage.setItem(k, JSON.stringify(v)),
+  del: (k) => localStorage.removeItem(k)
+};
+
+// Global state
+let currentUser = null;
+let currentAudit = null;
+let currentSite = null;
+let allUsers = [];
+let allSites = [];
+let firebaseDb = null;
+let charts = {};
+
+const DEFAULT_SECTIONS = [
+  { id: 'admin', label: 'Admin', items: [{id:1,label:'Accueil'},{id:2,label:'Bureau directeur'},{id:3,label:'Toilettes'},{id:4,label:'Couloirs'},{id:5,label:'Escaliers'}] },
+  { id: 'entree', label: 'Entrée', items: [{id:6,label:'Hall'},{id:7,label:'Accueil'},{id:8,label:'Toilettes'},{id:9,label:'Dressing'},{id:10,label:'Entrepôt'}] },
+  { id: 'caisses', label: 'Caisses', items: [{id:11,label:'Caisse 1'},{id:12,label:'Caisse 2'},{id:13,label:'Caisse 3'},{id:14,label:'Caisse 4'},{id:15,label:'Bureau'}] },
+  { id: 'bar', label: 'Bar', items: [{id:16,label:'Bar'},{id:17,label:'Cuisine'},{id:18,label:'Stockage'},{id:19,label:'Toilettes'},{id:20,label:'Terrasse'}] },
+  { id: 'bowling17', label: 'Bowling 1-7', items: [{id:21,label:'Piste 1'},{id:22,label:'Piste 2'},{id:23,label:'Piste 3'},{id:24,label:'Piste 4'},{id:25,label:'Piste 5'},{id:26,label:'Piste 6'},{id:27,label:'Piste 7'}] },
+  { id: 'arcades', label: 'Arcades', items: [{id:28,label:'Arcade 1'},{id:29,label:'Arcade 2'},{id:30,label:'Arcade 3'},{id:31,label:'Arcade 4'},{id:32,label:'Arcade 5'},{id:33,label:'Maintenance'}] },
+  { id: 'billards', label: 'Billards', items: [{id:34,label:'Table 1'},{id:35,label:'Table 2'},{id:36,label:'Table 3'},{id:37,label:'Table 4'},{id:38,label:'Table 5'}] },
+  { id: 'bowling1', label: 'Bowling 8-18', items: [{id:39,label:'Piste 8'},{id:40,label:'Piste 9'},{id:41,label:'Piste 10'},{id:42,label:'Piste 11'},{id:43,label:'Piste 12'},{id:44,label:'Piste 13'},{id:45,label:'Piste 14'},{id:46,label:'Piste 15'},{id:47,label:'Piste 16'},{id:48,label:'Piste 17'},{id:49,label:'Piste 18'}] },
+  { id: 'acces', label: 'Accès', items: [{id:50,label:'Serrure'},{id:51,label:'Clé'},{id:52,label:'Portes'},{id:53,label:'Fenêtres'},{id:54,label:'Alarme'}] },
+  { id: 'karting', label: 'Karting', items: [{id:55,label:'Piste'},{id:56,label:'Kart 1'},{id:57,label:'Kart 2'},{id:58,label:'Kart 3'},{id:59,label:'Équipement'}] },
+  { id: 'atelier', label: 'Atelier', items: [{id:60,label:'Établi'},{id:61,label:'Outils'},{id:62,label:'Pièces'},{id:63,label:'Nettoyage'}] },
+  { id: 'piste', label: 'Piste', items: [{id:64,label:'Piste 1'},{id:65,label:'Piste 2'},{id:66,label:'Piste 3'},{id:67,label:'Piste 4'}] },
+  { id: 'laser', label: 'Laser Game', items: [{id:68,label:'Zone 1'},{id:69,label:'Zone 2'},{id:70,label:'Zone 3'},{id:71,label:'Accueil'},{id:72,label:'Stock'}] },
+  { id: 'bureaux', label: 'Bureaux', items: [{id:73,label:'Bureau 1'},{id:74,label:'Bureau 2'},{id:75,label:'Bureau 3'},{id:76,label:'Salle réunion'},{id:77,label:'Cuisine'}] }
+];
+
+// Firebase functions
+let initFirebase = async (cfg) => {
+  if (!cfg) return;
+  try {
+    firebase.initializeApp(cfg, 'sqyouest-app');
+    firebaseDb = firebase.firestore();
+    console.log('Firebase initialized');
+  } catch (e) {
+    console.error('Firebase init error:', e);
+  }
+};
+
+let cloudSaveAudit = async (audit) => {
+  if (!firebaseDb) return;
+  try {
+    await firebaseDb.collection('audits').doc(audit.id).set({
+      ...audit,
+      updatedAt: new Date(),
+      userId: currentUser.email
+    });
+  } catch (e) {
+    console.error('Cloud save error:', e);
+  }
+};
+
+let cloudLoadHistory = async () => {
+  if (!firebaseDb) return [];
+  try {
+    const snap = await firebaseDb.collection('audits').where('userId', '==', currentUser.email).get();
+    return snap.docs.map(d => d.data());
+  } catch (e) {
+    console.error('Cloud load error:', e);
+    return [];
+  }
+};
+
+let cloudSaveKpiHistory = async (rows) => {
+  if (!firebaseDb) return;
+  try {
+    await firebaseDb.collection('kpi_history').doc('main').set({
+      rows,
+      updatedAt: new Date(),
+      userId: currentUser.email
+    });
+  } catch (e) {
+    console.error('Cloud KPI save error:', e);
+  }
+};
+
+let cloudLoadKpiHistory = async () => {
+  if (!firebaseDb) return [];
+  try {
+    const doc = await firebaseDb.collection('kpi_history').doc('main').get();
+    return doc.exists ? doc.data().rows || [] : [];
+  } catch (e) {
+    console.error('Cloud KPI load error:', e);
+    return [];
+  }
+};
+
+let saveFirebaseConfig = () => {
+  const json = document.getElementById('firebase-config-textarea').value;
+  try {
+    const cfg = JSON.parse(json);
+    LS.set('firebase_config', cfg);
+    initFirebase(cfg);
+    showToast('Configuration Firebase enregistrée');
+  } catch (e) {
+    showAlert('JSON invalide: ' + e.message);
+  }
+};
+
+// Auth functions
+let doLogin = async () => {
+  const email = document.getElementById('login-email').value;
+  const pwd = document.getElementById('login-password').value;
+  if (!email || !pwd) { showAlert('Email et mot de passe requis'); return; }
+
+  const users = LS.get('users', []);
+  const user = users.find(u => u.email === email && u.password === pwd);
+  if (!user) { showAlert('Identifiants invalides'); return; }
+
+  currentUser = { email: user.email, role: user.role, name: user.name || email.split('@')[0] };
+  LS.set('currentUser', currentUser);
+
+  applyRoleUI();
+  document.getElementById('login-panel').style.display = 'none';
+  document.getElementById('app-panel').style.display = 'flex';
+
+  populateSiteDropdown();
+  await initApp();
+};
+
+let doLogout = () => {
+  currentUser = null;
+  LS.del('currentUser');
+  LS.del('currentAudit');
+  document.getElementById('login-panel').style.display = 'flex';
+  document.getElementById('app-panel').style.display = 'none';
+};
+
+let checkSession = () => {
+  const u = LS.get('currentUser');
+  if (u) {
+    currentUser = u;
+    applyRoleUI();
+    document.getElementById('login-panel').style.display = 'none';
+    document.getElementById('app-panel').style.display = 'flex';
+    populateSiteDropdown();
+  }
+};
+
+let applyRoleUI = () => {
+  const isAdmin = currentUser.role === 'admin';
+  document.getElementById('firebase-section').style.display = isAdmin ? 'block' : 'none';
+};
+
+// App init
+let initApp = async () => {
+  allUsers = LS.get('users', []);
+  allSites = LS.get('sites', []);
+
+  const fbCfg = LS.get('firebase_config');
+  if (fbCfg) await initFirebase(fbCfg);
+
+  currentAudit = LS.get('currentAudit');
+  if (!currentAudit) newBlankAudit();
+
+  try {
+    const cloudHistory = await cloudLoadHistory();
+    let localHistory = LS.get('auditHistory', []);
+    const merged = [...localHistory];
+    for (const audit of cloudHistory) {
+      if (!merged.find(a => a.id === audit.id)) merged.push(audit);
+    }
+    LS.set('auditHistory', merged);
+  } catch (e) {
+    console.error('History merge error:', e);
+  }
+
+  renderAuditItems();
+  updateTopbar();
+  updateSyncBadge();
+};
+
+let updateSyncBadge = () => {
+  const badge = document.getElementById('sync-badge');
+  if (firebaseDb) {
+    badge.className = 'sync-badge cloud';
+    badge.textContent = '☁️ Sync';
+  } else {
+    badge.className = 'sync-badge local';
+    badge.textContent = '💾 Local';
+  }
+};
+
+// Audit functions
+let newBlankAudit = () => {
+  currentAudit = {
+    id: Date.now().toString(),
+    siteId: currentSite || '',
+    date: new Date().toISOString().split('T')[0],
+    week: getWeekNumber(),
+    auditor: currentUser ? currentUser.email : '',
+    sections: DEFAULT_SECTIONS.map(s => ({
+      id: s.id,
+      label: s.label,
+      items: s.items.map(i => ({ id: i.id, label: i.label, status: 'na', comment: '', photos: [] }))
+    })),
+    kpis: [],
+    notes: ''
+  };
+  LS.set('currentAudit', currentAudit);
+  renderAuditItems();
+  updateTopbar();
+};
+
+let getWeekNumber = () => {
+  const d = new Date();
+  const first = new Date(d.getFullYear(), 0, 1);
+  const diff = d - first;
+  const ms = 1000 * 60 * 60 * 24 * 7;
+  return Math.ceil((diff + first.getDay() * ms) / ms);
+};
+
+let updateTopbar = () => {
+  if (!currentAudit) return;
+  document.getElementById('site-display').textContent = currentAudit.siteId || '—';
+  document.getElementById('week-display').textContent = currentAudit.week || '—';
+  document.getElementById('user-display').textContent = currentAudit.auditor || '—';
+};
+
+let populateSiteDropdown = () => {
+  const sel = document.getElementById('site-dropdown');
+  sel.innerHTML = '<option value="">-- Sélectionner un site --</option>';
+  allSites.forEach(s => {
+    const opt = document.createElement('option');
+    opt.value = s.id;
+    opt.textContent = s.name;
+    sel.appendChild(opt);
+  });
+  sel.onchange = () => {
+    currentSite = sel.value;
+    if (currentAudit) {
+      currentAudit.siteId = currentSite;
+      LS.set('currentAudit', currentAudit);
+      updateTopbar();
+    }
+  };
+};
+
+// Rendering
+let renderAuditItems = () => {
+  if (!currentAudit) return;
+  const container = document.getElementById('audit-sections');
+  container.innerHTML = '';
+
+  currentAudit.sections.forEach(section => {
+    const sectionEl = createSectionElement(section);
+    container.appendChild(sectionEl);
+  });
+};
+
+let createSectionElement = (section) => {
+  const div = document.createElement('div');
+  div.className = 'section';
+
+  const header = document.createElement('div');
+  header.className = 'section-header';
+  header.innerHTML = `<span>${section.label}</span><span class="toggle">▼</span>`;
+  header.onclick = () => toggleSection(section.id);
+  div.appendChild(header);
+
+  const body = document.createElement('div');
+  body.className = 'section-body';
+  body.id = `section-${section.id}`;
+
+  const grid = document.createElement('div');
+  grid.className = 'item-grid';
+  section.items.forEach(item => {
+    const itemEl = createAuditItemEl(section.id, item);
+    grid.appendChild(itemEl);
+  });
+  body.appendChild(grid);
+  div.appendChild(body);
+
+  return div;
+};
+
+let createAuditItemEl = (sectionId, item) => {
+  const btn = document.createElement('button');
+  btn.className = 'item-btn';
+  btn.id = `item-${item.id}`;
+
+  const statusClass = item.status || 'na';
+  btn.classList.add(statusClass);
+  btn.textContent = `${item.id}: ${item.label}`;
+
+  btn.onclick = (e) => {
+    e.stopPropagation();
+    toggleItemBody(sectionId, item.id);
+  };
+
+  const itemBody = document.createElement('div');
+  itemBody.className = 'item-body';
+  itemBody.id = `item-body-${item.id}`;
+
+  const statusDiv = document.createElement('div');
+  statusDiv.className = 'input-row';
+  statusDiv.innerHTML = `
+    <button class="btn" style="background:var(--ok);color:#0d1117" onclick="setStatus(${item.id},'ok')">✓ OK</button>
+    <button class="btn" style="background:var(--nok);color:#fff" onclick="setStatus(${item.id},'nok')">✗ NOL</button>
+    <button class="btn" style="background:var(--na);color:#fff" onclick="setStatus(${item.id},'na')">— N/A</button>
+  `;
+  itemBody.appendChild(statusDiv);
+
+  const commentInput = document.createElement('textarea');
+  commentInput.placeholder = 'Commentaire...';
+  commentInput.value = item.comment || '';
+  commentInput.onchange = () => setComment(item.id, commentInput.value);
+  itemBody.appendChild(commentInput);
+
+  const photoDiv = document.createElement('div');
+  photoDiv.innerHTML = '<strong>Photos:</strong>';
+  const photoInput = document.createElement('input');
+  photoInput.type = 'file';
+  photoInput.multiple = true;
+  photoInput.accept = 'image/*';
+  photoInput.onchange = () => addPhotos(item.id, photoInput.files);
+  photoDiv.appendChild(photoInput);
+  itemBody.appendChild(photoDiv);
+
+  renderPhotos(item.id, itemBody);
+
+  const wrapper = document.createElement('div');
+  wrapper.appendChild(btn);
+  wrapper.appendChild(itemBody);
+
+  return wrapper;
+};
+
+let toggleSection = (sectionId) => {
+  const body = document.getElementById(`section-${sectionId}`);
+  const header = body.parentElement.querySelector('.section-header .toggle');
+  body.classList.toggle('open');
+  header.classList.toggle('open');
+};
+
+let toggleItemBody = (sectionId, itemId) => {
+  const body = document.getElementById(`item-body-${itemId}`);
+  body.classList.toggle('open');
+};
+
+let setStatus = (itemId, status) => {
+  const item = findItemById(itemId);
+  if (!item) return;
+  item.status = status;
+  LS.set('currentAudit', currentAudit);
+  const btn = document.getElementById(`item-${itemId}`);
+  btn.className = 'item-btn';
+  btn.classList.add(status);
+  autoSave();
+};
+
+let setComment = (itemId, comment) => {
+  const item = findItemById(itemId);
+  if (item) {
+    item.comment = comment;
+    LS.set('currentAudit', currentAudit);
+    autoSave();
+  }
+};
+
+let findItemById = (itemId) => {
+  for (const section of currentAudit.sections) {
+    for (const item of section.items) {
+      if (item.id === itemId) return item;
+    }
+  }
+  return null;
+};
+
+let getSectionIdForItem = (itemId) => {
+  for (const section of currentAudit.sections) {
+    if (section.items.some(i => i.id === itemId)) return section.id;
+  }
+  return null;
+};
+
+let addPhotos = async (itemId, files) => {
+  const item = findItemById(itemId);
+  if (!item) return;
+
+  for (const file of files) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const photoId = Date.now().toString();
+      item.photos = item.photos || [];
+      item.photos.push({ id: photoId, data: e.target.result });
+      LS.set('currentAudit', currentAudit);
+      renderPhotos(itemId, document.getElementById(`item-body-${itemId}`));
+      autoSave();
+    };
+    reader.readAsDataURL(file);
+  }
+};
+
+let renderPhotos = (itemId, container) => {
+  const item = findItemById(itemId);
+  if (!item || !item.photos || item.photos.length === 0) return;
+
+  let gallery = container.querySelector('.gallery');
+  if (!gallery) {
+    gallery = document.createElement('div');
+    gallery.className = 'gallery';
+    container.appendChild(gallery);
+  }
+
+  gallery.innerHTML = '';
+  item.photos.forEach(photo => {
+    const div = document.createElement('div');
+    div.className = 'gallery-item';
+    div.innerHTML = `<img src="${photo.data}" onclick="openLightbox('${photo.data}')">`;
+    const delBtn = document.createElement('button');
+    delBtn.className = 'delete-btn';
+    delBtn.textContent = '✕';
+    delBtn.onclick = () => deletePhoto(itemId, photo.id);
+    div.appendChild(delBtn);
+    gallery.appendChild(div);
+  });
+};
+
+let deletePhoto = (itemId, photoId) => {
+  const item = findItemById(itemId);
+  if (item) {
+    item.photos = (item.photos || []).filter(p => p.id !== photoId);
+    LS.set('currentAudit', currentAudit);
+    renderPhotos(itemId, document.getElementById(`item-body-${itemId}`));
+  }
+};
+
+let openLightbox = (src) => {
+  document.getElementById('lightbox-img').src = src;
+  document.getElementById('lightbox').classList.add('open');
+};
+
+let closeLightbox = () => {
+  document.getElementById('lightbox').classList.remove('open');
+};
+
+// Auto-save
+let autoSaveTimer = null;
+let autoSave = () => {
+  clearTimeout(autoSaveTimer);
+  autoSaveTimer = setTimeout(() => {
+    LS.set('currentAudit', currentAudit);
+  }, 1000);
+};
+
+let saveCurrentAudit = async () => {
+  readFormIntoAudit();
+  LS.set('currentAudit', currentAudit);
+
+  let history = LS.get('auditHistory', []);
+  const idx = history.findIndex(a => a.id === currentAudit.id);
+  if (idx >= 0) history[idx] = currentAudit;
+  else history.push(currentAudit);
+  LS.set('auditHistory', history);
+
+  await cloudSaveAudit(currentAudit);
+
+  showToast('Audit enregistré');
+};
+
+let readFormIntoAudit = () => {
+  if (!currentAudit) return;
+  currentAudit.notes = document.getElementById('audit-notes')?.value || '';
+};
+
+let resetAudit = () => {
+  if (confirm('Êtes-vous sûr de réinitialiser l\'audit?')) {
+    newBlankAudit();
+  }
+};
+
+let fillAllOK = () => {
+  currentAudit.sections.forEach(s => {
+    s.items.forEach(i => {
+      i.status = 'ok';
+      const btn = document.getElementById(`item-${i.id}`);
+      if (btn) {
+        btn.className = 'item-btn ok';
+        btn.textContent = `${i.id}: ${i.label}`;
+      }
+    });
+  });
+  LS.set('currentAudit', currentAudit);
+  autoSave();
+};
+
+// History
+let renderHistory = () => {
+  const history = LS.get('auditHistory', []);
+  const list = document.getElementById('history-items');
+  list.innerHTML = '';
+
+  history.sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(audit => {
+    const div = document.createElement('div');
+    div.className = 'history-item';
+    div.innerHTML = `
+      <div class="history-item-header">
+        <div class="history-item-title">${audit.siteId || 'Site'}</div>
+        <div class="history-item-date">${formatDateShort(audit.date)}</div>
+      </div>
+      <div class="history-item-meta">Auditeur: ${audit.auditor}</div>
+      <div class="history-item-meta">Semaine: ${audit.week}</div>
+    `;
+    div.onclick = () => showHistoryDetail(audit);
+    list.appendChild(div);
+  });
+};
+
+let showHistoryDetail = (audit) => {
+  const detail = document.getElementById('history-detail');
+  const score = computeScore(audit);
+  const oks = audit.sections.reduce((a, s) => a + s.items.filter(i => i.status === 'ok').length, 0);
+  const noks = audit.sections.reduce((a, s) => a + s.items.filter(i => i.status === 'nok').length, 0);
+
+  detail.innerHTML = `
+    <strong>${audit.siteId} - ${formatDate(audit.date)}</strong>
+    <p style="margin-top:10px;color:var(--text2)">Auditeur: ${audit.auditor}</p>
+    <p style="color:var(--text2)">Score: ${score}%</p>
+    <p style="color:var(--ok)(#✓ OK: ${oks}</p>
+    <p style="color:var(--nok)">✗ NOK: ${noks}</p>
+    <div style="margin-top:15px">
+      <button class="btn btn-secondary" onclick="loadHistoryAudit('${audit.id}')">Charger audit</button>
+      <button class="btn btn-danger" onclick="deleteHistoryItem('${audit.id}')" style="margin-left:8px">Supprimer</button>
+    </div>
+  `;
+};
+
+let loadHistoryAudit = (auditId) => {
+  const history = LS.get('auditHistory', []);
+  const audit = history.find(a => a.id === auditId);
+  if (audit) {
+    currentAudit = audit;
+    LS.set('currentAudit', currentAudit);
+    switchTab('audit');
+    renderAuditItems();
+    updateTopbar();
+  }
+};
+
+let deleteHistoryItem = (auditId) => {
+  if (confirm('Supprimer cet audit?')) {
+    let history = LS.get('auditHistory', []);
+    history = history.filter(a => a.id !== auditId);
+    LS.set('auditHistory', history);
+    renderHistory();
+    document.getElementById('history-detail').innerHTML = '';
+  }
+};
+
+// Report
+let populateReportSelects = () => {
+  const sel = document.getElementById('report-site');
+  sel.innerHTML = '<option value="">-- Tous --</option>';
+  allSites.forEach(s => {
+    const opt = document.createElement('option');
+    opt.value = s.id;
+    opt.textContent = s.name;
+    sel.appendChild(opt);
+  });
+
+  const today = new Date();
+  const from = new Date(today);
+  from.setDate(from.getDate() - 30);
+  document.getElementById('report-from').value = from.toISOString().split('T')[0];
+  document.getElementById('report-to').value = today.toISOString().split('T')[0];
+};
+
+let renderReport = () => {
+  const history = LS.get('auditHistory', []);
+  const siteFilter = document.getElementById('report-site').value;
+  const fromStr = document.getElementById('report-from').value;
+  const toStr = document.getElementById('report-to').value;
+
+  let filtered = history;
+  if (siteFilter) filtered = filtered.filter(a => a.siteId === siteFilter);
+  if (fromStr) filtered = filtered.filter(a => new Date(a.date) >= new Date(fromStr));
+  if (toStr) filtered = filtered.filter(a => new Date(a.date) <= new Date(toStr));
+
+  const content = document.getElementById('report-content');
+  content.innerHTML = '';
+
+  if (filtered.length === 0) {
+    content.innerHTML = '<p style="color:var(--text2)">Aucun audit trouvé</p>';
+    return;
+  }
+
+  const avgAudit = buildAvgAudit(filtered);
+  const avgScore = computeScore(avgAudit);
+
+  const statsDiv = document.createElement('div');
+  statsDiv.className = 'stats-grid';
+
+  const scoreCard = document.createElement('div');
+  scoreCard.className = 'stat-card';
+  scoreCard.innerHTML = `
+    <div class="stat-label">Score moyen</div>
+    <div class="stat-value">${avgScore.toFixed(1)}%</div>
+    <div class="stat-details">${filtered.length} audit(s)</div>
+  `;
+  statsDiv.appendChild(scoreCard);
+
+  content.appendChild(statsDiv);
+
+  const sectionsDiv = document.createElement('div');
+  sectionsDiv.style.marginTop = '20px';
+  avgAudit.sections.forEach(s => {
+    const div = document.createElement('div');
+    div.className = 'section';
+    div.innerHTML = `<h4 style="color:var(--text)">${s.label}</h4>`;
+
+    const table = document.createElement('table');
+    table.style.width = '100%';
+    table.style.borderCollapse = 'collapse';
+
+    s.items.forEach(i => {
+      const row = document.createElement('tr');
+      const okPct = i.okCount / (i.okCount + i.nokCount + i.naCount) * 100;
+      const color = okPct >= 80 ? 'var(--ok)' : okPct >= 50 ? '#f59e0b' : 'var(--nok)';
+      row.innerHTML = `
+        <td style="padding:8px;border-bottom:1px solid var(--border)">${i.label}</td>
+        <td style="padding:8px;border-bottom:1px solid var(--border);text-align:right;color:${color};font-weight:600">${okPct.toFixed(0)}%</td>
+      `;
+      table.appendChild(row);
+    });
+
+    div.appendChild(table);
+    sectionsDiv.appendChild(div);
+  });
+
+  content.appendChild(sectionsDiv);
+};
+
+let buildAvgAudit = (audits) => {
+  const result = JSON.parse(JSON.stringify(DEFAULT_SECTIONS.map(s => ({
+    id: s.id,
+    label: s.label,
+    items: s.items.map(i => ({ id: i.id, label: i.label, okCount: 0, nokCount: 0, naCount: 0 }))
+  }))));
+
+  audits.forEach(audit => {
+    audit.sections.forEach(section => {
+      const res = result.find(s => s.id === section.id);
+      if (res) {
+        section.items.forEach(item => {
+          const resItem = res.items.find(i => i.id === item.id);
+          if (resItem) {
+            if (item.status === 'ok') resItem.okCount++;
+            else if (item.status === 'nok') resItem.nokCount++;
+            else resItem.naCount++;
+          }
+        });
+      }
+    });
+  });
+
+  return result;
+};
+
+let computeScore = (audit) => {
+  if (!audit.sections || audit.sections.length === 0) return 0;
+  let total = 0, ok = 0;
+  audit.sections.forEach(s => {
+    s.items.forEach(i => {
+      if (i.status !== 'na') {
+        total++;
+        if (i.status === 'ok') ok++;
+      }
+    });
+  });
+  return total === 0 ? 0 : (ok / total) * 100;
+};
+
+// Settings
+let populateSettings = () => {
+  populateSiteDropdown();
+  renderUsersList();
+  renderSitesList();
+
+  const settings = LS.get('site_settings', {});
+  document.getElementById('set-site').value = settings.site || '';
+  document.getElementById('set-type').value = settings.type || '';
+
+  const fbCfg = LS.get('firebase_config');
+  if (fbCfg && currentUser.role === 'admin') {
+    document.getElementById('firebase-config-textarea').value = JSON.stringify(fbCfg, null, 2);
+  }
+
+  populateReportSelects();
+};
+
+let saveGeneralSettings = () => {
+  const site = document.getElementById('set-site').value;
+  const type = document.getElementById('set-type').value;
+  LS.set('site_settings', { site, type });
+  updateTopbar();
+  showToast('Paramètres enregistrés');
+};
+
+let renderUsersList = () => {
+  const list = document.getElementById('users-list');
+  list.innerHTML = '';
+  allUsers.forEach(u => {
+    const div = document.createElement('div');
+    div.className = 'user-row';
+    div.innerHTML = `
+      <div class="user-row-info">
+        <div class="user-row-name">${u.email}</div>
+        <div class="user-row-role">${u.role}</div>
+      </div>
+      <div class="user-row-actions">
+        <button class="btn btn-secondary" onclick="openEditUserModal('${u.email}')">Éditer</button>
+      </div>
+    `;
+    list.appendChild(div);
+  });
+};
+
+let renderSitesList = () => {
+  const list = document.getElementById('sites-list');
+  list.innerHTML = '';
+  allSites.forEach(s => {
+    const div = document.createElement('div');
+    div.className = 'user-row';
+    div.innerHTML = `
+      <div class="user-row-info">
+        <div class="user-row-name">${s.name}</div>
+        <div class="user-row-role">${s.type || 'Standard'}</div>
+      </div>
+      <div class="user-row-actions">
+        <button class="btn btn-secondary" onclick="if(confirm('Supprimer ce site?')) { allSites = allSites.filter(x => x.id !== '${s.id}'); LS.set('sites', allSites); renderSitesList(); }">Supprimer</button>
+      </div>
+    `;
+    list.appendChild(div);
+  });
+};
+
+let openAddUserModal = () => {
+  document.getElementById('modal-user-email').value = '';
+  document.getElementById('modal-user-role').value = 'auditor';
+  document.getElementById('modal-add-user').classList.add('open');
+};
+
+let openEditUserModal = (email) => {
+  const user = allUsers.find(u => u.email === email);
+  if (user) {
+    document.getElementById('modal-edit-email').value = email;
+    document.getElementById('modal-edit-role').value = user.role;
+    document.getElementById('modal-edit-user').classList.add('open');
+  }
+};
+
+let saveUserModal = (mode = 'add') => {
+  const email = mode === 'add' ? document.getElementById('modal-user-email').value : document.getElementById('modal-edit-email').value;
+  const role = mode === 'add' ? document.getElementById('modal-user-role').value : document.getElementById('modal-edit-role').value;
+
+  if (!email) { showAlert('Email requis'); return; }
+
+  if (mode === 'add') {
+    const pwd = Math.random().toString(36).slice(-8);
+    allUsers.push({ email, password: pwd, role, name: email.split('@')[0] });
+    closeModal('modal-add-user');
+    showAlert(`Utilisateur créé. Mot de passe temporaire: ${pwd}`);
+  } else {
+    const user = allUsers.find(u => u.email === email);
+    if (user) user.role = role;
+    closeModal('modal-edit-user');
+    showToast('Utilisateur mis à jour');
+  }
+
+  LS.set('users', allUsers);
+  renderUsersList();
+};
+
+let deleteUser = () => {
+  const email = document.getElementById('modal-edit-email').value;
+  if (confirm(`Supprimer l'utilisateur ${email}?`)) {
+    allUsers = allUsers.filter(u => u.email !== email);
+    LS.set('users', allUsers);
+    closeModal('modal-edit-user');
+    renderUsersList();
+    showToast('Utilisateur supprimé');
+  }
+};
+
+let openAddSiteModal = () => {
+  document.getElementById('modal-site-name').value = '';
+  document.getElementById('modal-site-type').value = '';
+  document.getElementById('modal-add-site').classList.add('open');
+};
+
+let saveSiteModal = () => {
+  const name = document.getElementById('modal-site-name').value;
+  const type = document.getElementById('modal-site-type').value;
+
+  if (!name) { showAlert('Nom du site requis'); return; }
+
+  allSites.push({ id: Date.now().toString(), name, type });
+  LS.set('sites', allSites);
+  closeModal('modal-add-site');
+  renderSitesList();
+  populateSiteDropdown();
+  showToast('Site ajouté');
+};
+
+// Item editor
+let renderItemEditor = () => {
+  const sel = document.getElementById('editor-section-select');
+  const sectionId = sel.value;
+
+  if (!sectionId) {
+    document.getElementById('editor-items-container').innerHTML = '';
+    return;
+  }
+
+  const section = currentAudit.sections.find(s => s.id === sectionId);
+  if (!section) return;
+
+  const container = document.getElementById('editor-items-container');
+  container.innerHTML = '';
+
+  section.items.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'editor-item';
+    div.innerHTML = `
+      <div class="editor-item-info">
+        <div class="editor-item-id">#${item.id}</div>
+        <div class="editor-item-label">${item.label}</div>
+      </div>
+      <div class="editor-item-actions">
+        <button class="btn btn-secondary" onclick="removeEditorItem('${sectionId}',${item.id})">Supprimer</button>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+};
+
+let addItemToSection = () => {
+  const sel = document.getElementById('editor-section-select');
+  const sectionId = sel.value;
+  if (!sectionId) { showAlert('Sélectionner une section'); return; }
+
+  const section = currentAudit.sections.find(s => s.id === sectionId);
+  if (section) {
+    const maxId = Math.max(...section.items.map(i => i.id), 0);
+    section.items.push({ id: maxId + 1, label: 'Nouveau', status: 'na', comment: '', photos: [] });
+    LS.set('currentAudit', currentAudit);
+    renderItemEditor();
+  }
+};
+
+let removeEditorItem = (sectionId, itemId) => {
+  const section = currentAudit.sections.find(s => s.id === sectionId);
+  if (section) {
+    section.items = section.items.filter(i => i.id !== itemId);
+    LS.set('currentAudit', currentAudit);
+    renderItemEditor();
+  }
+};
+
+let addNewItem = () => {
+  // Placeholder - add via addItemToSection
+};
+
+let saveItemEdits = (sectionId, itemId, label) => {
+  const section = currentAudit.sections.find(s => s.id === sectionId);
+  if (section) {
+    const item = section.items.find(i => i.id === itemId);
+    if (item) item.label = label;
+    LS.set('currentAudit', currentAudit);
+  }
+};
+
+let resetItemsToDefault = () => {
+  if (confirm('Réinitialiser tous les éléments par défaut?')) {
+    currentAudit.sections = DEFAULT_SECTIONS.map(s => ({
+      id: s.id,
+      label: s.label,
+      items: s.items.map(i => ({ id: i.id, label: i.label, status: 'na', comment: '', photos: [] }))
+    }));
+    LS.set('currentAudit', currentAudit);
+    renderItemEditor();
+    renderAuditItems();
+    showToast('Éléments réinitialisés');
+  }
+};
+
+// Export/Import
+let exportAllData = () => {
+  const data = {
+    users: allUsers,
+    sites: allSites,
+    history: LS.get('auditHistory', []),
+    kpiHistory: LS.get('kpi_history', []),
+    currentAudit: currentAudit
+  };
+
+  const json = JSON.stringify(data, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `sqyouest-export-${new Date().toISOString().split('T')[0]}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+let importData = (file) => {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (data.users) LS.set('users', data.users);
+      if (data.sites) LS.set('sites', data.sites);
+      if (data.history) LS.set('auditHistory', data.history);
+      if (data.kpiHistory) LS.set('kpi_history', data.kpiHistory);
+      allUsers = LS.get('users', []);
+      allSites = LS.get('sites', []);
+      showToast('Données importées');
+      location.reload();
+    } catch (err) {
+      showAlert('Erreur import: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+};
+
+let clearHistory = () => {
+  if (confirm('Supprimer tout l\'historique?')) {
+    LS.set('auditHistory', []);
+    renderHistory();
+    showToast('Historique supprimé');
+  }
+};
+
+let clearAllData = () => {
+  LS.del('users');
+  LS.del('sites');
+  LS.del('auditHistory');
+  LS.del('currentAudit');
+  LS.del('kpi_history');
+  location.reload();
+};
+
+// UI Helpers
+let switchTab = (tab) => {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+
+  const panel = document.getElementById(`${tab}-tab`);
+  if (panel) {
+    panel.classList.add('active');
+    if (tab === 'settings') populateSettings();
+    if (tab === 'report') populateReportSelects();
+    if (tab === 'history') renderHistory();
+    if (tab === 'kpi') renderKpiHistoryTab();
+    if (tab === 'editor') populateEditorSelects();
+  }
+
+  document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+  const sidebarBtn = Array.from(document.querySelectorAll('.sidebar-item')).find(b => b.textContent.includes(tab.charAt(0).toUpperCase() + tab.slice(1)));
+  if (sidebarBtn) sidebarBtn.classList.add('active');
+};
+
+let switchKpiTab = (tab) => {
+  document.querySelectorAll('#kpi-tab .tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tabs-secondary-item').forEach(t => t.classList.remove('active'));
+
+  document.getElementById(`kpi-${tab}-tab`).classList.add('active');
+  event.target.classList.add('active');
+};
+
+let closeModal = (id) => {
+  document.getElementById(id).classList.remove('open');
+};
+
+// Utilities
+let formatDate = (dateStr) => {
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
+};
+
+let formatDateShort = (dateStr) => {
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('fr-FR', { month: 'short', day: 'numeric' });
+};
+
+let showAlert = (msg) => {
+  alert(msg);
+};
+
+let showToast = (msg) => {
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.textContent = msg;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+};
+
+// KPI Functions
+let getKpiHistory = () => LS.get('kpi_history', []);
+
+let saveKpiHistory = async (rows) => {
+  LS.set('kpi_history', rows);
+  await cloudSaveKpiHistory(rows);
+  showToast('KPI enregistré');
+};
+
+let renderKpiHistoryTab = () => {
+  const rows = getKpiHistory();
+  renderKpiTable(rows);
+};
+
+let renderKpiTable = (rows) => {
+  const container = document.getElementById('kpi-table-container');
+  container.innerHTML = '<table class="kpi-table"><thead><tr><th>Site</th><th>Date</th><th>Valeur</th><th>Action</th></tr></thead><tbody id="kpi-tbody"></tbody></table>';
+
+  const tbody = document.getElementById('kpi-tbody');
+  rows.forEach((row, idx) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input type="text" value="${row.site || ''}" onchange="updateKpiRow(${idx}, 'site', this.value)"></td>
+      <td><input type="date" value="${row.date || ''}" onchange="updateKpiRow(${idx}, 'date', this.value)"></td>
+      <td><input type="number" value="${row.value || ''}" onchange="updateKpiRow(${idx}, 'value', this.value)"></td>
+      <td><button class="btn btn-danger" onclick="deleteKpiRow(${idx})">✕</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+};
+
+let addKpiRow = () => {
+  const rows = getKpiHistory();
+  rows.push({ site: '', date: new Date().toISOString().split('T')[0], value: 0 });
+  saveKpiHistory(rows);
+  renderKpiTable(rows);
+};
+
+let addKpiRowWithData = (site, date, value) => {
+  const rows = getKpiHistory();
+  rows.push({ site, date, value });
+  saveKpiHistory(rows);
+};
+
+let updateKpiRow = (idx, field, value) => {
+  const rows = getKpiHistory();
+  if (rows[idx]) {
+    rows[idx][field] = isNaN(value) ? value : parseFloat(value);
+    LS.set('kpi_history', rows);
+  }
+};
+
+let deleteKpiRow = (idx) => {
+  const rows = getKpiHistory();
+  rows.splice(idx, 1);
+  saveKpiHistory(rows);
+  renderKpiTable(rows);
+};
+
+let parsePasteArea = () => {
+  const text = document.getElementById('kpi-paste-area').value;
+  const lines = text.split('\n').filter(l => l.trim());
+  const result = [];
+
+  lines.forEach(line => {
+    const parts = line.split(',').map(p => p.trim());
+    if (parts.length >= 3) {
+      result.push({
+        site: parts[0],
+        date: parts[1],
+        value: parseFloat(parts[2])
+      });
+    }
+  });
+
+  return result;
+};
+
+let importKpiCsv = async () => {
+  const rows = parsePasteArea();
+  if (!rows.length) { showAlert('Aucune donnée'); return; }
+
+  let kpiHistory = getKpiHistory();
+  kpiHistory = [...kpiHistory, ...rows];
+  await saveKpiHistory(kpiHistory);
+  renderKpiTable(kpiHistory);
+  document.getElementById('kpi-paste-area').value = '';
+};
+
+let downloadKpiTemplate = () => {
+  const csv = 'site,date,valeur\nArcades,2025-01-15,1250\nBar,2025-01-15,980';
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'kpi-template.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+let renderKpiCharts = () => {
+  const rows = getKpiHistory();
+  if (!rows.length) return;
+
+  const byDate = {};
+  rows.forEach(r => {
+    if (!byDate[r.date]) byDate[r.date] = [];
+    byDate[r.date].push(r);
+  });
+
+  const container = document.getElementById('kpi-charts-container');
+  container.innerHTML = '<div id="kpi-chart-main" style="position:relative;height:300px"></div>';
+
+  const dates = Object.keys(byDate).sort();
+  const datasets = {};
+
+  rows.forEach(r => {
+    if (!datasets[r.site]) datasets[r.site] = [];
+    datasets[r.site].push({ x: r.date, y: r.value });
+  });
+
+  const colors = ['#f97316', '#fb923c', '#22c55e', '#ef4444', '#3b82f6'];
+  const chartDatasets = Object.entries(datasets).map(([site, data], idx) => ({
+    label: site,
+    data: data.map(d => ({ x: d.x, y: d.y })),
+    borderColor: colors[idx % colors.length],
+    backgroundColor: colors[idx % colors.length] + '20',
+    tension: 0.3,
+    fill: false
+  }));
+
+  if (charts.kpi) charts.kpi.destroy();
+
+  const ctx = document.getElementById('kpi-chart-main');
+  if (ctx && ctx.parentElement) {
+    charts.kpi = new Chart(ctx, {
+      type: 'line',
+      data: { datasets: chartDatasets },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: true, labels: { color: '#e2e8f0' } } },
+        scales: {
+          x: { ticks: { color: '#e2e8f0' } },
+          y: { ticks: { color: '#e2e8f0' } }
+        }
+      }
+    });
+  }
+};
+
+let populateEditorSelects = () => {
+  const sel = document.getElementById('editor-section-select');
+  sel.innerHTML = '<option value="">-- Choisir une section --</option>';
+  currentAudit.sections.forEach(s => {
+    const opt = document.createElement('option');
+    opt.value = s.id;
+    opt.textContent = s.label;
+    sel.appendChild(opt);
+  });
+};
+
+// Setup file import
+document.addEventListener('DOMContentLoaded', async () => {
+  checkSession();
+
+  const fileInput = document.getElementById('import-file');
+  if (fileInput) {
+    fileInput.onchange = (e) => {
+      if (e.target.files[0]) importData(e.target.files[0]);
+    };
+  }
+
+  if (currentUser) {
+    await initApp();
+  }
+});
+</script>
+</body>
 </html>
