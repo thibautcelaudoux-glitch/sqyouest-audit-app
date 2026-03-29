@@ -17,38 +17,53 @@ input,textarea,select,button{font-family:inherit}
 --text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;--radius:10px;--shadow:0 4px 24px rgba(0,0,0,.4);
 }
 body{background-color:var(--bg);color:var(--text)}
-.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between}
-.topbar-left{display:flex;align-items:center;gap:20px}
-.topbar-title{font-weight:700;font-size:1.2rem;letter-spacing:-0.5px}
-.topbar-info{display:flex;gap:20px;align-items:center;font-size:0.9rem}
-.topbar-info>div{display:flex;gap:8px;align-items:center}
+
+/* ── Topbar ── */
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px;position:sticky;top:0;z-index:100}
+.topbar-left{display:flex;align-items:center;gap:12px;flex:1;min-width:0}
+.topbar-title{font-weight:700;font-size:1.1rem;letter-spacing:-0.5px;white-space:nowrap}
+.topbar-info{display:flex;gap:16px;align-items:center;font-size:0.85rem}
+.topbar-info>div{display:flex;gap:6px;align-items:center}
 .topbar-info small{color:var(--text2)}
-.topbar-right{display:flex;gap:12px;align-items:center}
+.topbar-right{display:flex;gap:8px;align-items:center;flex-shrink:0}
 .sync-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:12px;font-size:0.75rem;font-weight:600}
 .sync-badge.cloud{background:#10b98120;color:#22c55e}
-.sync-badge.local{background:#64748b20;color:var(--text3)}
-.user-chip{display:flex;align-items:center;gap:8px;padding:4px 10px;border-radius:20px;background:var(--surface2);border:1px solid var(--border);font-size:0.85rem}
-.user-chip img{width:26px;height:26px;border-radius:50%}
-.container{display:flex;height:100vh}
-.sidebar{background:var(--surface);border-right:1px solid var(--border);width:200px;overflow-y:auto;padding:15px}
-.sidebar-item{display:block;width:100%;text-align:left;padding:10px;margin:8px 0;border-radius:var(--radius);background:var(--surface2);border:1px solid transparent;color:var(--text2);cursor:pointer;transition:all 150ms;font-size:0.9rem}
+.user-chip{display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;background:var(--surface2);border:1px solid var(--border);font-size:0.85rem}
+.user-chip img{width:24px;height:24px;border-radius:50%}
+
+/* ── Hamburger ── */
+.hamburger{display:none;flex-direction:column;gap:4px;background:none;border:none;cursor:pointer;padding:6px}
+.hamburger span{display:block;width:20px;height:2px;background:var(--text);border-radius:2px;transition:all 200ms}
+.hamburger.open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+
+/* ── Layout ── */
+.app-body{display:flex;height:calc(100vh - 49px);overflow:hidden}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:149}
+.sidebar{background:var(--surface);border-right:1px solid var(--border);width:200px;overflow-y:auto;padding:12px;flex-shrink:0;transition:transform 200ms}
+.sidebar-item{display:flex;align-items:center;gap:8px;width:100%;text-align:left;padding:10px 12px;margin:4px 0;border-radius:var(--radius);background:var(--surface2);border:1px solid transparent;color:var(--text2);cursor:pointer;transition:all 150ms;font-size:0.9rem}
 .sidebar-item:hover{background:var(--border);color:var(--text)}
 .sidebar-item.active{background:var(--accent);color:#0d1117;font-weight:600;border-color:var(--accent2)}
-.main{flex:1;display:flex;flex-direction:column}
-.tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border);padding:12px 20px;gap:20px;overflow-x:auto}
-.tab{padding:8px 16px;border:none;background:0;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent;transition:all 150ms;font-weight:500;white-space:nowrap}
+.main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden}
+.tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border);padding:0 16px;gap:4px;overflow-x:auto}
+.tab{padding:12px 14px;border:none;background:0;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent;transition:all 150ms;font-weight:500;white-space:nowrap;font-size:0.85rem}
 .tab:hover{color:var(--text)}
 .tab.active{color:var(--accent);border-bottom-color:var(--accent)}
-.content{flex:1;overflow-y:auto;padding:20px}
+.content{flex:1;overflow-y:auto;padding:16px}
 .tab-panel{display:none}
 .tab-panel.active{display:block}
-.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
-.form-group{display:flex;flex-direction:column;gap:8px}
-label{color:var(--text2);font-size:0.9rem;font-weight:500}
-input,textarea,select{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:10px;border-radius:var(--radius);transition:all 150ms}
+
+/* ── Forms ── */
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.form-group{display:flex;flex-direction:column;gap:6px}
+label{color:var(--text2);font-size:0.85rem;font-weight:500}
+input,textarea,select{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:var(--radius);transition:all 150ms;width:100%}
 input:focus,textarea:focus,select:focus{outline:0;border-color:var(--accent);background:var(--surface)}
-textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem}
-.btn{padding:10px 16px;border:none;border-radius:var(--radius);cursor:pointer;font-weight:500;transition:all 150ms;font-size:0.9rem}
+textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resize:vertical}
+
+/* ── Buttons ── */
+.btn{padding:9px 14px;border:none;border-radius:var(--radius);cursor:pointer;font-weight:500;transition:all 150ms;font-size:0.85rem;white-space:nowrap}
 .btn-primary{background:var(--accent);color:#0d1117}
 .btn-primary:hover{background:var(--accent2)}
 .btn-secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border)}
@@ -57,181 +72,259 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem}
 .btn-danger:hover{background:#dc2626}
 .btn-success{background:var(--ok);color:#0d1117}
 .btn-success:hover{background:#16a34a}
-.section{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:20px}
-.section-header{display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;padding:12px;background:var(--border);border-radius:var(--radius);font-weight:600;transition:all 150ms}
+.btn-sm{padding:5px 10px;font-size:0.78rem}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+
+/* ── Audit sections ── */
+.section{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:0;margin-bottom:14px;overflow:hidden}
+.section-header{display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;padding:12px 16px;background:var(--border);font-weight:600;transition:all 150ms}
 .section-header:hover{background:#3a4556}
-.section-header .toggle{transition:transform 150ms}
+.section-header .toggle{transition:transform 150ms;font-size:0.75rem}
 .section-header .toggle.open{transform:rotate(180deg)}
-.section-body{margin-top:12px;display:none}
+.section-score{font-size:0.8rem;font-weight:500;padding:3px 8px;border-radius:8px;margin-right:8px}
+.section-body{padding:12px;display:none}
 .section-body.open{display:block}
-.item-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:12px}
-.item-btn{padding:12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);cursor:pointer;transition:all 150ms;font-weight:500;font-size:0.85rem;text-align:center}
+.item-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-top:8px}
+.item-btn{padding:10px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);cursor:pointer;transition:all 150ms;font-weight:500;font-size:0.8rem;text-align:center;line-height:1.3}
 .item-btn:hover{border-color:var(--accent);background:var(--surface2)}
-.item-btn.ok{background:var(--ok)20;border-color:var(--ok);color:var(--ok)}
-.item-btn.nok{background:var(--nok)20;border-color:var(--nok);color:var(--nok)}
-.item-btn.na{background:var(--na)20;border-color:var(--na);color:var(--na)}
-.item-body{margin-top:10px;padding:12px;background:var(--surface);border-radius:var(--radius);display:none}
+.item-btn.ok{background:#22c55e20;border-color:var(--ok);color:var(--ok)}
+.item-btn.nok{background:#ef444420;border-color:var(--nok);color:var(--nok)}
+.item-btn.na{background:#64748b20;border-color:var(--na);color:var(--na)}
+.item-body{margin-top:8px;padding:12px;background:var(--surface);border-radius:var(--radius);display:none}
 .item-body.open{display:block}
-.input-row{display:flex;gap:10px;margin-top:10px}
-.input-row input{flex:1}
-.modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center}
-.modal.open{display:flex}
-.modal-content{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto}
-.modal-header{font-size:1.1rem;font-weight:700;margin-bottom:16px}
-.modal-footer{display:flex;gap:10px;margin-top:20px;justify-content:flex-end}
-.gallery{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
-.gallery-item{position:relative;width:80px;height:80px}
-.gallery-item img{width:100%;height:100%;object-fit:cover;border-radius:var(--radius);cursor:pointer}
-.gallery-item .delete-btn{position:absolute;top:-6px;right:-6px;background:var(--nok);color:#fff;border:none;border-radius:50%;width:20px;height:20px;cursor:pointer;font-size:10px;display:flex;align-items:center;justify-content:center}
-.lightbox{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.9);z-index:2000;align-items:center;justify-content:center}
-.lightbox.open{display:flex}
-.lightbox img{max-width:90%;max-height:90%;border-radius:var(--radius)}
-.lightbox .close{position:absolute;top:20px;right:20px;background:var(--nok);color:#fff;border:none;border-radius:var(--radius);padding:10px 15px;cursor:pointer;font-size:1rem}
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px}
-.stat-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:16px}
-.stat-label{color:var(--text2);font-size:0.9rem;margin-bottom:8px}
-.stat-value{font-size:2rem;font-weight:700;color:var(--accent)}
-.stat-details{color:var(--text3);font-size:0.85rem;margin-top:8px}
-.history-item{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:12px;cursor:pointer;transition:all 150ms}
-.history-item:hover{border-color:var(--accent);background:var(--border)}
-.history-item.selected{background:var(--accent)20;border-color:var(--accent)}
-.history-item-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-.history-item-title{font-weight:600;color:var(--text)}
-.history-item-date{color:var(--text3);font-size:0.85rem}
-.history-item-meta{color:var(--text2);font-size:0.85rem}
-.kpi-table{width:100%;border-collapse:collapse;margin-top:12px}
-.kpi-table th,.kpi-table td{border:1px solid var(--border);padding:10px;text-align:left;background:var(--surface2)}
-.kpi-table th{background:var(--border);font-weight:600;color:var(--text)}
+.status-row{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.status-row .btn{flex:1;min-width:60px}
+
+/* ── Stats / Cards ── */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
+.stat-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
+.stat-label{color:var(--text2);font-size:0.85rem;margin-bottom:6px}
+.stat-value{font-size:1.8rem;font-weight:700;color:var(--accent)}
+.stat-details{color:var(--text3);font-size:0.8rem;margin-top:6px}
+
+/* ── History ── */
+.history-layout{display:grid;grid-template-columns:280px 1fr;gap:16px}
+.history-item{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;margin-bottom:8px;cursor:pointer;transition:all 150ms}
+.history-item:hover{border-color:var(--accent)}
+.history-item.selected{background:#f9731620;border-color:var(--accent)}
+.history-item-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.history-item-title{font-weight:600;font-size:0.9rem}
+.history-item-date{color:var(--text3);font-size:0.8rem}
+.history-item-meta{color:var(--text2);font-size:0.8rem}
+
+/* ── KPI Table ── */
+.kpi-table{width:100%;border-collapse:collapse;margin-top:10px}
+.kpi-table th,.kpi-table td{border:1px solid var(--border);padding:8px 10px;text-align:left}
+.kpi-table th{background:var(--border);font-weight:600;color:var(--text);font-size:0.85rem}
 .kpi-table td{background:var(--surface)}
-.kpi-table input{width:100%;padding:4px;background:var(--surface2)}
-.toast{position:fixed;bottom:20px;right:20px;background:var(--accent);color:#0d1117;padding:12px 16px;border-radius:var(--radius);font-weight:500;z-index:3000;animation:slideIn 300ms ease-out}
-@keyframes slideIn{from{transform:translateX(400px);opacity:0}to{transform:translateX(0);opacity:1}}
-.login-container{display:flex;align-items:center;justify-content:center;height:100vh;background:linear-gradient(135deg,var(--surface) 0%,var(--bg) 100%)}
-.login-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:40px;max-width:400px;width:90%;box-shadow:var(--shadow);text-align:center}
-.login-card h1{margin-bottom:8px;color:var(--text);font-size:1.8rem}
-.login-card .subtitle{color:var(--text2);margin-bottom:32px;font-size:0.95rem}
-.google-btn{background:#fff;color:#1f1f1f;border:1px solid #dadce0;display:flex;align-items:center;gap:12px;font-size:1rem;padding:13px 24px;width:100%;justify-content:center;border-radius:8px;cursor:pointer;font-weight:500;transition:box-shadow 150ms,background 150ms}
-.google-btn:hover{box-shadow:0 2px 10px rgba(0,0,0,0.25);background:#f8f8f8}
-.google-btn:disabled{opacity:0.6;cursor:not-allowed}
-.login-error{color:var(--nok);margin-top:14px;font-size:0.85rem;display:none}
-.report-section{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:20px}
-.report-header{font-weight:600;font-size:1.1rem;margin-bottom:12px;color:var(--text)}
-.settings-section{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:20px}
-.settings-section h3{margin:0 0 12px 0;color:var(--text);font-weight:600;font-size:1rem}
-.settings-input{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:10px;border-radius:var(--radius)}
-.user-row{display:flex;justify-content:space-between;align-items:center;background:var(--surface);padding:12px;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px}
-.user-row-info{flex:1;display:flex;align-items:center;gap:10px}
-.user-row-name{font-weight:600;color:var(--text)}
-.user-row-role{color:var(--text2);font-size:0.85rem}
-.user-row-actions{display:flex;gap:8px}
-.user-row-actions button{padding:6px 10px;font-size:0.8rem}
-.user-avatar{width:32px;height:32px;border-radius:50%;border:2px solid var(--border)}
-.editor-item{background:var(--surface);padding:12px;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
-.editor-item-info{flex:1}
-.editor-item-id{font-weight:600;color:var(--text)}
-.editor-item-label{color:var(--text2);font-size:0.85rem}
-.editor-item-actions{display:flex;gap:8px}
-.editor-item-actions button{padding:6px 10px;font-size:0.8rem}
-.tabs-secondary{display:flex;gap:10px;margin-bottom:20px;border-bottom:1px solid var(--border);padding-bottom:12px}
-.tabs-secondary-item{padding:8px 12px;border-radius:var(--radius);background:var(--surface2);color:var(--text2);cursor:pointer;transition:all 150ms;font-weight:500;font-size:0.85rem}
+.kpi-table input{width:100%;padding:4px 6px;background:var(--surface2)}
+
+/* ── Modals ── */
+.modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:1000;align-items:center;justify-content:center;padding:16px}
+.modal.open{display:flex}
+.modal-content{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;max-width:520px;width:100%;max-height:85vh;overflow-y:auto}
+.modal-content.wide{max-width:700px}
+.modal-header{font-size:1rem;font-weight:700;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
+.modal-footer{display:flex;gap:8px;margin-top:16px;justify-content:flex-end;flex-wrap:wrap}
+
+/* ── Gallery / Lightbox ── */
+.gallery{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.gallery-item{position:relative;width:72px;height:72px}
+.gallery-item img{width:100%;height:100%;object-fit:cover;border-radius:var(--radius);cursor:pointer}
+.gallery-item .delete-btn{position:absolute;top:-5px;right:-5px;background:var(--nok);color:#fff;border:none;border-radius:50%;width:18px;height:18px;cursor:pointer;font-size:9px;display:flex;align-items:center;justify-content:center}
+.lightbox{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.92);z-index:2000;align-items:center;justify-content:center}
+.lightbox.open{display:flex}
+.lightbox img{max-width:92%;max-height:92%;border-radius:var(--radius)}
+.lightbox .close{position:absolute;top:16px;right:16px;background:var(--nok);color:#fff;border:none;border-radius:var(--radius);padding:8px 14px;cursor:pointer}
+
+/* ── Settings / Users / Sites ── */
+.settings-section{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:16px}
+.settings-section h3{margin:0 0 12px 0;color:var(--text);font-weight:600;font-size:0.95rem}
+.user-row,.site-row{display:flex;justify-content:space-between;align-items:center;background:var(--surface);padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;gap:10px}
+.row-info{flex:1;min-width:0}
+.row-name{font-weight:600;color:var(--text);font-size:0.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row-sub{color:var(--text2);font-size:0.8rem}
+.row-actions{display:flex;gap:6px;flex-shrink:0}
+
+/* ── Editor ── */
+.editor-item{background:var(--surface);padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.editor-item input{flex:1;padding:6px 10px}
+.editor-item-actions{display:flex;gap:6px;flex-shrink:0}
+
+/* ── Tabs secondary ── */
+.tabs-secondary{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.tabs-secondary-item{padding:7px 12px;border-radius:var(--radius);background:var(--surface2);color:var(--text2);cursor:pointer;transition:all 150ms;font-weight:500;font-size:0.85rem;border:1px solid transparent}
 .tabs-secondary-item:hover{background:var(--border);color:var(--text)}
 .tabs-secondary-item.active{background:var(--accent);color:#0d1117}
+
+/* ── Report ── */
+.report-section{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:14px}
+.report-header{font-weight:600;font-size:1rem;margin-bottom:10px}
+.nok-item{padding:6px 10px;background:#ef444415;border:1px solid #ef444440;border-radius:8px;margin-bottom:6px;font-size:0.85rem}
+.nok-label{font-weight:600;color:var(--nok)}
+.nok-comment{color:var(--text2);margin-top:2px}
+.score-bar{height:8px;border-radius:4px;background:var(--border);overflow:hidden;margin-top:6px}
+.score-bar-fill{height:100%;border-radius:4px;transition:width 400ms}
+
+/* ── File input ── */
 .file-input-wrapper{position:relative;display:inline-block}
 .file-input-wrapper input[type="file"]{display:none}
-.file-input-label{display:inline-block;padding:10px 16px;background:var(--accent);color:#0d1117;border-radius:var(--radius);cursor:pointer;font-weight:500;transition:all 150ms}
+.file-input-label{display:inline-block;padding:8px 14px;background:var(--accent);color:#0d1117;border-radius:var(--radius);cursor:pointer;font-weight:500;font-size:0.85rem;transition:all 150ms}
 .file-input-label:hover{background:var(--accent2)}
+
+/* ── Toast ── */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--accent);color:#0d1117;padding:10px 16px;border-radius:var(--radius);font-weight:600;z-index:3000;animation:slideIn 250ms ease-out;max-width:280px;font-size:0.85rem}
+@keyframes slideIn{from{transform:translateX(320px);opacity:0}to{transform:translateX(0);opacity:1}}
+
+/* ── Login ── */
+.login-container{display:flex;align-items:center;justify-content:center;height:100vh;background:linear-gradient(135deg,var(--surface) 0%,var(--bg) 100%)}
+.login-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:36px;max-width:380px;width:90%;box-shadow:var(--shadow);text-align:center}
+.login-card h1{margin-bottom:6px;font-size:1.7rem}
+.login-card .subtitle{color:var(--text2);margin-bottom:28px;font-size:0.9rem}
+.google-btn{background:#fff;color:#1f1f1f;border:1px solid #dadce0;display:flex;align-items:center;gap:10px;font-size:0.95rem;padding:12px 20px;width:100%;justify-content:center;border-radius:8px;cursor:pointer;font-weight:500;transition:box-shadow 150ms,background 150ms}
+.google-btn:hover{box-shadow:0 2px 8px rgba(0,0,0,.2);background:#f8f8f8}
+.google-btn:disabled{opacity:0.6;cursor:not-allowed}
+.login-error{color:var(--nok);margin-top:12px;font-size:0.85rem;display:none}
+
+/* ── Print ── */
+@media print {
+  .topbar,.sidebar,.tabs,.btn-row,.btn,.modal,.toast,.hamburger,.sidebar-overlay{display:none!important}
+  .app-body{height:auto!important;overflow:visible!important}
+  .main{overflow:visible!important}
+  .content{overflow:visible!important;padding:0!important}
+  .tab-panel{display:block!important}
+  .tab-panel:not(#report-tab){display:none!important}
+  #report-tab{display:block!important}
+  body{background:#fff!important;color:#000!important}
+  .report-section{border:1px solid #ccc!important;background:#fff!important}
+  .stat-card{background:#f5f5f5!important;border:1px solid #ccc!important}
+}
+
+/* ── Responsive ── */
+@media (max-width:768px) {
+  .hamburger{display:flex}
+  .topbar-info{display:none}
+  .sidebar{position:fixed;left:0;top:0;bottom:0;z-index:150;width:220px;transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .sidebar-overlay.open{display:block}
+  .app-body{height:calc(100vh - 46px)}
+  .history-layout{grid-template-columns:1fr}
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .form-grid{grid-template-columns:1fr}
+  .modal-content{max-width:100%;margin:0}
+  .tabs{padding:0 8px}
+  .tab{padding:10px 10px;font-size:0.8rem}
+  .content{padding:12px}
+  .btn{padding:8px 12px}
+  .topbar-right .btn-secondary{display:none}
+}
+@media (max-width:480px) {
+  .stats-grid{grid-template-columns:1fr}
+  .item-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}
+  .topbar-title{font-size:1rem}
+}
 </style>
 </head>
 <body>
 
-<!-- LOGIN PANEL -->
+<!-- LOGIN -->
 <div id="login-panel" class="login-container">
   <div class="login-card">
     <h1>🔍 SQYouest</h1>
-    <p class="subtitle">Audit Manager</p>
+    <p class="subtitle">Audit Manager — Connectez-vous pour continuer</p>
     <button class="google-btn" id="google-btn" onclick="doGoogleLogin()">
-      <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-      </svg>
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
       Se connecter avec Google
     </button>
     <p class="login-error" id="login-error"></p>
   </div>
 </div>
 
-<!-- APP PANEL -->
-<div id="app-panel" style="display:none;height:100vh;flex-direction:column">
+<!-- APP -->
+<div id="app-panel" style="display:none">
   <div class="topbar">
     <div class="topbar-left">
-      <div class="topbar-title">🔍 SQYouest Audit</div>
+      <button class="hamburger" id="hamburger" onclick="toggleSidebar()">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="topbar-title">🔍 SQYouest</div>
       <div class="topbar-info">
-        <div><small>Site:</small><span id="site-display">—</span></div>
-        <div><small>Semaine:</small><span id="week-display">—</span></div>
+        <div><small>Site:</small><strong id="site-display">—</strong></div>
+        <div><small>Sem:</small><strong id="week-display">—</strong></div>
       </div>
     </div>
     <div class="topbar-right">
       <div class="sync-badge cloud" id="sync-badge">☁️ Cloud</div>
-      <div class="user-chip" id="user-chip">
-        <span id="user-display">—</span>
-      </div>
-      <button class="btn btn-secondary" onclick="doLogout()">Déconnexion</button>
+      <div class="user-chip" id="user-chip"><span id="user-display">—</span></div>
+      <button class="btn btn-secondary btn-sm" onclick="doLogout()">Déco</button>
     </div>
   </div>
 
-  <div class="container">
-    <div class="sidebar">
-      <button class="sidebar-item active" onclick="switchTab('audit')">📋 Audit</button>
-      <button class="sidebar-item" onclick="switchTab('history')">📊 Historique</button>
-      <button class="sidebar-item" onclick="switchTab('report')">📈 Rapport</button>
-      <button class="sidebar-item" onclick="switchTab('kpi')">📉 KPI</button>
-      <button class="sidebar-item" onclick="switchTab('settings')">⚙️ Paramètres</button>
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+  <div class="app-body">
+    <div class="sidebar" id="sidebar">
+      <button class="sidebar-item active" data-tab="audit" onclick="switchTab('audit')">📋 Audit</button>
+      <button class="sidebar-item" data-tab="history" onclick="switchTab('history')">📊 Historique</button>
+      <button class="sidebar-item" data-tab="report" onclick="switchTab('report')">📈 Rapport</button>
+      <button class="sidebar-item" data-tab="kpi" onclick="switchTab('kpi')">📉 KPI</button>
+      <button class="sidebar-item" data-tab="settings" onclick="switchTab('settings')">⚙️ Paramètres</button>
     </div>
 
     <div class="main">
       <div class="tabs">
-        <button class="tab active" onclick="switchTab('audit')">Audit</button>
-        <button class="tab" onclick="switchTab('history')">Historique</button>
-        <button class="tab" onclick="switchTab('report')">Rapport</button>
-        <button class="tab" onclick="switchTab('kpi')">KPI</button>
-        <button class="tab" onclick="switchTab('settings')">Paramètres</button>
+        <button class="tab active" data-tab="audit" onclick="switchTab('audit')">Audit</button>
+        <button class="tab" data-tab="history" onclick="switchTab('history')">Historique</button>
+        <button class="tab" data-tab="report" onclick="switchTab('report')">Rapport</button>
+        <button class="tab" data-tab="kpi" onclick="switchTab('kpi')">KPI</button>
+        <button class="tab" data-tab="settings" onclick="switchTab('settings')">Paramètres</button>
       </div>
 
       <div class="content">
+
         <!-- AUDIT TAB -->
         <div id="audit-tab" class="tab-panel active">
-          <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
-            <select id="site-dropdown" style="padding:10px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface2);color:var(--text)">
+          <div class="btn-row" style="margin-bottom:14px">
+            <select id="site-dropdown" style="flex:1;min-width:160px;max-width:260px">
               <option value="">-- Sélectionner un site --</option>
             </select>
-            <button class="btn btn-secondary" onclick="newBlankAudit()">Nouveau</button>
+            <select id="auditor-week" style="width:120px">
+              <option value="">Sem. auto</option>
+            </select>
             <button class="btn btn-success" id="save-btn" onclick="saveCurrentAudit()">💾 Enregistrer</button>
-            <button class="btn btn-secondary" onclick="resetAudit()">Réinitialiser</button>
+            <button class="btn btn-secondary" onclick="newBlankAudit()">Nouveau</button>
             <button class="btn btn-secondary" onclick="fillAllOK()">Tout OK</button>
+            <button class="btn btn-secondary" onclick="resetAudit()">Réinitialiser</button>
           </div>
           <div id="audit-sections"></div>
+          <div class="form-group" style="margin-top:16px">
+            <label>Notes générales</label>
+            <textarea id="audit-notes" placeholder="Observations, remarques générales…" rows="3"></textarea>
+          </div>
         </div>
 
         <!-- HISTORY TAB -->
         <div id="history-tab" class="tab-panel">
-          <div style="display:flex;gap:10px;margin-bottom:20px">
+          <div class="btn-row" style="margin-bottom:14px">
+            <input type="text" id="history-search" placeholder="Rechercher…" style="max-width:200px" oninput="filterHistory()">
+            <select id="history-site-filter" onchange="filterHistory()">
+              <option value="">Tous les sites</option>
+            </select>
             <button class="btn btn-secondary" onclick="renderHistory()">🔄 Rafraîchir</button>
             <button class="btn btn-danger" onclick="clearHistory()">Supprimer tout</button>
           </div>
-          <div id="history-list" style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+          <div class="history-layout">
             <div id="history-items"></div>
-            <div id="history-detail" style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;min-height:300px"></div>
+            <div id="history-detail" style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:14px;min-height:200px"></div>
           </div>
         </div>
 
         <!-- REPORT TAB -->
         <div id="report-tab" class="tab-panel">
-          <div class="form-grid">
+          <div class="form-grid" style="margin-bottom:14px">
             <div class="form-group">
               <label>Site</label>
-              <select id="report-site"><option value="">-- Tous --</option></select>
+              <select id="report-site"><option value="">— Tous —</option></select>
             </div>
             <div class="form-group">
               <label>Date début</label>
@@ -241,34 +334,42 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem}
               <label>Date fin</label>
               <input type="date" id="report-to">
             </div>
-            <div style="display:flex;align-items:flex-end">
-              <button class="btn btn-primary" onclick="renderReport()" style="width:100%">Générer</button>
+            <div style="display:flex;align-items:flex-end;gap:8px">
+              <button class="btn btn-primary" onclick="renderReport()" style="flex:1">Générer</button>
+              <button class="btn btn-secondary" onclick="window.print()" title="Imprimer">🖨️</button>
             </div>
           </div>
-          <div id="report-content" style="margin-top:20px"></div>
+          <div id="report-content"></div>
         </div>
 
         <!-- KPI TAB -->
         <div id="kpi-tab" class="tab-panel">
           <div class="tabs-secondary">
-            <div class="tabs-secondary-item active" onclick="switchKpiTab('table')">📊 Tableau</div>
-            <div class="tabs-secondary-item" onclick="switchKpiTab('import')">📥 Import</div>
-            <div class="tabs-secondary-item" onclick="switchKpiTab('chart')">📈 Graphique</div>
+            <div class="tabs-secondary-item active" onclick="switchKpiTab('table',this)">📊 Tableau</div>
+            <div class="tabs-secondary-item" onclick="switchKpiTab('import',this)">📥 Import</div>
+            <div class="tabs-secondary-item" onclick="switchKpiTab('chart',this)">📈 Graphique</div>
           </div>
           <div id="kpi-table-tab" class="tab-panel active">
-            <button class="btn btn-secondary" onclick="addKpiRow()">+ Ligne</button>
+            <div class="btn-row" style="margin-bottom:10px">
+              <button class="btn btn-secondary" onclick="addKpiRow()">+ Ligne</button>
+              <button class="btn btn-primary" onclick="saveKpiHistory(getKpiHistory())">💾 Sauvegarder</button>
+            </div>
             <div id="kpi-table-container"></div>
           </div>
           <div id="kpi-import-tab" class="tab-panel">
             <div class="form-group">
               <label>Coller données CSV (site,date,valeur)</label>
-              <textarea id="kpi-paste-area" placeholder="Arcades,2025-01-15,1250&#10;Bar,2025-01-15,980"></textarea>
+              <textarea id="kpi-paste-area" placeholder="Arcades,2025-01-15,1250&#10;Bar,2025-01-15,980" rows="6"></textarea>
             </div>
-            <button class="btn btn-primary" onclick="importKpiCsv()">Importer</button>
-            <button class="btn btn-secondary" onclick="downloadKpiTemplate()" style="margin-left:8px">Télécharger template</button>
+            <div class="btn-row" style="margin-top:10px">
+              <button class="btn btn-primary" onclick="importKpiCsv()">Importer</button>
+              <button class="btn btn-secondary" onclick="downloadKpiTemplate()">Télécharger template</button>
+            </div>
           </div>
           <div id="kpi-chart-tab" class="tab-panel">
-            <button class="btn btn-secondary" onclick="renderKpiCharts()" style="margin-bottom:12px">🔄 Actualiser graphique</button>
+            <div class="btn-row" style="margin-bottom:12px">
+              <button class="btn btn-secondary" onclick="renderKpiCharts()">🔄 Actualiser</button>
+            </div>
             <div id="kpi-charts-container"></div>
           </div>
         </div>
@@ -280,11 +381,11 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem}
             <div class="form-grid">
               <div class="form-group">
                 <label>Nom du site par défaut</label>
-                <input class="settings-input" type="text" id="set-site" placeholder="SQYouest">
+                <input type="text" id="set-site" placeholder="SQYouest">
               </div>
               <div class="form-group">
                 <label>Type de site</label>
-                <select class="settings-input" id="set-type">
+                <select id="set-type">
                   <option value="">Standard</option>
                   <option value="premium">Premium</option>
                 </select>
@@ -294,63 +395,75 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem}
           </div>
 
           <div class="settings-section">
-            <h3>Sites enregistrés</h3>
+            <h3>Sites & Templates d'audit</h3>
+            <p style="color:var(--text2);font-size:0.82rem;margin-bottom:10px">Chaque site peut avoir son propre template de sections/points audités.</p>
             <button class="btn btn-secondary" onclick="openAddSiteModal()" style="margin-bottom:10px">+ Ajouter un site</button>
             <div id="sites-list"></div>
           </div>
 
-          <div class="settings-section" id="users-section">
+          <div class="settings-section" id="users-section" style="display:none">
             <h3>Utilisateurs</h3>
-            <p style="color:var(--text2);font-size:0.85rem;margin-bottom:12px">Les utilisateurs se connectent avec leur compte Google.</p>
+            <p style="color:var(--text2);font-size:0.82rem;margin-bottom:10px">Les utilisateurs se connectent avec leur compte Google.</p>
             <div id="users-list"></div>
           </div>
 
           <div class="settings-section">
-            <h3>Éléments d'audit</h3>
-            <button class="btn btn-secondary" onclick="switchTab('editor')">Éditeur d'éléments</button>
+            <h3>Éditeur d'éléments (audit en cours)</h3>
+            <p style="color:var(--text2);font-size:0.82rem;margin-bottom:10px">Modifiez les sections et points de l'audit en cours.</p>
+            <button class="btn btn-secondary" onclick="switchTab('editor')">Ouvrir l'éditeur</button>
           </div>
 
           <div class="settings-section">
             <h3>Données</h3>
-            <button class="btn btn-secondary" onclick="exportAllData()">Exporter données</button>
-            <div class="file-input-wrapper" style="display:inline-block;margin-left:10px">
-              <input type="file" id="import-file" accept=".json">
-              <label for="import-file" class="file-input-label">Importer données</label>
+            <div class="btn-row">
+              <button class="btn btn-secondary" onclick="exportAllData()">📤 Exporter</button>
+              <div class="file-input-wrapper">
+                <input type="file" id="import-file" accept=".json">
+                <label for="import-file" class="file-input-label">📥 Importer</label>
+              </div>
+              <button class="btn btn-danger" onclick="if(confirm('Supprimer toutes vos données cloud?')) clearAllData()">🗑️ Supprimer tout</button>
             </div>
-            <button class="btn btn-danger" onclick="if(confirm('Supprimer toutes vos données cloud?')) clearAllData()" style="margin-left:10px">Supprimer tout</button>
           </div>
         </div>
 
         <!-- EDITOR TAB -->
         <div id="editor-tab" class="tab-panel">
-          <button class="btn btn-secondary" onclick="switchTab('settings')">← Retour aux paramètres</button>
-          <div style="margin-top:20px">
-            <div class="form-group">
-              <label>Sélectionner une section</label>
-              <select id="editor-section-select" onchange="renderItemEditor()">
-                <option value="">-- Choisir une section --</option>
-              </select>
-            </div>
-            <div id="editor-items-container" style="margin-top:20px"></div>
-            <button class="btn btn-secondary" onclick="addItemToSection()" style="margin-top:10px">+ Ajouter élément</button>
-            <button class="btn btn-secondary" onclick="resetItemsToDefault()" style="margin-top:10px;margin-left:8px">Réinitialiser par défaut</button>
+          <div class="btn-row" style="margin-bottom:14px">
+            <button class="btn btn-secondary" onclick="switchTab('settings')">← Retour</button>
+            <button class="btn btn-secondary" onclick="addEditorSection()">+ Section</button>
+            <button class="btn btn-secondary" onclick="addItemToSection()">+ Point</button>
+            <button class="btn btn-secondary" onclick="resetItemsToDefault()">↺ Défaut</button>
           </div>
+          <div class="form-group" style="margin-bottom:16px;max-width:300px">
+            <label>Section</label>
+            <select id="editor-section-select" onchange="renderItemEditor()">
+              <option value="">-- Choisir une section --</option>
+            </select>
+          </div>
+          <div id="editor-section-rename" style="display:none;margin-bottom:12px">
+            <div class="form-group" style="max-width:300px">
+              <label>Renommer la section</label>
+              <div style="display:flex;gap:8px">
+                <input type="text" id="editor-section-name" placeholder="Nom de la section">
+                <button class="btn btn-primary btn-sm" onclick="renameSection()">OK</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteSection()">Supprimer</button>
+              </div>
+            </div>
+          </div>
+          <div id="editor-items-container"></div>
         </div>
-      </div>
-    </div>
-  </div>
-</div>
+
+      </div><!-- /content -->
+    </div><!-- /main -->
+  </div><!-- /app-body -->
+</div><!-- /app-panel -->
 
 <!-- MODALS -->
 <div id="modal-edit-user" class="modal">
   <div class="modal-content">
-    <div class="modal-header">Modifier le rôle</div>
-    <div class="form-group">
-      <label>Utilisateur</label>
-      <input type="text" id="modal-edit-email" disabled style="opacity:0.7">
-    </div>
-    <div class="form-group">
-      <label>Rôle</label>
+    <div class="modal-header">Modifier le rôle <button class="btn btn-secondary btn-sm" onclick="closeModal('modal-edit-user')">✕</button></div>
+    <div class="form-group"><label>Utilisateur</label><input type="text" id="modal-edit-email" disabled style="opacity:0.7"></div>
+    <div class="form-group"><label>Rôle</label>
       <select id="modal-edit-role">
         <option value="auditor">Auditeur</option>
         <option value="manager">Manager</option>
@@ -367,17 +480,10 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem}
 
 <div id="modal-add-site" class="modal">
   <div class="modal-content">
-    <div class="modal-header">Ajouter un site</div>
-    <div class="form-group">
-      <label>Nom du site</label>
-      <input type="text" id="modal-site-name" placeholder="SQYouest Paris">
-    </div>
-    <div class="form-group">
-      <label>Type</label>
-      <select id="modal-site-type">
-        <option value="">Standard</option>
-        <option value="premium">Premium</option>
-      </select>
+    <div class="modal-header">Ajouter un site <button class="btn btn-secondary btn-sm" onclick="closeModal('modal-add-site')">✕</button></div>
+    <div class="form-group"><label>Nom du site</label><input type="text" id="modal-site-name" placeholder="SQYouest Paris"></div>
+    <div class="form-group"><label>Type</label>
+      <select id="modal-site-type"><option value="">Standard</option><option value="premium">Premium</option></select>
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('modal-add-site')">Annuler</button>
@@ -386,18 +492,37 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem}
   </div>
 </div>
 
+<div id="modal-site-template" class="modal">
+  <div class="modal-content wide">
+    <div class="modal-header">
+      <span>🛠️ Template — <span id="template-site-name"></span></span>
+      <button class="btn btn-secondary btn-sm" onclick="closeModal('modal-site-template')">✕</button>
+    </div>
+    <p style="color:var(--text2);font-size:0.82rem;margin-bottom:12px">Définissez les sections et points audités pour ce site. Ce template sera utilisé lors de la création d'un nouvel audit sur ce site.</p>
+    <div id="template-editor-container"></div>
+    <div class="btn-row" style="margin-top:12px">
+      <button class="btn btn-secondary" onclick="addTemplateSection()">+ Section</button>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="resetTemplateToDefault()">↺ Défaut</button>
+      <button class="btn btn-secondary" onclick="closeModal('modal-site-template')">Annuler</button>
+      <button class="btn btn-primary" onclick="saveTemplate()">💾 Enregistrer template</button>
+    </div>
+  </div>
+</div>
+
 <div id="lightbox" class="lightbox">
-  <img id="lightbox-img">
+  <img id="lightbox-img" alt="Photo">
   <button class="close" onclick="closeLightbox()">✕</button>
 </div>
 
-<!-- Firebase SDKs (compat) -->
+<!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <script>
-// ─── Firebase init ───────────────────────────────────────────────────────────
+// ─── Firebase ────────────────────────────────────────────────────────────────
 firebase.initializeApp({
   apiKey: "AIzaSyA1Hk8lPBL2Mnzs5gXa9CRti0rKrliBcwU",
   authDomain: "audit-ok.firebaseapp.com",
@@ -410,34 +535,53 @@ const db = firebase.firestore();
 const auth = firebase.auth();
 const googleProvider = new firebase.auth.GoogleAuthProvider();
 
-// ─── Global state ────────────────────────────────────────────────────────────
-let currentUser = null;
-let currentAudit = null;
-let currentSite = null;
-let allUsers = [];
-let allSites = [];
-let historyCache = null;
-let kpiHistoryCache = null;
-let charts = {};
-let autoSaveTimer = null;
-let kpiSaveTimer = null;
+// ─── State ───────────────────────────────────────────────────────────────────
+let currentUser = null, currentAudit = null, currentSite = null;
+let allUsers = [], allSites = [], historyCache = null, kpiHistoryCache = null;
+let charts = {}, autoSaveTimer = null, kpiSaveTimer = null;
+let editingTemplateSiteId = null, editingTemplateSections = [];
 
 // ─── Default sections ────────────────────────────────────────────────────────
 const DEFAULT_SECTIONS = [
-  { id: 'admin', label: 'Admin', items: [{id:1,label:'Accueil'},{id:2,label:'Bureau directeur'},{id:3,label:'Toilettes'},{id:4,label:'Couloirs'},{id:5,label:'Escaliers'}] },
-  { id: 'entree', label: 'Entrée', items: [{id:6,label:'Hall'},{id:7,label:'Accueil'},{id:8,label:'Toilettes'},{id:9,label:'Dressing'},{id:10,label:'Entrepôt'}] },
-  { id: 'caisses', label: 'Caisses', items: [{id:11,label:'Caisse 1'},{id:12,label:'Caisse 2'},{id:13,label:'Caisse 3'},{id:14,label:'Caisse 4'},{id:15,label:'Bureau'}] },
-  { id: 'bar', label: 'Bar', items: [{id:16,label:'Bar'},{id:17,label:'Cuisine'},{id:18,label:'Stockage'},{id:19,label:'Toilettes'},{id:20,label:'Terrasse'}] },
-  { id: 'bowling17', label: 'Bowling 1-7', items: [{id:21,label:'Piste 1'},{id:22,label:'Piste 2'},{id:23,label:'Piste 3'},{id:24,label:'Piste 4'},{id:25,label:'Piste 5'},{id:26,label:'Piste 6'},{id:27,label:'Piste 7'}] },
-  { id: 'arcades', label: 'Arcades', items: [{id:28,label:'Arcade 1'},{id:29,label:'Arcade 2'},{id:30,label:'Arcade 3'},{id:31,label:'Arcade 4'},{id:32,label:'Arcade 5'},{id:33,label:'Maintenance'}] },
-  { id: 'billards', label: 'Billards', items: [{id:34,label:'Table 1'},{id:35,label:'Table 2'},{id:36,label:'Table 3'},{id:37,label:'Table 4'},{id:38,label:'Table 5'}] },
-  { id: 'bowling1', label: 'Bowling 8-18', items: [{id:39,label:'Piste 8'},{id:40,label:'Piste 9'},{id:41,label:'Piste 10'},{id:42,label:'Piste 11'},{id:43,label:'Piste 12'},{id:44,label:'Piste 13'},{id:45,label:'Piste 14'},{id:46,label:'Piste 15'},{id:47,label:'Piste 16'},{id:48,label:'Piste 17'},{id:49,label:'Piste 18'}] },
-  { id: 'acces', label: 'Accès', items: [{id:50,label:'Serrure'},{id:51,label:'Clé'},{id:52,label:'Portes'},{id:53,label:'Fenêtres'},{id:54,label:'Alarme'}] },
-  { id: 'karting', label: 'Karting', items: [{id:55,label:'Piste'},{id:56,label:'Kart 1'},{id:57,label:'Kart 2'},{id:58,label:'Kart 3'},{id:59,label:'Équipement'}] },
-  { id: 'atelier', label: 'Atelier', items: [{id:60,label:'Établi'},{id:61,label:'Outils'},{id:62,label:'Pièces'},{id:63,label:'Nettoyage'}] },
-  { id: 'piste', label: 'Piste', items: [{id:64,label:'Piste 1'},{id:65,label:'Piste 2'},{id:66,label:'Piste 3'},{id:67,label:'Piste 4'}] },
-  { id: 'laser', label: 'Laser Game', items: [{id:68,label:'Zone 1'},{id:69,label:'Zone 2'},{id:70,label:'Zone 3'},{id:71,label:'Accueil'},{id:72,label:'Stock'}] },
-  { id: 'bureaux', label: 'Bureaux', items: [{id:73,label:'Bureau 1'},{id:74,label:'Bureau 2'},{id:75,label:'Bureau 3'},{id:76,label:'Salle réunion'},{id:77,label:'Cuisine'}] }
+  { id:'admin', label:'Admin', items:[
+    {id:1,label:'Accueil / Bureau directeur'},{id:2,label:'Toilettes admin'},{id:3,label:'Couloirs & escaliers'},{id:4,label:'Affichages réglementaires'},{id:5,label:'Registres de sécurité'}
+  ]},
+  { id:'entree', label:'Entrée client', items:[
+    {id:6,label:'Hall d\'entrée'},{id:7,label:'Accueil caisse principale'},{id:8,label:'Toilettes entrée'},{id:9,label:'Vestiaires / Casiers'},{id:10,label:'Signalétique'}
+  ]},
+  { id:'caisses', label:'Caisses', items:[
+    {id:11,label:'Caisse 1'},{id:12,label:'Caisse 2'},{id:13,label:'Caisse 3'},{id:14,label:'Caisse 4'},{id:15,label:'Bureau caisses'}
+  ]},
+  { id:'bar', label:'Bar', items:[
+    {id:16,label:'Bar & comptoir'},{id:17,label:'Cuisine'},{id:18,label:'Stockage'},{id:19,label:'Toilettes bar'},{id:20,label:'Terrasse'}
+  ]},
+  { id:'bowling17', label:'Bowling 1-7', items:[
+    {id:21,label:'Piste 1'},{id:22,label:'Piste 2'},{id:23,label:'Piste 3'},{id:24,label:'Piste 4'},{id:25,label:'Piste 5'},{id:26,label:'Piste 6'},{id:27,label:'Piste 7'}
+  ]},
+  { id:'bowling818', label:'Bowling 8-18', items:[
+    {id:39,label:'Piste 8'},{id:40,label:'Piste 9'},{id:41,label:'Piste 10'},{id:42,label:'Piste 11'},{id:43,label:'Piste 12'},{id:44,label:'Piste 13'},{id:45,label:'Piste 14'},{id:46,label:'Piste 15'},{id:47,label:'Piste 16'},{id:48,label:'Piste 17'},{id:49,label:'Piste 18'}
+  ]},
+  { id:'arcades', label:'Arcades', items:[
+    {id:28,label:'Zone arcades A'},{id:29,label:'Zone arcades B'},{id:30,label:'Zone arcades C'},{id:31,label:'Maintenance machines'},{id:32,label:'Stockage pièces'}
+  ]},
+  { id:'billards', label:'Billards', items:[
+    {id:34,label:'Table 1'},{id:35,label:'Table 2'},{id:36,label:'Table 3'},{id:37,label:'Table 4'},{id:38,label:'Éclairage & ambiance'}
+  ]},
+  { id:'karting', label:'Karting', items:[
+    {id:55,label:'Piste karting'},{id:56,label:'Kart 1'},{id:57,label:'Kart 2'},{id:58,label:'Kart 3'},{id:59,label:'Équipements sécurité'}
+  ]},
+  { id:'laser', label:'Laser Game', items:[
+    {id:68,label:'Zone de jeu 1'},{id:69,label:'Zone de jeu 2'},{id:70,label:'Zone de jeu 3'},{id:71,label:'Accueil laser'},{id:72,label:'Stockage équipements'}
+  ]},
+  { id:'acces', label:'Accès & Sécurité', items:[
+    {id:50,label:'Serrures & clés'},{id:51,label:'Portes & fenêtres'},{id:52,label:'Système alarme'},{id:53,label:'Issues de secours'},{id:54,label:'Extincteurs'}
+  ]},
+  { id:'atelier', label:'Atelier / Maintenance', items:[
+    {id:60,label:'Établi & outils'},{id:61,label:'Pièces & stocks'},{id:62,label:'Nettoyage atelier'},{id:63,label:'Registre maintenance'}
+  ]},
+  { id:'bureaux', label:'Bureaux', items:[
+    {id:73,label:'Bureau 1'},{id:74,label:'Bureau 2'},{id:75,label:'Salle de réunion'},{id:76,label:'Cuisine bureaux'},{id:77,label:'Espace commun'}
+  ]}
 ];
 
 // ─── Auth ─────────────────────────────────────────────────────────────────────
@@ -445,52 +589,41 @@ let doGoogleLogin = async () => {
   const btn = document.getElementById('google-btn');
   const errEl = document.getElementById('login-error');
   btn.disabled = true;
-  btn.textContent = 'Connexion en cours…';
+  btn.innerHTML = '<span style="opacity:0.5">Connexion en cours…</span>';
   errEl.style.display = 'none';
   try {
     await auth.signInWithPopup(googleProvider);
   } catch (e) {
-    errEl.textContent = 'Erreur : ' + e.message;
+    errEl.textContent = 'Erreur : ' + (e.message || e);
     errEl.style.display = 'block';
     btn.disabled = false;
-    btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> Se connecter avec Google';
+    btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> Se connecter avec Google`;
   }
 };
 
 let doLogout = async () => {
-  currentUser = null; currentAudit = null;
-  allUsers = []; allSites = [];
+  currentUser = null; currentAudit = null; allUsers = []; allSites = [];
   historyCache = null; kpiHistoryCache = null;
   await auth.signOut();
 };
 
-// ─── Auth state observer ──────────────────────────────────────────────────────
 auth.onAuthStateChanged(async (fbUser) => {
   if (fbUser) {
     try {
       let snap = await db.collection('users').doc(fbUser.uid).get();
       if (!snap.exists) {
         const isAdmin = fbUser.email === 'thibaut.celaudoux@gmail.com';
-        const profile = {
-          uid: fbUser.uid,
-          email: fbUser.email,
-          name: fbUser.displayName || fbUser.email.split('@')[0],
-          role: isAdmin ? 'admin' : 'auditor',
-          photoURL: fbUser.photoURL || '',
-          createdAt: new Date().toISOString()
-        };
+        const profile = { uid: fbUser.uid, email: fbUser.email, name: fbUser.displayName || fbUser.email.split('@')[0], role: isAdmin ? 'admin' : 'auditor', photoURL: fbUser.photoURL || '', createdAt: new Date().toISOString() };
         await db.collection('users').doc(fbUser.uid).set(profile);
         currentUser = profile;
       } else {
         currentUser = { uid: fbUser.uid, ...snap.data() };
       }
       document.getElementById('login-panel').style.display = 'none';
-      document.getElementById('app-panel').style.display = 'flex';
+      document.getElementById('app-panel').style.display = 'block';
       applyRoleUI();
       await initApp();
-    } catch (e) {
-      console.error('Auth state error:', e);
-    }
+    } catch (e) { console.error('Auth error:', e); }
   } else {
     document.getElementById('login-panel').style.display = '';
     document.getElementById('app-panel').style.display = 'none';
@@ -498,36 +631,28 @@ auth.onAuthStateChanged(async (fbUser) => {
 });
 
 let applyRoleUI = () => {
-  const isAdmin = currentUser.role === 'admin';
-  // Update user chip
   const chip = document.getElementById('user-chip');
-  if (chip) {
-    chip.innerHTML = currentUser.photoURL
-      ? `<img src="${currentUser.photoURL}" class="user-avatar"> <span>${currentUser.name}</span>`
-      : `<span>${currentUser.name || currentUser.email}</span>`;
-  }
-  // Show/hide users management section (admin only)
+  if (chip) chip.innerHTML = currentUser.photoURL
+    ? `<img src="${currentUser.photoURL}" style="width:22px;height:22px;border-radius:50%"> <span>${currentUser.name}</span>`
+    : `<span>${currentUser.name || currentUser.email}</span>`;
   const usersSection = document.getElementById('users-section');
-  if (usersSection) usersSection.style.display = isAdmin ? 'block' : 'none';
+  if (usersSection) usersSection.style.display = currentUser.role === 'admin' ? 'block' : 'none';
 };
 
 // ─── App init ─────────────────────────────────────────────────────────────────
 let initApp = async () => {
-  // Load shared sites
   try {
     const sitesDoc = await db.collection('sites').doc('main').get();
     allSites = sitesDoc.exists ? (sitesDoc.data().list || []) : [];
   } catch (e) { allSites = []; }
 
-  // Load users list (admin only)
   if (currentUser.role === 'admin') {
     try {
-      const usersSnap = await db.collection('users').get();
-      allUsers = usersSnap.docs.map(d => d.data());
+      const snap = await db.collection('users').get();
+      allUsers = snap.docs.map(d => d.data());
     } catch (e) { allUsers = []; }
   }
 
-  // Load current audit
   try {
     const auditDoc = await db.collection('currentAudit').doc(currentUser.uid).get();
     currentAudit = auditDoc.exists ? auditDoc.data() : null;
@@ -535,7 +660,6 @@ let initApp = async () => {
 
   if (!currentAudit) newBlankAudit();
 
-  // Load user settings
   try {
     const settingsDoc = await db.collection('settings').doc(currentUser.uid).get();
     if (settingsDoc.exists) {
@@ -548,44 +672,58 @@ let initApp = async () => {
   populateSiteDropdown();
   renderAuditItems();
   updateTopbar();
-  updateSyncBadge();
 
-  // Setup import file
   const fileInput = document.getElementById('import-file');
   if (fileInput) fileInput.onchange = (e) => { if (e.target.files[0]) importData(e.target.files[0]); };
 };
 
-let updateSyncBadge = () => {
-  const badge = document.getElementById('sync-badge');
-  badge.className = 'sync-badge cloud';
-  badge.textContent = '☁️ Cloud';
+// ─── Sidebar toggle (mobile) ──────────────────────────────────────────────────
+let toggleSidebar = () => {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  const hamburger = document.getElementById('hamburger');
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('open');
+  hamburger.classList.toggle('open');
+};
+let closeSidebar = () => {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
 };
 
-// ─── Firestore auto-save ──────────────────────────────────────────────────────
+// ─── Auto-save ────────────────────────────────────────────────────────────────
 let autoSave = () => {
   clearTimeout(autoSaveTimer);
   autoSaveTimer = setTimeout(async () => {
     if (currentAudit && currentUser) {
-      try {
-        await db.collection('currentAudit').doc(currentUser.uid).set(currentAudit);
-      } catch (e) { console.error('Auto-save error:', e); }
+      try { await db.collection('currentAudit').doc(currentUser.uid).set(currentAudit); }
+      catch (e) { console.error('Auto-save error:', e); }
     }
   }, 2000);
 };
 
-// ─── Audit functions ─────────────────────────────────────────────────────────
+// ─── Audit functions ──────────────────────────────────────────────────────────
+let getSectionsForSite = (siteId) => {
+  const site = allSites.find(s => s.id === siteId);
+  if (site && site.sections && site.sections.length > 0) return site.sections;
+  return DEFAULT_SECTIONS;
+};
+
 let newBlankAudit = () => {
+  const siteId = currentSite || '';
+  const template = getSectionsForSite(siteId);
   currentAudit = {
     id: Date.now().toString(),
-    siteId: currentSite || '',
+    siteId,
     date: new Date().toISOString().split('T')[0],
     week: getWeekNumber(),
     auditor: currentUser ? currentUser.email : '',
-    sections: DEFAULT_SECTIONS.map(s => ({
+    sections: template.map(s => ({
       id: s.id, label: s.label,
       items: s.items.map(i => ({ id: i.id, label: i.label, status: 'na', comment: '', photos: [] }))
     })),
-    kpis: [], notes: ''
+    notes: ''
   };
   autoSave();
   renderAuditItems();
@@ -593,30 +731,44 @@ let newBlankAudit = () => {
 };
 
 let getWeekNumber = () => {
-  const d = new Date();
-  const first = new Date(d.getFullYear(), 0, 1);
+  const d = new Date(), first = new Date(d.getFullYear(), 0, 1);
   return Math.ceil(((d - first) / 86400000 + first.getDay() + 1) / 7);
 };
 
 let updateTopbar = () => {
   if (!currentAudit) return;
-  document.getElementById('site-display').textContent = currentAudit.siteId || '—';
+  const siteName = allSites.find(s => s.id === currentAudit.siteId)?.name || currentAudit.siteId || '—';
+  document.getElementById('site-display').textContent = siteName;
   document.getElementById('week-display').textContent = currentAudit.week || '—';
+  const notesEl = document.getElementById('audit-notes');
+  if (notesEl) notesEl.value = currentAudit.notes || '';
 };
 
 let populateSiteDropdown = () => {
   const sel = document.getElementById('site-dropdown');
+  const current = sel.value || (currentAudit && currentAudit.siteId) || '';
   sel.innerHTML = '<option value="">-- Sélectionner un site --</option>';
   allSites.forEach(s => {
     const opt = document.createElement('option');
-    opt.value = s.id;
-    opt.textContent = s.name;
-    if (currentAudit && currentAudit.siteId === s.id) opt.selected = true;
+    opt.value = s.id; opt.textContent = s.name;
+    if (s.id === current) opt.selected = true;
     sel.appendChild(opt);
   });
   sel.onchange = () => {
+    const oldSiteId = currentSite;
     currentSite = sel.value;
-    if (currentAudit) { currentAudit.siteId = currentSite; autoSave(); updateTopbar(); }
+    if (currentAudit) {
+      currentAudit.siteId = currentSite;
+      // If site has custom template and user confirms, apply it
+      const newSite = allSites.find(s => s.id === currentSite);
+      if (newSite && newSite.sections && newSite.sections.length > 0 && currentSite !== oldSiteId) {
+        if (confirm(`Le site "${newSite.name}" a un template personnalisé. Appliquer ce template à l'audit en cours ? (Les données non sauvegardées seront perdues)`)) {
+          newBlankAudit();
+          return;
+        }
+      }
+      autoSave(); updateTopbar();
+    }
   };
 };
 
@@ -635,7 +787,7 @@ let saveCurrentAudit = async () => {
       if (idx >= 0) historyCache[idx] = { ...currentAudit };
       else historyCache.push({ ...currentAudit });
     }
-    showToast('✅ Audit enregistré dans le cloud');
+    showToast('✅ Audit enregistré');
   } catch (e) { showAlert('Erreur sauvegarde : ' + e.message); }
   finally { btn.disabled = false; btn.textContent = '💾 Enregistrer'; }
 };
@@ -645,19 +797,16 @@ let readFormIntoAudit = () => {
   currentAudit.notes = document.getElementById('audit-notes')?.value || '';
 };
 
-let resetAudit = () => {
-  if (confirm('Réinitialiser l\'audit en cours ?')) newBlankAudit();
-};
+let resetAudit = () => { if (confirm('Réinitialiser l\'audit en cours ?')) newBlankAudit(); };
 
 let fillAllOK = () => {
-  currentAudit.sections.forEach(s => {
-    s.items.forEach(i => {
-      i.status = 'ok';
-      const btn = document.getElementById(`item-${i.id}`);
-      if (btn) { btn.className = 'item-btn ok'; }
-    });
-  });
+  currentAudit.sections.forEach(s => s.items.forEach(i => {
+    i.status = 'ok';
+    const btn = document.getElementById(`item-${i.id}`);
+    if (btn) btn.className = 'item-btn ok';
+  }));
   autoSave();
+  renderAuditItems();
 };
 
 // ─── Rendering ────────────────────────────────────────────────────────────────
@@ -668,19 +817,26 @@ let renderAuditItems = () => {
   currentAudit.sections.forEach(section => container.appendChild(createSectionElement(section)));
 };
 
+let computeSectionScore = (section) => {
+  const total = section.items.filter(i => i.status !== 'na').length;
+  const ok = section.items.filter(i => i.status === 'ok').length;
+  return total === 0 ? null : Math.round(ok / total * 100);
+};
+
 let createSectionElement = (section) => {
-  const div = document.createElement('div');
-  div.className = 'section';
-  const header = document.createElement('div');
-  header.className = 'section-header';
-  header.innerHTML = `<span>${section.label}</span><span class="toggle">▼</span>`;
+  const score = computeSectionScore(section);
+  const div = document.createElement('div'); div.className = 'section';
+  const header = document.createElement('div'); header.className = 'section-header';
+  let scoreHtml = '';
+  if (score !== null) {
+    const c = score >= 80 ? '#22c55e' : score >= 50 ? '#f59e0b' : '#ef4444';
+    scoreHtml = `<span class="section-score" style="background:${c}20;color:${c}">${score}%</span>`;
+  }
+  header.innerHTML = `<span>${section.label}</span><div style="display:flex;align-items:center;gap:4px">${scoreHtml}<span class="toggle">▼</span></div>`;
   header.onclick = () => toggleSection(section.id);
   div.appendChild(header);
-  const body = document.createElement('div');
-  body.className = 'section-body';
-  body.id = `section-${section.id}`;
-  const grid = document.createElement('div');
-  grid.className = 'item-grid';
+  const body = document.createElement('div'); body.className = 'section-body'; body.id = `section-${section.id}`;
+  const grid = document.createElement('div'); grid.className = 'item-grid';
   section.items.forEach(item => grid.appendChild(createAuditItemEl(section.id, item)));
   body.appendChild(grid);
   div.appendChild(body);
@@ -691,28 +847,27 @@ let createAuditItemEl = (sectionId, item) => {
   const btn = document.createElement('button');
   btn.className = 'item-btn ' + (item.status || 'na');
   btn.id = `item-${item.id}`;
-  btn.textContent = `${item.id}: ${item.label}`;
+  btn.textContent = item.label;
   btn.onclick = (e) => { e.stopPropagation(); toggleItemBody(sectionId, item.id); };
   const itemBody = document.createElement('div');
-  itemBody.className = 'item-body';
-  itemBody.id = `item-body-${item.id}`;
-  const statusDiv = document.createElement('div');
-  statusDiv.className = 'input-row';
-  statusDiv.innerHTML = `
-    <button class="btn" style="background:var(--ok);color:#0d1117" onclick="setStatus(${item.id},'ok')">✓ OK</button>
-    <button class="btn" style="background:var(--nok);color:#fff" onclick="setStatus(${item.id},'nok')">✗ NOK</button>
-    <button class="btn" style="background:var(--na);color:#fff" onclick="setStatus(${item.id},'na')">— N/A</button>
+  itemBody.className = 'item-body'; itemBody.id = `item-body-${item.id}`;
+  const statusRow = document.createElement('div'); statusRow.className = 'status-row';
+  statusRow.innerHTML = `
+    <button class="btn btn-sm" style="background:var(--ok);color:#0d1117;flex:1" onclick="setStatus(${item.id},'ok')">✓ OK</button>
+    <button class="btn btn-sm" style="background:var(--nok);color:#fff;flex:1" onclick="setStatus(${item.id},'nok')">✗ NOK</button>
+    <button class="btn btn-sm" style="background:var(--na);color:#fff;flex:1" onclick="setStatus(${item.id},'na')">— N/A</button>
   `;
-  itemBody.appendChild(statusDiv);
+  itemBody.appendChild(statusRow);
   const commentInput = document.createElement('textarea');
-  commentInput.placeholder = 'Commentaire…';
-  commentInput.value = item.comment || '';
+  commentInput.placeholder = 'Commentaire…'; commentInput.value = item.comment || '';
+  commentInput.rows = 2;
   commentInput.onchange = () => setComment(item.id, commentInput.value);
   itemBody.appendChild(commentInput);
-  const photoDiv = document.createElement('div');
-  photoDiv.innerHTML = '<strong style="color:var(--text2);font-size:0.85rem">Photos :</strong>';
+  const photoDiv = document.createElement('div'); photoDiv.style.marginTop = '8px';
+  photoDiv.innerHTML = '<label style="font-size:0.8rem;color:var(--text2)">Photos</label>';
   const photoInput = document.createElement('input');
   photoInput.type = 'file'; photoInput.multiple = true; photoInput.accept = 'image/*';
+  photoInput.style.cssText = 'display:block;margin-top:4px;font-size:0.8rem';
   photoInput.onchange = () => addPhotos(item.id, photoInput.files);
   photoDiv.appendChild(photoInput);
   itemBody.appendChild(photoDiv);
@@ -724,9 +879,8 @@ let createAuditItemEl = (sectionId, item) => {
 
 let toggleSection = (sectionId) => {
   const body = document.getElementById(`section-${sectionId}`);
-  const header = body.parentElement.querySelector('.section-header .toggle');
   body.classList.toggle('open');
-  header.classList.toggle('open');
+  body.parentElement.querySelector('.section-header .toggle').classList.toggle('open');
 };
 
 let toggleItemBody = (sectionId, itemId) => {
@@ -738,7 +892,17 @@ let setStatus = (itemId, status) => {
   if (!item) return;
   item.status = status;
   const btn = document.getElementById(`item-${itemId}`);
-  btn.className = 'item-btn ' + status;
+  if (btn) btn.className = 'item-btn ' + status;
+  // Update section score badge
+  const section = currentAudit.sections.find(s => s.items.some(i => i.id === itemId));
+  if (section) {
+    const score = computeSectionScore(section);
+    const header = document.querySelector(`#section-${section.id}`)?.parentElement?.querySelector('.section-score');
+    if (header && score !== null) {
+      const c = score >= 80 ? '#22c55e' : score >= 50 ? '#f59e0b' : '#ef4444';
+      header.style.background = c + '20'; header.style.color = c; header.textContent = score + '%';
+    }
+  }
   autoSave();
 };
 
@@ -748,39 +912,41 @@ let setComment = (itemId, comment) => {
 };
 
 let findItemById = (itemId) => {
-  for (const section of currentAudit.sections) {
-    for (const item of section.items) { if (item.id === itemId) return item; }
-  }
+  for (const section of currentAudit.sections)
+    for (const item of section.items) if (item.id === itemId) return item;
   return null;
 };
 
 let addPhotos = async (itemId, files) => {
   const item = findItemById(itemId);
   if (!item) return;
-  for (const file of files) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      item.photos = item.photos || [];
-      item.photos.push({ id: Date.now().toString(), data: e.target.result });
-      renderPhotos(itemId, document.getElementById(`item-body-${itemId}`));
-      autoSave();
-    };
-    reader.readAsDataURL(file);
+  for (const file of Array.from(files)) {
+    await new Promise(resolve => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        item.photos = item.photos || [];
+        item.photos.push({ id: Date.now().toString() + Math.random(), data: e.target.result });
+        renderPhotos(itemId, document.getElementById(`item-body-${itemId}`));
+        autoSave();
+        resolve();
+      };
+      reader.readAsDataURL(file);
+    });
   }
 };
 
 let renderPhotos = (itemId, container) => {
   const item = findItemById(itemId);
-  if (!item || !item.photos || item.photos.length === 0) return;
+  if (!item || !item.photos?.length) return;
   let gallery = container.querySelector('.gallery');
   if (!gallery) { gallery = document.createElement('div'); gallery.className = 'gallery'; container.appendChild(gallery); }
   gallery.innerHTML = '';
   item.photos.forEach(photo => {
     const div = document.createElement('div'); div.className = 'gallery-item';
     div.innerHTML = `<img src="${photo.data}" onclick="openLightbox('${photo.data}')">`;
-    const delBtn = document.createElement('button'); delBtn.className = 'delete-btn'; delBtn.textContent = '✕';
-    delBtn.onclick = () => deletePhoto(itemId, photo.id);
-    div.appendChild(delBtn); gallery.appendChild(div);
+    const del = document.createElement('button'); del.className = 'delete-btn'; del.textContent = '✕';
+    del.onclick = () => deletePhoto(itemId, photo.id);
+    div.appendChild(del); gallery.appendChild(div);
   });
 };
 
@@ -793,36 +959,63 @@ let deletePhoto = (itemId, photoId) => {
   }
 };
 
-let openLightbox = (src) => {
-  document.getElementById('lightbox-img').src = src;
-  document.getElementById('lightbox').classList.add('open');
-};
+let openLightbox = (src) => { document.getElementById('lightbox-img').src = src; document.getElementById('lightbox').classList.add('open'); };
 let closeLightbox = () => document.getElementById('lightbox').classList.remove('open');
 
 // ─── History ──────────────────────────────────────────────────────────────────
 let renderHistory = async () => {
   const list = document.getElementById('history-items');
-  list.innerHTML = '<p style="color:var(--text2);padding:12px">Chargement…</p>';
+  list.innerHTML = '<p style="color:var(--text2);padding:8px">Chargement…</p>';
   try {
     const snap = await db.collection('auditHistory').where('userId', '==', currentUser.uid).get();
     historyCache = snap.docs.map(d => d.data());
-  } catch (e) { historyCache = []; console.error('Load history error:', e); }
+  } catch (e) { historyCache = []; }
+  populateHistoryFilters();
+  displayHistoryList(historyCache);
+};
+
+let populateHistoryFilters = () => {
+  const sel = document.getElementById('history-site-filter');
+  const current = sel.value;
+  sel.innerHTML = '<option value="">Tous les sites</option>';
+  allSites.forEach(s => {
+    const opt = document.createElement('option'); opt.value = s.id; opt.textContent = s.name;
+    if (s.id === current) opt.selected = true;
+    sel.appendChild(opt);
+  });
+};
+
+let filterHistory = () => {
+  if (!historyCache) return;
+  const search = document.getElementById('history-search').value.toLowerCase();
+  const siteId = document.getElementById('history-site-filter').value;
+  let filtered = historyCache;
+  if (siteId) filtered = filtered.filter(a => a.siteId === siteId);
+  if (search) filtered = filtered.filter(a => (a.siteId||'').toLowerCase().includes(search) || (a.auditor||'').toLowerCase().includes(search));
+  displayHistoryList(filtered);
+};
+
+let displayHistoryList = (audits) => {
+  const list = document.getElementById('history-items');
   list.innerHTML = '';
-  if (!historyCache.length) {
-    list.innerHTML = '<p style="color:var(--text2)">Aucun audit enregistré.</p>'; return;
-  }
-  [...historyCache].sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(audit => {
-    const div = document.createElement('div');
-    div.className = 'history-item';
+  if (!audits || !audits.length) { list.innerHTML = '<p style="color:var(--text2)">Aucun audit.</p>'; return; }
+  [...audits].sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(audit => {
+    const score = computeScore(audit);
+    const scoreColor = score >= 80 ? '#22c55e' : score >= 50 ? '#f59e0b' : '#ef4444';
+    const siteName = allSites.find(s => s.id === audit.siteId)?.name || audit.siteId || 'Site';
+    const div = document.createElement('div'); div.className = 'history-item';
     div.innerHTML = `
       <div class="history-item-header">
-        <div class="history-item-title">${audit.siteId || 'Site'}</div>
+        <div class="history-item-title">${siteName}</div>
         <div class="history-item-date">${formatDateShort(audit.date)}</div>
       </div>
-      <div class="history-item-meta">Auditeur: ${audit.auditor}</div>
-      <div class="history-item-meta">Semaine: ${audit.week}</div>
+      <div class="history-item-meta">Auditeur: ${audit.auditor || '—'} • Sem. ${audit.week || '—'}</div>
+      <div style="display:flex;align-items:center;gap:6px;margin-top:4px">
+        <div class="score-bar" style="flex:1"><div class="score-bar-fill" style="width:${score}%;background:${scoreColor}"></div></div>
+        <strong style="color:${scoreColor};font-size:0.8rem">${score.toFixed(0)}%</strong>
+      </div>
     `;
-    div.onclick = () => showHistoryDetail(audit);
+    div.onclick = () => { document.querySelectorAll('.history-item').forEach(x => x.classList.remove('selected')); div.classList.add('selected'); showHistoryDetail(audit); };
     list.appendChild(div);
   });
 };
@@ -830,27 +1023,41 @@ let renderHistory = async () => {
 let showHistoryDetail = (audit) => {
   const detail = document.getElementById('history-detail');
   const score = computeScore(audit);
+  const scoreColor = score >= 80 ? '#22c55e' : score >= 50 ? '#f59e0b' : '#ef4444';
+  const siteName = allSites.find(s => s.id === audit.siteId)?.name || audit.siteId || 'Site';
   const oks = audit.sections.reduce((a, s) => a + s.items.filter(i => i.status === 'ok').length, 0);
   const noks = audit.sections.reduce((a, s) => a + s.items.filter(i => i.status === 'nok').length, 0);
+  // NOK items list
+  const nokItems = [];
+  audit.sections.forEach(s => s.items.forEach(i => { if (i.status === 'nok') nokItems.push({ section: s.label, label: i.label, comment: i.comment }); }));
+  const nokHtml = nokItems.length
+    ? nokItems.map(x => `<div class="nok-item"><div class="nok-label">✗ ${x.section} — ${x.label}</div>${x.comment ? `<div class="nok-comment">${x.comment}</div>` : ''}</div>`).join('')
+    : '<p style="color:var(--text2);font-size:0.85rem">Aucun point NOK</p>';
   detail.innerHTML = `
-    <strong>${audit.siteId} — ${formatDate(audit.date)}</strong>
-    <p style="margin-top:10px;color:var(--text2)">Auditeur: ${audit.auditor}</p>
-    <p style="color:var(--text2)">Score: ${score.toFixed(1)}%</p>
-    <p style="color:var(--ok)">✓ OK: ${oks}</p>
-    <p style="color:var(--nok)">✗ NOK: ${noks}</p>
-    <div style="margin-top:15px;display:flex;gap:8px">
-      <button class="btn btn-secondary" onclick="loadHistoryAudit('${audit.id}')">Charger audit</button>
-      <button class="btn btn-danger" onclick="deleteHistoryItem('${audit.id}')">Supprimer</button>
+    <strong style="font-size:1rem">${siteName}</strong> <span style="color:var(--text2);font-size:0.85rem">${formatDate(audit.date)}</span>
+    <p style="color:var(--text2);font-size:0.85rem;margin-top:4px">Auditeur: ${audit.auditor || '—'} • Semaine ${audit.week || '—'}</p>
+    <div style="display:flex;gap:12px;margin:12px 0;flex-wrap:wrap">
+      <div style="font-size:1.6rem;font-weight:700;color:${scoreColor}">${score.toFixed(1)}%</div>
+      <div><span style="color:var(--ok)">✓ ${oks} OK</span>&nbsp;&nbsp;<span style="color:var(--nok)">✗ ${noks} NOK</span></div>
+    </div>
+    <h4 style="color:var(--text2);font-size:0.85rem;margin-bottom:6px">Points NOK :</h4>
+    ${nokHtml}
+    ${audit.notes ? `<p style="color:var(--text2);font-size:0.85rem;margin-top:10px"><strong>Notes:</strong> ${audit.notes}</p>` : ''}
+    <div class="btn-row" style="margin-top:14px">
+      <button class="btn btn-secondary btn-sm" onclick="loadHistoryAudit('${audit.id}')">Charger audit</button>
+      <button class="btn btn-danger btn-sm" onclick="deleteHistoryItem('${audit.id}')">Supprimer</button>
     </div>
   `;
 };
 
 let loadHistoryAudit = async (auditId) => {
-  const audit = historyCache ? historyCache.find(a => a.id === auditId) : null;
+  const audit = historyCache?.find(a => a.id === auditId);
   if (audit) {
     currentAudit = { ...audit };
+    currentSite = audit.siteId || '';
     await db.collection('currentAudit').doc(currentUser.uid).set(currentAudit);
     switchTab('audit'); renderAuditItems(); updateTopbar();
+    populateSiteDropdown();
   }
 };
 
@@ -859,8 +1066,7 @@ let deleteHistoryItem = async (auditId) => {
     try {
       await db.collection('auditHistory').doc(auditId).delete();
       if (historyCache) historyCache = historyCache.filter(a => a.id !== auditId);
-      renderHistory();
-      document.getElementById('history-detail').innerHTML = '';
+      renderHistory(); document.getElementById('history-detail').innerHTML = '';
     } catch (e) { showAlert('Erreur : ' + e.message); }
   }
 };
@@ -872,9 +1078,7 @@ let clearHistory = async () => {
       const batch = db.batch();
       snap.docs.forEach(d => batch.delete(d.ref));
       await batch.commit();
-      historyCache = [];
-      renderHistory();
-      showToast('Historique supprimé');
+      historyCache = []; renderHistory(); showToast('Historique supprimé');
     } catch (e) { showAlert('Erreur : ' + e.message); }
   }
 };
@@ -882,10 +1086,8 @@ let clearHistory = async () => {
 // ─── Report ───────────────────────────────────────────────────────────────────
 let populateReportSelects = () => {
   const sel = document.getElementById('report-site');
-  sel.innerHTML = '<option value="">-- Tous --</option>';
-  allSites.forEach(s => {
-    const opt = document.createElement('option'); opt.value = s.id; opt.textContent = s.name; sel.appendChild(opt);
-  });
+  sel.innerHTML = '<option value="">— Tous —</option>';
+  allSites.forEach(s => { const o = document.createElement('option'); o.value = s.id; o.textContent = s.name; sel.appendChild(o); });
   const today = new Date(), from = new Date(today);
   from.setDate(from.getDate() - 30);
   document.getElementById('report-from').value = from.toISOString().split('T')[0];
@@ -894,8 +1096,8 @@ let populateReportSelects = () => {
 
 let renderReport = async () => {
   const content = document.getElementById('report-content');
+  content.innerHTML = '<p style="color:var(--text2)">Chargement…</p>';
   if (!historyCache) {
-    content.innerHTML = '<p style="color:var(--text2)">Chargement…</p>';
     try {
       const snap = await db.collection('auditHistory').where('userId', '==', currentUser.uid).get();
       historyCache = snap.docs.map(d => d.data());
@@ -907,72 +1109,107 @@ let renderReport = async () => {
   let filtered = [...historyCache];
   if (siteFilter) filtered = filtered.filter(a => a.siteId === siteFilter);
   if (fromStr) filtered = filtered.filter(a => new Date(a.date) >= new Date(fromStr));
-  if (toStr) filtered = filtered.filter(a => new Date(a.date) <= new Date(toStr));
+  if (toStr) filtered = filtered.filter(a => new Date(a.date) <= new Date(toStr + 'T23:59:59'));
   content.innerHTML = '';
-  if (!filtered.length) { content.innerHTML = '<p style="color:var(--text2)">Aucun audit trouvé.</p>'; return; }
-  const avgAudit = buildAvgAudit(filtered);
-  const avgScore = computeScore(avgAudit);
-  const statsDiv = document.createElement('div'); statsDiv.className = 'stats-grid';
-  const scoreCard = document.createElement('div'); scoreCard.className = 'stat-card';
-  scoreCard.innerHTML = `<div class="stat-label">Score moyen</div><div class="stat-value">${avgScore.toFixed(1)}%</div><div class="stat-details">${filtered.length} audit(s)</div>`;
-  statsDiv.appendChild(scoreCard); content.appendChild(statsDiv);
-  const sectionsDiv = document.createElement('div'); sectionsDiv.style.marginTop = '20px';
-  avgAudit.forEach(s => {
-    const div = document.createElement('div'); div.className = 'section';
-    div.innerHTML = `<h4 style="color:var(--text)">${s.label}</h4>`;
-    const table = document.createElement('table'); table.style.cssText = 'width:100%;border-collapse:collapse';
-    s.items.forEach(i => {
-      const row = document.createElement('tr');
-      const okPct = (i.okCount + i.nokCount + i.naCount) > 0 ? i.okCount / (i.okCount + i.nokCount + i.naCount) * 100 : 0;
-      const color = okPct >= 80 ? 'var(--ok)' : okPct >= 50 ? '#f59e0b' : 'var(--nok)';
-      row.innerHTML = `<td style="padding:8px;border-bottom:1px solid var(--border)">${i.label}</td><td style="padding:8px;border-bottom:1px solid var(--border);text-align:right;color:${color};font-weight:600">${okPct.toFixed(0)}%</td>`;
-      table.appendChild(row);
-    });
-    div.appendChild(table); sectionsDiv.appendChild(div);
-  });
-  content.appendChild(sectionsDiv);
-};
+  if (!filtered.length) { content.innerHTML = '<p style="color:var(--text2)">Aucun audit trouvé pour ces critères.</p>'; return; }
 
-let buildAvgAudit = (audits) => {
-  const result = JSON.parse(JSON.stringify(DEFAULT_SECTIONS.map(s => ({
-    id: s.id, label: s.label,
-    items: s.items.map(i => ({ id: i.id, label: i.label, okCount: 0, nokCount: 0, naCount: 0 }))
-  }))));
-  audits.forEach(audit => {
-    audit.sections.forEach(section => {
-      const res = result.find(s => s.id === section.id);
-      if (res) section.items.forEach(item => {
-        const resItem = res.items.find(i => i.id === item.id);
-        if (resItem) {
-          if (item.status === 'ok') resItem.okCount++;
-          else if (item.status === 'nok') resItem.nokCount++;
-          else resItem.naCount++;
-        }
+  const siteName = siteFilter ? (allSites.find(s => s.id === siteFilter)?.name || siteFilter) : 'Tous les sites';
+  const scores = filtered.map(a => computeScore(a));
+  const avgScore = scores.reduce((a, b) => a + b, 0) / scores.length;
+  const minScore = Math.min(...scores), maxScore = Math.max(...scores);
+  const scoreColor = avgScore >= 80 ? '#22c55e' : avgScore >= 50 ? '#f59e0b' : '#ef4444';
+
+  // Header stats
+  const header = document.createElement('div');
+  header.innerHTML = `<h2 style="font-size:1.1rem;margin-bottom:12px">Rapport — ${siteName} (${fromStr} → ${toStr})</h2>`;
+  content.appendChild(header);
+  const statsDiv = document.createElement('div'); statsDiv.className = 'stats-grid'; statsDiv.style.marginBottom = '16px';
+  statsDiv.innerHTML = `
+    <div class="stat-card"><div class="stat-label">Score moyen</div><div class="stat-value" style="color:${scoreColor}">${avgScore.toFixed(1)}%</div><div class="stat-details">${filtered.length} audit(s)</div></div>
+    <div class="stat-card"><div class="stat-label">Score min / max</div><div class="stat-value" style="font-size:1.3rem">${minScore.toFixed(0)}% / ${maxScore.toFixed(0)}%</div></div>
+    <div class="stat-card"><div class="stat-label">Points NOK total</div><div class="stat-value" style="color:var(--nok)">${filtered.reduce((a, aud) => a + aud.sections.reduce((b, s) => b + s.items.filter(i => i.status === 'nok').length, 0), 0)}</div></div>
+  `;
+  content.appendChild(statsDiv);
+
+  // Per-section breakdown - built dynamically from actual audit data
+  const sectionMap = {};
+  filtered.forEach(audit => {
+    audit.sections.forEach(s => {
+      if (!sectionMap[s.id]) sectionMap[s.id] = { label: s.label, items: {} };
+      s.items.forEach(i => {
+        if (!sectionMap[s.id].items[i.id]) sectionMap[s.id].items[i.id] = { label: i.label, ok: 0, nok: 0, na: 0 };
+        if (i.status === 'ok') sectionMap[s.id].items[i.id].ok++;
+        else if (i.status === 'nok') sectionMap[s.id].items[i.id].nok++;
+        else sectionMap[s.id].items[i.id].na++;
       });
     });
   });
-  return result;
+
+  const sectionsDiv = document.createElement('div');
+  Object.values(sectionMap).forEach(sec => {
+    const sectionTotal = Object.values(sec.items).reduce((a, i) => a + i.ok + i.nok, 0);
+    const sectionOk = Object.values(sec.items).reduce((a, i) => a + i.ok, 0);
+    const sectionScore = sectionTotal === 0 ? null : Math.round(sectionOk / sectionTotal * 100);
+    const sc = sectionScore === null ? '#64748b' : sectionScore >= 80 ? '#22c55e' : sectionScore >= 50 ? '#f59e0b' : '#ef4444';
+
+    const div = document.createElement('div'); div.className = 'report-section';
+    div.innerHTML = `
+      <div class="report-header" style="display:flex;justify-content:space-between;align-items:center">
+        <span>${sec.label}</span>
+        ${sectionScore !== null ? `<span style="color:${sc};font-weight:700">${sectionScore}%</span>` : ''}
+      </div>
+    `;
+    const table = document.createElement('table'); table.style.cssText = 'width:100%;border-collapse:collapse';
+    table.innerHTML = '<thead><tr style="background:var(--border)"><th style="padding:6px 8px;text-align:left;font-size:0.8rem">Point audité</th><th style="padding:6px 8px;text-align:center;font-size:0.8rem;color:var(--ok)">OK</th><th style="padding:6px 8px;text-align:center;font-size:0.8rem;color:var(--nok)">NOK</th><th style="padding:6px 8px;text-align:right;font-size:0.8rem">Score</th></tr></thead>';
+    const tbody = document.createElement('tbody');
+    Object.values(sec.items).forEach(i => {
+      const total = i.ok + i.nok;
+      const pct = total === 0 ? null : Math.round(i.ok / total * 100);
+      const c = pct === null ? '#64748b' : pct >= 80 ? '#22c55e' : pct >= 50 ? '#f59e0b' : '#ef4444';
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td style="padding:6px 8px;border-bottom:1px solid var(--border);font-size:0.85rem">${i.label}</td><td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:0.85rem;color:var(--ok)">${i.ok}</td><td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:0.85rem;color:var(--nok)">${i.nok}</td><td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:right;color:${c};font-weight:600;font-size:0.85rem">${pct !== null ? pct + '%' : '—'}</td>`;
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    div.appendChild(table);
+    sectionsDiv.appendChild(div);
+  });
+  content.appendChild(sectionsDiv);
+
+  // NOK details with comments
+  const nokComments = [];
+  filtered.forEach(audit => {
+    const sn = allSites.find(s => s.id === audit.siteId)?.name || audit.siteId;
+    audit.sections.forEach(s => s.items.forEach(i => {
+      if (i.status === 'nok' && i.comment) nokComments.push({ site: sn, date: audit.date, section: s.label, label: i.label, comment: i.comment });
+    }));
+  });
+  if (nokComments.length) {
+    const nokDiv = document.createElement('div'); nokDiv.className = 'report-section';
+    nokDiv.innerHTML = '<div class="report-header">💬 Commentaires NOK</div>';
+    nokComments.forEach(x => {
+      const d = document.createElement('div'); d.className = 'nok-item';
+      d.innerHTML = `<div class="nok-label">✗ ${x.section} — ${x.label} <span style="color:var(--text3);font-size:0.78rem">${x.site} ${formatDateShort(x.date)}</span></div><div class="nok-comment">${x.comment}</div>`;
+      nokDiv.appendChild(d);
+    });
+    content.appendChild(nokDiv);
+  }
 };
 
+// ─── Score helper ─────────────────────────────────────────────────────────────
 let computeScore = (audit) => {
   if (!audit.sections) return 0;
   let total = 0, ok = 0;
-  audit.sections.forEach(s => s.items.forEach(i => {
-    if (i.status !== 'na') { total++; if (i.status === 'ok') ok++; }
-  }));
+  audit.sections.forEach(s => s.items.forEach(i => { if (i.status !== 'na') { total++; if (i.status === 'ok') ok++; } }));
   return total === 0 ? 0 : (ok / total) * 100;
 };
 
 // ─── Settings ─────────────────────────────────────────────────────────────────
 let populateSettings = async () => {
-  populateSiteDropdown();
   renderSitesList();
   if (currentUser.role === 'admin') {
     if (!allUsers.length) {
-      try {
-        const snap = await db.collection('users').get();
-        allUsers = snap.docs.map(d => d.data());
-      } catch (e) {}
+      try { const snap = await db.collection('users').get(); allUsers = snap.docs.map(d => d.data()); } catch (e) {}
     }
     renderUsersList();
   }
@@ -983,35 +1220,26 @@ let populateSettings = async () => {
       document.getElementById('set-type').value = s.data().type || '';
     }
   } catch (e) {}
-  populateReportSelects();
 };
 
 let saveGeneralSettings = async () => {
-  const site = document.getElementById('set-site').value;
-  const type = document.getElementById('set-type').value;
   try {
-    await db.collection('settings').doc(currentUser.uid).set({ site, type });
-    updateTopbar(); showToast('Paramètres enregistrés');
+    await db.collection('settings').doc(currentUser.uid).set({ site: document.getElementById('set-site').value, type: document.getElementById('set-type').value });
+    showToast('Paramètres enregistrés');
   } catch (e) { showAlert('Erreur : ' + e.message); }
 };
 
-// ─── Users management ─────────────────────────────────────────────────────────
+// ─── Users ────────────────────────────────────────────────────────────────────
 let renderUsersList = () => {
-  const list = document.getElementById('users-list');
-  list.innerHTML = '';
+  const list = document.getElementById('users-list'); list.innerHTML = '';
   allUsers.forEach(u => {
     const div = document.createElement('div'); div.className = 'user-row';
     div.innerHTML = `
-      <div class="user-row-info">
-        ${u.photoURL ? `<img src="${u.photoURL}" class="user-avatar">` : ''}
-        <div>
-          <div class="user-row-name">${u.name || u.email}</div>
-          <div class="user-row-role">${u.email} — <strong>${u.role}</strong></div>
-        </div>
+      <div class="row-info">
+        <div class="row-name">${u.photoURL ? `<img src="${u.photoURL}" style="width:20px;height:20px;border-radius:50%;vertical-align:middle;margin-right:6px">` : ''}${u.name || u.email}</div>
+        <div class="row-sub">${u.email} — <strong>${u.role}</strong></div>
       </div>
-      <div class="user-row-actions">
-        <button class="btn btn-secondary" onclick="openEditUserModal('${u.uid}')">Rôle</button>
-      </div>
+      <div class="row-actions"><button class="btn btn-secondary btn-sm" onclick="openEditUserModal('${u.uid}')">Rôle</button></div>
     `;
     list.appendChild(div);
   });
@@ -1019,13 +1247,12 @@ let renderUsersList = () => {
 
 let openEditUserModal = (uid) => {
   const user = allUsers.find(u => u.uid === uid);
-  if (user) {
-    const emailInput = document.getElementById('modal-edit-email');
-    emailInput.value = user.name ? `${user.name} (${user.email})` : user.email;
-    emailInput.setAttribute('data-uid', uid);
-    document.getElementById('modal-edit-role').value = user.role;
-    document.getElementById('modal-edit-user').classList.add('open');
-  }
+  if (!user) return;
+  const el = document.getElementById('modal-edit-email');
+  el.value = user.name ? `${user.name} (${user.email})` : user.email;
+  el.setAttribute('data-uid', uid);
+  document.getElementById('modal-edit-role').value = user.role;
+  document.getElementById('modal-edit-user').classList.add('open');
 };
 
 let saveUserModal = async () => {
@@ -1035,34 +1262,37 @@ let saveUserModal = async () => {
     await db.collection('users').doc(uid).update({ role });
     const user = allUsers.find(u => u.uid === uid);
     if (user) user.role = role;
-    closeModal('modal-edit-user');
-    renderUsersList();
-    showToast('Rôle mis à jour');
+    closeModal('modal-edit-user'); renderUsersList(); showToast('Rôle mis à jour');
   } catch (e) { showAlert('Erreur : ' + e.message); }
 };
 
 let deleteUser = async () => {
   const uid = document.getElementById('modal-edit-email').getAttribute('data-uid');
-  const emailVal = document.getElementById('modal-edit-email').value;
-  if (confirm(`Supprimer l'utilisateur ${emailVal} ?`)) {
+  if (confirm('Supprimer cet utilisateur ?')) {
     try {
       await db.collection('users').doc(uid).delete();
       allUsers = allUsers.filter(u => u.uid !== uid);
-      closeModal('modal-edit-user');
-      renderUsersList();
-      showToast('Utilisateur supprimé');
+      closeModal('modal-edit-user'); renderUsersList(); showToast('Utilisateur supprimé');
     } catch (e) { showAlert('Erreur : ' + e.message); }
   }
 };
 
-// ─── Sites management ─────────────────────────────────────────────────────────
+// ─── Sites ────────────────────────────────────────────────────────────────────
 let renderSitesList = () => {
   const list = document.getElementById('sites-list'); list.innerHTML = '';
+  if (!allSites.length) { list.innerHTML = '<p style="color:var(--text2);font-size:0.85rem">Aucun site enregistré.</p>'; return; }
   allSites.forEach(s => {
-    const div = document.createElement('div'); div.className = 'user-row';
+    const hasTemplate = s.sections && s.sections.length > 0;
+    const div = document.createElement('div'); div.className = 'site-row';
     div.innerHTML = `
-      <div class="user-row-info"><div class="user-row-name">${s.name}</div><div class="user-row-role">${s.type || 'Standard'}</div></div>
-      <div class="user-row-actions"><button class="btn btn-danger" onclick="deleteSite('${s.id}')">Supprimer</button></div>
+      <div class="row-info">
+        <div class="row-name">${s.name}</div>
+        <div class="row-sub">${s.type || 'Standard'} ${hasTemplate ? '• <span style="color:var(--ok)">Template custom (' + s.sections.length + ' sections)</span>' : '• Template par défaut'}</div>
+      </div>
+      <div class="row-actions">
+        <button class="btn btn-secondary btn-sm" onclick="openSiteTemplateModal('${s.id}')">🛠️ Template</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteSite('${s.id}')">✕</button>
+      </div>
     `;
     list.appendChild(div);
   });
@@ -1075,15 +1305,12 @@ let openAddSiteModal = () => {
 };
 
 let saveSiteModal = async () => {
-  const name = document.getElementById('modal-site-name').value;
-  const type = document.getElementById('modal-site-type').value;
+  const name = document.getElementById('modal-site-name').value.trim();
   if (!name) { showAlert('Nom du site requis'); return; }
-  allSites.push({ id: Date.now().toString(), name, type });
+  allSites.push({ id: Date.now().toString(), name, type: document.getElementById('modal-site-type').value, sections: [] });
   try {
     await db.collection('sites').doc('main').set({ list: allSites });
-    closeModal('modal-add-site');
-    renderSitesList(); populateSiteDropdown();
-    showToast('Site ajouté');
+    closeModal('modal-add-site'); renderSitesList(); populateSiteDropdown(); showToast('Site ajouté');
   } catch (e) { showAlert('Erreur : ' + e.message); }
 };
 
@@ -1095,22 +1322,139 @@ let deleteSite = async (siteId) => {
   }
 };
 
-// ─── Item editor ──────────────────────────────────────────────────────────────
+// ─── Per-site template editor ─────────────────────────────────────────────────
+let openSiteTemplateModal = (siteId) => {
+  const site = allSites.find(s => s.id === siteId);
+  if (!site) return;
+  editingTemplateSiteId = siteId;
+  document.getElementById('template-site-name').textContent = site.name;
+  // Deep copy: use site's custom sections or DEFAULT_SECTIONS
+  editingTemplateSections = JSON.parse(JSON.stringify(
+    site.sections && site.sections.length > 0 ? site.sections : DEFAULT_SECTIONS
+  ));
+  renderTemplateEditor();
+  document.getElementById('modal-site-template').classList.add('open');
+};
+
+let renderTemplateEditor = () => {
+  const container = document.getElementById('template-editor-container');
+  container.innerHTML = '';
+  editingTemplateSections.forEach((sec, si) => {
+    const secDiv = document.createElement('div');
+    secDiv.style.cssText = 'background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:10px';
+    const secHeader = document.createElement('div');
+    secHeader.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:10px';
+    secHeader.innerHTML = `
+      <input type="text" value="${sec.label}" style="flex:1;font-weight:600" onchange="editingTemplateSections[${si}].label = this.value" placeholder="Nom de la section">
+      <button class="btn btn-secondary btn-sm" onclick="addTemplateItem(${si})">+ Point</button>
+      <button class="btn btn-danger btn-sm" onclick="removeTemplateSection(${si})">✕ Section</button>
+    `;
+    secDiv.appendChild(secHeader);
+    sec.items.forEach((item, ii) => {
+      const itemRow = document.createElement('div');
+      itemRow.style.cssText = 'display:flex;gap:8px;align-items:center;margin-bottom:6px';
+      itemRow.innerHTML = `
+        <input type="text" value="${item.label}" style="flex:1;font-size:0.85rem" onchange="editingTemplateSections[${si}].items[${ii}].label = this.value" placeholder="Point audité">
+        <button class="btn btn-danger btn-sm" onclick="removeTemplateItem(${si},${ii})">✕</button>
+      `;
+      secDiv.appendChild(itemRow);
+    });
+    container.appendChild(secDiv);
+  });
+};
+
+let addTemplateSection = () => {
+  editingTemplateSections.push({ id: 'sec_' + Date.now(), label: 'Nouvelle section', items: [{id: Date.now(), label: 'Nouveau point'}] });
+  renderTemplateEditor();
+};
+
+let removeTemplateSection = (si) => {
+  editingTemplateSections.splice(si, 1);
+  renderTemplateEditor();
+};
+
+let addTemplateItem = (si) => {
+  editingTemplateSections[si].items.push({ id: Date.now() + Math.random(), label: 'Nouveau point' });
+  renderTemplateEditor();
+};
+
+let removeTemplateItem = (si, ii) => {
+  editingTemplateSections[si].items.splice(ii, 1);
+  renderTemplateEditor();
+};
+
+let resetTemplateToDefault = () => {
+  if (confirm('Réinitialiser le template par défaut ?')) {
+    editingTemplateSections = JSON.parse(JSON.stringify(DEFAULT_SECTIONS));
+    renderTemplateEditor();
+  }
+};
+
+let saveTemplate = async () => {
+  const site = allSites.find(s => s.id === editingTemplateSiteId);
+  if (!site) return;
+  // Sync labels from inputs before saving
+  const inputs = document.querySelectorAll('#template-editor-container input');
+  // Already updated via onchange events
+  site.sections = JSON.parse(JSON.stringify(editingTemplateSections));
+  try {
+    await db.collection('sites').doc('main').set({ list: allSites });
+    closeModal('modal-site-template');
+    renderSitesList();
+    showToast('✅ Template enregistré pour ' + site.name);
+  } catch (e) { showAlert('Erreur : ' + e.message); }
+};
+
+// ─── Item editor (current audit) ──────────────────────────────────────────────
 let renderItemEditor = () => {
   const sectionId = document.getElementById('editor-section-select').value;
   const container = document.getElementById('editor-items-container');
-  if (!sectionId) { container.innerHTML = ''; return; }
+  const renameDiv = document.getElementById('editor-section-rename');
+  if (!sectionId) { container.innerHTML = ''; renameDiv.style.display = 'none'; return; }
   const section = currentAudit.sections.find(s => s.id === sectionId);
   if (!section) return;
+  renameDiv.style.display = 'block';
+  document.getElementById('editor-section-name').value = section.label;
   container.innerHTML = '';
   section.items.forEach(item => {
     const div = document.createElement('div'); div.className = 'editor-item';
     div.innerHTML = `
-      <div class="editor-item-info"><div class="editor-item-id">#${item.id}</div><div class="editor-item-label">${item.label}</div></div>
-      <div class="editor-item-actions"><button class="btn btn-secondary" onclick="removeEditorItem('${sectionId}',${item.id})">Supprimer</button></div>
+      <input type="text" value="${item.label}" style="flex:1" onchange="updateItemLabel('${sectionId}',${item.id},this.value)" placeholder="Libellé">
+      <div class="editor-item-actions">
+        <button class="btn btn-danger btn-sm" onclick="removeEditorItem('${sectionId}',${item.id})">✕</button>
+      </div>
     `;
     container.appendChild(div);
   });
+};
+
+let updateItemLabel = (sectionId, itemId, label) => {
+  const section = currentAudit.sections.find(s => s.id === sectionId);
+  const item = section?.items.find(i => i.id === itemId);
+  if (item) { item.label = label; autoSave(); }
+};
+
+let renameSection = () => {
+  const sectionId = document.getElementById('editor-section-select').value;
+  const newLabel = document.getElementById('editor-section-name').value.trim();
+  const section = currentAudit.sections.find(s => s.id === sectionId);
+  if (section && newLabel) { section.label = newLabel; autoSave(); populateEditorSelects(); showToast('Section renommée'); }
+};
+
+let deleteSection = () => {
+  const sectionId = document.getElementById('editor-section-select').value;
+  if (confirm('Supprimer cette section ?')) {
+    currentAudit.sections = currentAudit.sections.filter(s => s.id !== sectionId);
+    autoSave(); populateEditorSelects(); renderItemEditor(); renderAuditItems();
+  }
+};
+
+let addEditorSection = () => {
+  const id = 'sec_' + Date.now();
+  currentAudit.sections.push({ id, label: 'Nouvelle section', items: [] });
+  autoSave(); populateEditorSelects();
+  document.getElementById('editor-section-select').value = id;
+  renderItemEditor();
 };
 
 let addItemToSection = () => {
@@ -1118,8 +1462,8 @@ let addItemToSection = () => {
   if (!sectionId) { showAlert('Sélectionner une section'); return; }
   const section = currentAudit.sections.find(s => s.id === sectionId);
   if (section) {
-    const maxId = Math.max(...section.items.map(i => i.id), 0);
-    section.items.push({ id: maxId + 1, label: 'Nouveau', status: 'na', comment: '', photos: [] });
+    const maxId = Math.max(...section.items.map(i => i.id || 0), 0);
+    section.items.push({ id: maxId + 1, label: 'Nouveau point', status: 'na', comment: '', photos: [] });
     autoSave(); renderItemEditor();
   }
 };
@@ -1130,29 +1474,31 @@ let removeEditorItem = (sectionId, itemId) => {
 };
 
 let resetItemsToDefault = () => {
-  if (confirm('Réinitialiser tous les éléments par défaut ?')) {
-    currentAudit.sections = DEFAULT_SECTIONS.map(s => ({
+  if (confirm('Réinitialiser vers le template du site sélectionné (ou défaut) ?')) {
+    const template = getSectionsForSite(currentAudit.siteId);
+    currentAudit.sections = template.map(s => ({
       id: s.id, label: s.label,
       items: s.items.map(i => ({ id: i.id, label: i.label, status: 'na', comment: '', photos: [] }))
     }));
-    autoSave(); renderItemEditor(); renderAuditItems();
+    autoSave(); populateEditorSelects(); renderItemEditor(); renderAuditItems();
     showToast('Éléments réinitialisés');
   }
 };
 
 let populateEditorSelects = () => {
   const sel = document.getElementById('editor-section-select');
+  const current = sel.value;
   sel.innerHTML = '<option value="">-- Choisir une section --</option>';
   currentAudit.sections.forEach(s => {
-    const opt = document.createElement('option'); opt.value = s.id; opt.textContent = s.label; sel.appendChild(opt);
+    const opt = document.createElement('option'); opt.value = s.id; opt.textContent = s.label;
+    if (s.id === current) opt.selected = true;
+    sel.appendChild(opt);
   });
 };
 
 // ─── Export / Import ──────────────────────────────────────────────────────────
 let exportAllData = async () => {
-  const history = historyCache || [];
-  const kpi = kpiHistoryCache || [];
-  const data = { sites: allSites, history, kpiHistory: kpi, currentAudit };
+  const data = { sites: allSites, history: historyCache || [], kpiHistory: kpiHistoryCache || [], currentAudit };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -1165,19 +1511,13 @@ let importData = async (file) => {
   reader.onload = async (e) => {
     try {
       const data = JSON.parse(e.target.result);
-      if (data.sites) {
-        allSites = data.sites;
-        await db.collection('sites').doc('main').set({ list: allSites });
-      }
-      if (data.history && data.history.length) {
+      if (data.sites) { allSites = data.sites; await db.collection('sites').doc('main').set({ list: allSites }); }
+      if (data.history?.length) {
         const batch = db.batch();
-        data.history.forEach(audit => {
-          batch.set(db.collection('auditHistory').doc(audit.id), { ...audit, userId: currentUser.uid });
-        });
-        await batch.commit();
-        historyCache = data.history;
+        data.history.forEach(audit => batch.set(db.collection('auditHistory').doc(audit.id), { ...audit, userId: currentUser.uid }));
+        await batch.commit(); historyCache = data.history;
       }
-      if (data.kpiHistory && data.kpiHistory.length) {
+      if (data.kpiHistory?.length) {
         kpiHistoryCache = data.kpiHistory;
         await db.collection('kpiHistory').doc(currentUser.uid).set({ rows: kpiHistoryCache });
       }
@@ -1225,15 +1565,15 @@ let renderKpiHistoryTab = async () => {
 
 let renderKpiTable = (rows) => {
   const container = document.getElementById('kpi-table-container');
-  container.innerHTML = '<table class="kpi-table"><thead><tr><th>Site</th><th>Date</th><th>Valeur</th><th>Action</th></tr></thead><tbody id="kpi-tbody"></tbody></table>';
+  container.innerHTML = '<table class="kpi-table"><thead><tr><th>Site</th><th>Date</th><th>Valeur (CA)</th><th>Action</th></tr></thead><tbody id="kpi-tbody"></tbody></table>';
   const tbody = document.getElementById('kpi-tbody');
   rows.forEach((row, idx) => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td><input type="text" value="${row.site || ''}" onchange="updateKpiRow(${idx},'site',this.value)"></td>
-      <td><input type="date" value="${row.date || ''}" onchange="updateKpiRow(${idx},'date',this.value)"></td>
-      <td><input type="number" value="${row.value || ''}" onchange="updateKpiRow(${idx},'value',this.value)"></td>
-      <td><button class="btn btn-danger" onclick="deleteKpiRow(${idx})">✕</button></td>
+      <td><input type="text" value="${row.site||''}" onchange="updateKpiRow(${idx},'site',this.value)"></td>
+      <td><input type="date" value="${row.date||''}" onchange="updateKpiRow(${idx},'date',this.value)"></td>
+      <td><input type="number" value="${row.value||''}" onchange="updateKpiRow(${idx},'value',this.value)"></td>
+      <td><button class="btn btn-danger btn-sm" onclick="deleteKpiRow(${idx})">✕</button></td>
     `;
     tbody.appendChild(tr);
   });
@@ -1242,23 +1582,20 @@ let renderKpiTable = (rows) => {
 let addKpiRow = async () => {
   const rows = getKpiHistory();
   rows.push({ site: '', date: new Date().toISOString().split('T')[0], value: 0 });
-  await saveKpiHistory(rows); renderKpiTable(rows);
+  kpiHistoryCache = rows; renderKpiTable(rows);
 };
 
 let updateKpiRow = (idx, field, value) => {
-  if (!kpiHistoryCache) return;
-  if (kpiHistoryCache[idx]) {
-    kpiHistoryCache[idx][field] = isNaN(value) ? value : parseFloat(value);
-    clearTimeout(kpiSaveTimer);
-    kpiSaveTimer = setTimeout(() => {
-      db.collection('kpiHistory').doc(currentUser.uid).set({ rows: kpiHistoryCache, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }).catch(console.error);
-    }, 1500);
-  }
+  if (!kpiHistoryCache || !kpiHistoryCache[idx]) return;
+  kpiHistoryCache[idx][field] = isNaN(value) ? value : parseFloat(value);
+  clearTimeout(kpiSaveTimer);
+  kpiSaveTimer = setTimeout(() => {
+    db.collection('kpiHistory').doc(currentUser.uid).set({ rows: kpiHistoryCache, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }).catch(console.error);
+  }, 1500);
 };
 
 let deleteKpiRow = async (idx) => {
-  const rows = getKpiHistory();
-  rows.splice(idx, 1);
+  const rows = getKpiHistory(); rows.splice(idx, 1);
   await saveKpiHistory(rows); renderKpiTable(rows);
 };
 
@@ -1282,8 +1619,7 @@ let downloadKpiTemplate = () => {
   const csv = 'site,date,valeur\nArcades,2025-01-15,1250\nBar,2025-01-15,980';
   const blob = new Blob([csv], { type: 'text/csv' });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href = url; a.download = 'kpi-template.csv';
-  a.click(); URL.revokeObjectURL(url);
+  const a = document.createElement('a'); a.href = url; a.download = 'kpi-template.csv'; a.click(); URL.revokeObjectURL(url);
 };
 
 let renderKpiCharts = () => {
@@ -1293,7 +1629,7 @@ let renderKpiCharts = () => {
   rows.forEach(r => { if (!datasets[r.site]) datasets[r.site] = []; datasets[r.site].push({ x: r.date, y: r.value }); });
   const container = document.getElementById('kpi-charts-container');
   container.innerHTML = '<div id="kpi-chart-main" style="position:relative;height:300px"></div>';
-  const colors = ['#f97316','#fb923c','#22c55e','#ef4444','#3b82f6'];
+  const colors = ['#f97316','#fb923c','#22c55e','#ef4444','#3b82f6','#a855f7'];
   const chartDatasets = Object.entries(datasets).map(([site, data], idx) => ({
     label: site, data: data.map(d => ({ x: d.x, y: d.y })),
     borderColor: colors[idx % colors.length], backgroundColor: colors[idx % colors.length] + '20',
@@ -1301,22 +1637,19 @@ let renderKpiCharts = () => {
   }));
   if (charts.kpi) charts.kpi.destroy();
   const ctx = document.getElementById('kpi-chart-main');
-  if (ctx) {
-    charts.kpi = new Chart(ctx, {
-      type: 'line', data: { datasets: chartDatasets },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: true, labels: { color: '#e2e8f0' } } },
-        scales: { x: { ticks: { color: '#e2e8f0' } }, y: { ticks: { color: '#e2e8f0' } } }
-      }
-    });
-  }
+  if (ctx) charts.kpi = new Chart(ctx, {
+    type: 'line', data: { datasets: chartDatasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: true, labels: { color: '#e2e8f0' } } },
+      scales: { x: { ticks: { color: '#e2e8f0' } }, y: { ticks: { color: '#e2e8f0' } } }
+    }
+  });
 };
 
 // ─── UI helpers ───────────────────────────────────────────────────────────────
 let switchTab = (tab) => {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   const panel = document.getElementById(`${tab}-tab`);
   if (panel) {
     panel.classList.add('active');
@@ -1326,22 +1659,23 @@ let switchTab = (tab) => {
     if (tab === 'kpi') renderKpiHistoryTab();
     if (tab === 'editor') populateEditorSelects();
   }
-  document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
-  const sidebarBtn = Array.from(document.querySelectorAll('.sidebar-item')).find(b => b.textContent.toLowerCase().includes(tab));
-  if (sidebarBtn) sidebarBtn.classList.add('active');
+  document.querySelectorAll('[data-tab]').forEach(el => {
+    el.classList.toggle('active', el.getAttribute('data-tab') === tab);
+  });
+  closeSidebar();
 };
 
-let switchKpiTab = (tab) => {
+let switchKpiTab = (tab, el) => {
   document.querySelectorAll('#kpi-tab .tab-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tabs-secondary-item').forEach(t => t.classList.remove('active'));
   document.getElementById(`kpi-${tab}-tab`).classList.add('active');
-  event.target.classList.add('active');
+  el.classList.add('active');
 };
 
 let closeModal = (id) => document.getElementById(id).classList.remove('open');
 
-let formatDate = (dateStr) => new Date(dateStr).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
-let formatDateShort = (dateStr) => new Date(dateStr).toLocaleDateString('fr-FR', { month: 'short', day: 'numeric' });
+let formatDate = (dateStr) => new Date(dateStr + 'T12:00:00').toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
+let formatDateShort = (dateStr) => new Date(dateStr + 'T12:00:00').toLocaleDateString('fr-FR', { month: 'short', day: 'numeric' });
 let showAlert = (msg) => alert(msg);
 let showToast = (msg) => {
   const toast = document.createElement('div'); toast.className = 'toast'; toast.textContent = msg;
