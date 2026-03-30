@@ -1072,7 +1072,7 @@ let renderHistory = async () => {
   const list = document.getElementById('history-items');
   list.innerHTML = '<p style="color:var(--text2);padding:8px">Chargement…</p>';
   try {
-    const snap = await (isAdmin() ? db.collection('auditHistory').get() : db.collection('auditHistory').where('userId', '==', currentUser.uid).get());
+    const snap = await ((currentUser && currentUser.role === 'admin') ? db.collection('auditHistory').get() : db.collection('auditHistory').where('userId', '==', currentUser.uid).get());
     historyCache = snap.docs.map(d => d.data());
   } catch (e) { historyCache = []; }
   populateHistoryFilters();
@@ -1179,7 +1179,7 @@ let deleteHistoryItem = async (auditId) => {
 let clearHistory = async () => {
   if (confirm('Supprimer tout l\'historique ?')) {
     try {
-      const snap = await (isAdmin() ? db.collection('auditHistory').get() : db.collection('auditHistory').where('userId', '==', currentUser.uid).get());
+      const snap = await ((currentUser && currentUser.role === 'admin') ? db.collection('auditHistory').get() : db.collection('auditHistory').where('userId', '==', currentUser.uid).get());
       const batch = db.batch();
       snap.docs.forEach(d => batch.delete(d.ref));
       await batch.commit();
@@ -1204,7 +1204,7 @@ let renderReport = async () => {
   content.innerHTML = '<p style="color:var(--text2)">Chargement…</p>';
   if (!historyCache) {
     try {
-      const snap = await (isAdmin() ? db.collection('auditHistory').get() : db.collection('auditHistory').where('userId', '==', currentUser.uid).get());
+      const snap = await ((currentUser && currentUser.role === 'admin') ? db.collection('auditHistory').get() : db.collection('auditHistory').where('userId', '==', currentUser.uid).get());
       historyCache = snap.docs.map(d => d.data());
     } catch (e) { historyCache = []; }
   }
@@ -1701,7 +1701,7 @@ let clearAllData = async () => {
     batch.delete(db.collection('kpiHistory').doc(currentUser.uid));
     batch.delete(db.collection('settings').doc(currentUser.uid));
     await batch.commit();
-    const snap = await (isAdmin() ? db.collection('auditHistory').get() : db.collection('auditHistory').where('userId', '==', currentUser.uid).get());
+    const snap = await ((currentUser && currentUser.role === 'admin') ? db.collection('auditHistory').get() : db.collection('auditHistory').where('userId', '==', currentUser.uid).get());
     const batch2 = db.batch();
     snap.docs.forEach(d => batch2.delete(d.ref));
     await batch2.commit();
