@@ -2563,7 +2563,7 @@ let _buildBenchmarkChart = (audits) => {
   const palette = ['#4f46e5','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#ec4899','#84cc16'];
   _kpiCharts.benchmark = new Chart(canvas, {
     type: 'bar',
-    data: { labels: lbls, datasets: [{ label: 'Score moyen', data, backgroundColor: lbls.map((_,i)=>palette[i%palette.length]+'bb'), borderColor: lbls.map((_,i)=>palette[i%palette.length]), borderWidth: 2, borderRadius: 8 }] },
+    data: { labels: lbls.map(function(s){return getSiteName(s)}), datasets: [{ label: 'Score moyen', data, backgroundColor: lbls.map((_,i)=>palette[i%palette.length]+'bb'), borderColor: lbls.map((_,i)=>palette[i%palette.length]), borderWidth: 2, borderRadius: 8 }] },
     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { min: 0, max: 100, ticks: { callback: v => v + '%' }, grid: { color: '#f3f4f6' } }, x: { grid: { display: false } } } }
   });
 };
