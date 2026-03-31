@@ -1586,7 +1586,7 @@ let renderReport = async () => {
       const prevTotal = prevW ? (prevW.activites||0)+(prevW.bar||0)+(prevW.btob||0) : 0;
       const n1Total = n1W ? (n1W.activites||0)+(n1W.bar||0)+(n1W.btob||0) : 0;
       khtml += '<div style="margin-bottom:16px;border:1px solid #ddd;border-radius:8px;padding:12px">';
-      khtml += '<h3 style="margin:0 0 8px;font-size:1rem">' + siteId + '</h3>';
+      khtml += '<h3 style="margin:0 0 8px;font-size:1rem">' + getSiteName(siteId) + '</h3>';
       khtml += '<table style="width:100%;border-collapse:collapse;font-size:.85rem">';
       khtml += '<tr style="background:#f5f5f5"><th style="padding:6px;text-align:left">P\u00E9riode</th><th style="text-align:right;padding:6px">Activit\u00E9s</th><th style="text-align:right;padding:6px">Bar</th><th style="text-align:right;padding:6px">BtoB</th><th style="text-align:right;padding:6px">Total</th><th style="text-align:right;padding:6px">\u0394</th></tr>';
       if (currW) {
@@ -2175,6 +2175,7 @@ let showToast = (msg) => {
 let _kpiCharts = {};
 let _kpiSite = null;
 
+let getSiteName = (id) => { const s = (typeof allSites !== 'undefined' ? allSites : []).find(x => x.id === id || x.id === String(id)); return s ? s.name : id; };
 let renderKPIDashboard = () => {
   const audits = historyCache || [];
   const siteMap = {};
@@ -2185,7 +2186,7 @@ let renderKPIDashboard = () => {
     if (_kpiSite === null && sites.length > 0) _kpiSite = sites[0];
     bar.innerHTML = '<span style="font-size:.78rem;color:#6b7280;align-self:center;margin-right:6px;font-weight:600">\u{1F4CD} Site :</span>' +
       '<button class="kpi-site-btn' + (_kpiSite === null ? ' active' : '') + '" onclick="_kpiSite=null;renderKPIDashboard();renderCASection(\'__all__\')">Tous</button>' +
-      sites.map(s => '<button class="kpi-site-btn' + (_kpiSite === s ? ' active' : '') + '" onclick="_kpiSite=\'' + s.replace(/'/g, '') + '\';renderKPIDashboard();renderCASection(window._kpiSite)">'  + (s || 'Sans nom') + '</button>').join('');
+      sites.map(s => '<button class="kpi-site-btn' + (_kpiSite === s ? ' active' : '') + '" onclick="_kpiSite=\'' + s.replace(/'/g, '') + '\';renderKPIDashboard();renderCASection(window._kpiSite)">'  + (getSiteName(s) || 'Sans nom') + '</button>').join('');
   }
   _buildEvolutionChart(audits, _kpiSite);
   _buildRadarChart(audits, _kpiSite);
@@ -2232,7 +2233,7 @@ let renderCASection = (siteId) => {
   const cw = getCurrentWeek();
   
   let html = '<div class="ca-pro-section">';
-  html += '<div class="ca-pro-header"><h3>\uD83D\uDCB0 Chiffre d\'Affaires - ' + (siteId || 'Site') + '</h3>';
+  html += '<div class="ca-pro-header"><h3>\uD83D\uDCB0 Chiffre d\'Affaires - ' + getSiteName(siteId) + '</h3>';
   html += '<div class="ca-actions">';
   html += '<button onclick="addCAWeek(\'' + siteId + '\')">\u2795 Ajouter semaine</button>';
   html += '<button onclick="showCATemplate(\'' + siteId + '\')">\uD83D\uDCE5 Import template</button>';
@@ -2300,7 +2301,7 @@ let renderCAAllSites = (container) => {
       if (wk === prevWKey) { prevAct += (w.activites||0); prevBar += (w.bar||0); prevBtob += (w.btob||0); }
     });
     const grandTotal = totalAct + totalBar + totalBtob;
-    siteRows += '<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:2px"><span>' + s + '</span><span>' + sTotal.toLocaleString('fr-FR') + ' \u20AC</span></div>';
+    siteRows += '<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:2px"><span>' + getSiteName(s) + '</span><span>' + sTotal.toLocaleString('fr-FR') + ' \u20AC</span></div>';
     siteRows += '<div class="ca-chart-bar" style="background:var(--border)">';
     const pAct = grandTotal > 0 ? ((totalAct/grandTotal)*100) : 0;
     const pBar = grandTotal > 0 ? ((totalBar/grandTotal)*100) : 0;
@@ -2338,7 +2339,7 @@ let renderCAAllSites = (container) => {
     let sAct = 0, sBar = 0, sBtob = 0;
     Object.keys(sd.weeks).forEach(wk => { const w = sd.weeks[wk]; sAct += (w.activites||0); sBar += (w.bar||0); sBtob += (w.btob||0); });
     const sTotal = sAct + sBar + sBtob;
-    html += '<div style="margin-bottom:6px"><div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:2px"><span>' + s + '</span><span>' + sTotal.toLocaleString('fr-FR') + ' \u20AC</span></div>';
+    html += '<div style="margin-bottom:6px"><div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:2px"><span>' + getSiteName(s) + '</span><span>' + sTotal.toLocaleString('fr-FR') + ' \u20AC</span></div>';
     html += '<div class="ca-chart-bar" style="background:var(--border)">';
     if (sTotal > 0) {
       html += '<div style="width:' + (sAct/sTotal*100) + '%;background:var(--primary)" title="Activit\u00E9s: ' + sAct.toLocaleString('fr-FR') + ' \u20AC"></div>';
@@ -2458,7 +2459,7 @@ let showCATemplate = (siteId) => {
   const overlay = document.createElement('div');
   overlay.className = 'ca-template-modal';
   overlay.innerHTML = '<div class="modal-body">' +
-    '<h3>\uD83D\uDCE5 Import CA - ' + siteId + '</h3>' +
+    '<h3>\uD83D\uDCE5 Import CA - ' + getSiteName(siteId) + '</h3>' +
     '<p style="font-size:.85rem;color:var(--muted-text);margin:8px 0">Format CSV : <code>Semaine;Activit\u00E9s;Bar;BtoB;Vacances</code><br>Exemple : <code>2026-S14;12500;8300;4200;0</code><br>Vacances: 1=oui, 0=non</p>' +
     '<textarea id="ca-template-input" placeholder="2026-S14;12500;8300;4200;0\n2026-S13;11000;7500;3800;1"></textarea>' +
     '<div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end">' +
@@ -2493,7 +2494,7 @@ let importCATemplate = (siteId) => {
   saveCAData();
   document.querySelector('.ca-template-modal')?.remove();
   renderCASection(siteId);
-  alert(imported + ' semaine(s) import\u00E9e(s)');
+  (function(){var t=document.createElement('div');t.style.cssText='position:fixed;bottom:20px;right:20px;background:var(--success,#22c55e);color:#fff;padding:12px 20px;border-radius:8px;z-index:9999;font-weight:600;box-shadow:0 4px 12px rgba(0,0,0,.3);transition:opacity .5s';t.textContent=imported+' semaine(s) import\u00E9e(s)';document.body.appendChild(t);setTimeout(function(){t.style.opacity='0';setTimeout(function(){t.remove()},500)},3000)})();
 };
 
 let exportCATemplate = (siteId) => {
@@ -2507,7 +2508,7 @@ let exportCATemplate = (siteId) => {
   const blob = new Blob([csv], { type: 'text/csv' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'CA_' + siteId + '.csv';
+  a.download = 'CA_' + getSiteName(siteId) + '.csv';
   a.click();
 };
 
