@@ -312,6 +312,35 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
 .sortable-drag{box-shadow:0 4px 12px rgba(0,0,0,.15);transform:scale(1.02)}
 .sortable-chosen{background:var(--surface)}
 .item-wrapper{width:100%}
+
+/* v5.2 KPI Pro */
+.ca-pro-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin:12px 0}
+.ca-pro-section h3{margin:0 0 12px;font-size:1rem;display:flex;align-items:center;gap:8px}
+.ca-pro-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.ca-week-row{display:grid;grid-template-columns:100px 1fr 1fr 1fr 120px 40px;gap:6px;align-items:center;padding:8px;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:4px;font-size:.85rem}
+.ca-week-row.header{background:var(--primary);color:#fff;font-weight:700;border:none;font-size:.8rem}
+.ca-week-row input{width:100%;padding:5px;border:1px solid var(--border);border-radius:4px;font-size:.85rem;background:var(--bg);color:var(--text)}
+.ca-week-row .total-cell{font-weight:700;text-align:right;font-size:.9rem}
+.ca-week-row .holiday-toggle{cursor:pointer;font-size:1.2rem;text-align:center;opacity:.3;transition:opacity .2s}
+.ca-week-row .holiday-toggle.active{opacity:1}
+.ca-actions{display:flex;gap:8px;flex-wrap:wrap}
+.ca-actions button{padding:6px 12px;border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;font-size:.8rem;background:var(--surface);color:var(--text);display:flex;align-items:center;gap:4px;transition:all .15s}
+.ca-actions button:hover{background:var(--primary);color:#fff;border-color:var(--primary)}
+.ca-actions button.primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+.ca-compare-card{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:12px 0}
+.ca-kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px;text-align:center}
+.ca-kpi-card .kpi-value{font-size:1.4rem;font-weight:700;color:var(--primary)}
+.ca-kpi-card .kpi-label{font-size:.75rem;color:var(--muted-text);margin-top:2px}
+.ca-kpi-card .kpi-delta{font-size:.8rem;margin-top:4px}
+.ca-kpi-card .kpi-delta.up{color:var(--success,#22c55e)}
+.ca-kpi-card .kpi-delta.down{color:var(--danger,#ef4444)}
+.ca-chart-bar{height:20px;border-radius:4px;display:flex;overflow:hidden;margin:4px 0}
+.ca-chart-bar>div{transition:width .3s}
+.ca-template-modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:999}
+.ca-template-modal .modal-body{background:var(--surface);border-radius:var(--radius);padding:24px;max-width:600px;width:90%;max-height:80vh;overflow-y:auto}
+.ca-template-modal textarea{width:100%;min-height:150px;padding:8px;border:1px solid var(--border);border-radius:var(--radius);font-family:monospace;font-size:.8rem}
+@media print{.ca-week-row .holiday-toggle{font-size:.9rem}.no-print{display:none!important}.print-only{display:block!important}.photo-in-report{display:none!important}}
+.print-only{display:none}
 </style>
 </head>
 <body>
@@ -1532,6 +1561,84 @@ let renderReport = async () => {
   const _stampSiteSel = document.getElementById('report-site');
   const _stampSiteName = _stampSiteSel ? (_stampSiteSel.selectedOptions[0] || {}).textContent || '' : '';
   const _stampAuditor = currentUser ? (currentUser.name || currentUser.email || '') : '';
+
+  await loadCAData();
+  // === KPI CA Summary in Report ===
+  if (typeof caData !== 'undefined' && Object.keys(caData).length > 0) {
+    const kpiDiv = document.createElement('div');
+    kpiDiv.className = 'report-kpi-section';
+    kpiDiv.style.cssText = 'page-break-before:always;padding:20px 0';
+    let khtml = '<h2 style="margin:0 0 16px;font-size:1.2rem">\uD83D\uDCB0 Synth\u00E8se Chiffre d\'Affaires</h2>';
+    const cw = getCurrentWeek();
+    Object.keys(caData).forEach(siteId => {
+      const sd = caData[siteId];
+      if (!sd?.weeks) return;
+      let totalAct = 0, totalBar = 0, totalBtob = 0;
+      const cwKey = getWeekKey(cw.year, cw.week);
+      const prevWKey = getWeekKey(cw.year, cw.week > 1 ? cw.week - 1 : 52);
+      const n1Key = getWeekKey(cw.year - 1, cw.week);
+      Object.values(sd.weeks).forEach(w => { totalAct += (w.activites||0); totalBar += (w.bar||0); totalBtob += (w.btob||0); });
+      const grandTotal = totalAct + totalBar + totalBtob;
+      const currW = sd.weeks[cwKey];
+      const prevW = sd.weeks[prevWKey];
+      const n1W = sd.weeks[n1Key];
+      const currTotal = currW ? (currW.activites||0)+(currW.bar||0)+(currW.btob||0) : 0;
+      const prevTotal = prevW ? (prevW.activites||0)+(prevW.bar||0)+(prevW.btob||0) : 0;
+      const n1Total = n1W ? (n1W.activites||0)+(n1W.bar||0)+(n1W.btob||0) : 0;
+      khtml += '<div style="margin-bottom:16px;border:1px solid #ddd;border-radius:8px;padding:12px">';
+      khtml += '<h3 style="margin:0 0 8px;font-size:1rem">' + siteId + '</h3>';
+      khtml += '<table style="width:100%;border-collapse:collapse;font-size:.85rem">';
+      khtml += '<tr style="background:#f5f5f5"><th style="padding:6px;text-align:left">P\u00E9riode</th><th style="text-align:right;padding:6px">Activit\u00E9s</th><th style="text-align:right;padding:6px">Bar</th><th style="text-align:right;padding:6px">BtoB</th><th style="text-align:right;padding:6px">Total</th><th style="text-align:right;padding:6px">\u0394</th></tr>';
+      if (currW) {
+        khtml += '<tr><td style="padding:6px">Sem. ' + cwKey + (currW.holiday ? ' \uD83C\uDF34' : '') + '</td><td style="text-align:right;padding:6px">' + (currW.activites||0).toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px">' + (currW.bar||0).toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px">' + (currW.btob||0).toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px;font-weight:700">' + currTotal.toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px">-</td></tr>';
+      }
+      if (prevW) {
+        const d = prevTotal > 0 ? Math.round((currTotal-prevTotal)/prevTotal*100) : 0;
+        khtml += '<tr style="background:#f9f9f9"><td style="padding:6px">Sem. ' + prevWKey + (prevW.holiday ? ' \uD83C\uDF34' : '') + '</td><td style="text-align:right;padding:6px">' + (prevW.activites||0).toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px">' + (prevW.bar||0).toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px">' + (prevW.btob||0).toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px;font-weight:700">' + prevTotal.toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px;color:' + (d >= 0 ? '#22c55e' : '#ef4444') + '">' + (d >= 0 ? '+' : '') + d + '%</td></tr>';
+      }
+      if (n1W) {
+        const d2 = n1Total > 0 ? Math.round((currTotal-n1Total)/n1Total*100) : 0;
+        khtml += '<tr><td style="padding:6px">N-1 ' + n1Key + '</td><td style="text-align:right;padding:6px">' + (n1W.activites||0).toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px">' + (n1W.bar||0).toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px">' + (n1W.btob||0).toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px;font-weight:700">' + n1Total.toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px;color:' + (d2 >= 0 ? '#22c55e' : '#ef4444') + '">' + (d2 >= 0 ? '+' : '') + d2 + '%</td></tr>';
+      }
+      khtml += '<tr style="background:#e8f4fd;font-weight:700"><td style="padding:6px">Cumul</td><td style="text-align:right;padding:6px">' + totalAct.toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px">' + totalBar.toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px">' + totalBtob.toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px">' + grandTotal.toLocaleString('fr-FR') + ' \u20AC</td><td></td></tr>';
+      khtml += '</table>';
+      khtml += '<div style="display:flex;gap:8px;margin-top:8px;font-size:.75rem">';
+      khtml += '<span>\u25A0 Activit\u00E9s: ' + (grandTotal > 0 ? Math.round(totalAct/grandTotal*100) : 0) + '%</span>';
+      khtml += '<span>\u25A0 Bar: ' + (grandTotal > 0 ? Math.round(totalBar/grandTotal*100) : 0) + '%</span>';
+      khtml += '<span>\u25A0 BtoB: ' + (grandTotal > 0 ? Math.round(totalBtob/grandTotal*100) : 0) + '%</span>';
+      khtml += '</div></div>';
+    });
+    kpiDiv.innerHTML = khtml;
+    content.appendChild(kpiDiv);
+  }
+  // === Photo section for PDF only (hidden in print) ===
+  if (currentAudit && currentAudit.sections) {
+    let hasAnyPhotos = false;
+    currentAudit.sections.forEach(sec => {
+      sec.items?.forEach(item => { if (item.photos?.length) hasAnyPhotos = true; });
+    });
+    if (hasAnyPhotos) {
+      const photoDiv = document.createElement('div');
+      photoDiv.className = 'photo-in-report';
+      photoDiv.style.cssText = 'page-break-before:always;padding:20px 0';
+      let phtml = '<h2 style="margin:0 0 16px;font-size:1.2rem">\uD83D\uDCF7 Photos jointes</h2>';
+      currentAudit.sections.forEach(sec => {
+        sec.items?.forEach(item => {
+          if (item.photos?.length) {
+            phtml += '<div style="margin-bottom:12px"><div style="font-weight:600;font-size:.9rem;margin-bottom:4px">' + (item.label || item.id) + '</div>';
+            phtml += '<div style="display:flex;gap:6px;flex-wrap:wrap">';
+            item.photos.forEach(url => {
+              phtml += '<img src="' + url + '" style="width:120px;height:90px;object-fit:cover;border-radius:4px;border:1px solid #ddd" crossorigin="anonymous">';
+            });
+            phtml += '</div></div>';
+          }
+        });
+      });
+      photoDiv.innerHTML = phtml;
+      content.appendChild(photoDiv);
+    }
+  }
+
   if (typeof buildAuditStamp === 'function') {
     content.appendChild(buildAuditStamp(_stampScoreCalc, _stampSiteName, _stampAuditor));
   }
@@ -2092,11 +2199,20 @@ let loadCAData = async () => {
   try {
     const doc = await db.collection('appConfig').doc('caData').get();
     if (doc.exists) caData = doc.data() || {};
-  } catch(e) { console.log('No CA data yet'); caData = {}; }
+  } catch(e) { caData = {}; }
 };
 let saveCAData = () => {
-  db.collection('appConfig').doc('caData').set(caData).catch(e => console.error('CA save error:', e));
+  db.collection('appConfig').doc('caData').set(caData).catch(e => console.error('CA save:', e));
 };
+
+let getWeekKey = (year, week) => year + '-S' + String(week).padStart(2, '0');
+let getCurrentWeek = () => {
+  const d = new Date();
+  const oneJan = new Date(d.getFullYear(), 0, 1);
+  const week = Math.ceil(((d - oneJan) / 86400000 + oneJan.getDay() + 1) / 7);
+  return { year: d.getFullYear(), week };
+};
+
 let renderCASection = (siteId) => {
   let container = document.getElementById('ca-section-container');
   if (!container) {
@@ -2104,57 +2220,295 @@ let renderCASection = (siteId) => {
     container.id = 'ca-section-container';
     const siteBar = document.getElementById('kpi-site-bar');
     if (siteBar) siteBar.parentNode.insertBefore(container, siteBar.nextSibling);
+    else return;
   }
   if (!siteId || siteId === '__all__') {
-    const allSites = Object.keys(caData);
-    if (!allSites.length) { container.innerHTML = '<div class="ca-section"><h3>Chiffre d\'Affaires</h3><p style="color:var(--muted-text);font-size:.85rem">S\u00E9lectionnez un site pour saisir le CA</p></div>'; return; }
-    let totalCA = 0, totalCABar = 0;
-    allSites.forEach(s => { totalCA += (caData[s]?.ca || 0); totalCABar += (caData[s]?.caBar || 0); });
-    const totalAll = totalCA + totalCABar;
-    let html = '<div class="ca-section"><h3>Chiffre d\'Affaires - Tous les sites</h3>';
-    html += '<div class="ca-total">CA Total: ' + totalAll.toLocaleString('fr-FR') + ' \u20AC | CA: ' + totalCA.toLocaleString('fr-FR') + ' \u20AC (' + (totalAll > 0 ? Math.round(totalCA/totalAll*100) : 0) + '%) | CA Bar: ' + totalCABar.toLocaleString('fr-FR') + ' \u20AC (' + (totalAll > 0 ? Math.round(totalCABar/totalAll*100) : 0) + '%)</div>';
-    html += '<div class="ca-bar-chart" style="margin-top:12px">';
-    allSites.forEach(s => {
-      const ca = caData[s]?.ca || 0;
-      const cb = caData[s]?.caBar || 0;
-      const tot = ca + cb;
-      const pct = totalAll > 0 ? Math.round(tot/totalAll*100) : 0;
-      const siteName = allSites.length > 0 ? s : s;
-      html += '<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:2px"><span>' + s + '</span><span>' + tot.toLocaleString('fr-FR') + ' \u20AC (' + pct + '%)</span></div>';
-      html += '<div style="background:var(--border);border-radius:4px;height:20px;display:flex;overflow:hidden">';
-      if (totalAll > 0) {
-        html += '<div style="width:' + (ca/totalAll*100) + '%;background:var(--primary);transition:width .3s" title="CA: ' + ca.toLocaleString('fr-FR') + ' \u20AC"></div>';
-        html += '<div style="width:' + (cb/totalAll*100) + '%;background:var(--success,#22c55e);transition:width .3s" title="CA Bar: ' + cb.toLocaleString('fr-FR') + ' \u20AC"></div>';
-      }
-      html += '</div></div>';
-    });
-    html += '</div><div style="display:flex;gap:12px;margin-top:8px;font-size:.75rem"><span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;background:var(--primary);border-radius:2px;display:inline-block"></span>CA</span><span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;background:var(--success,#22c55e);border-radius:2px;display:inline-block"></span>CA Bar</span></div>';
-    html += '</div>';
-    container.innerHTML = html;
+    renderCAAllSites(container);
     return;
   }
-  if (!caData[siteId]) caData[siteId] = { ca: 0, caBar: 0 };
+  if (!caData[siteId]) caData[siteId] = { weeks: {} };
   const sd = caData[siteId];
-  const total = sd.ca + sd.caBar;
-  let html = '<div class="ca-section"><h3>Chiffre d\'Affaires - ' + siteId + '</h3>';
-  html += '<div class="ca-grid"><div><label>CA (\u20AC)</label><input type="number" id="ca-input" value="' + (sd.ca || '') + '" placeholder="0"></div>';
-  html += '<div><label>CA Bar (\u20AC)</label><input type="number" id="ca-bar-input" value="' + (sd.caBar || '') + '" placeholder="0"></div></div>';
-  html += '<div class="ca-total">Total: ' + total.toLocaleString('fr-FR') + ' \u20AC';
-  if (total > 0) html += ' | CA: ' + Math.round(sd.ca/total*100) + '% | CA Bar: ' + Math.round(sd.caBar/total*100) + '%';
+  if (!sd.weeks) sd.weeks = {};
+  const cw = getCurrentWeek();
+  
+  let html = '<div class="ca-pro-section">';
+  html += '<div class="ca-pro-header"><h3>\uD83D\uDCB0 Chiffre d\'Affaires - ' + (siteId || 'Site') + '</h3>';
+  html += '<div class="ca-actions">';
+  html += '<button onclick="addCAWeek(\'' + siteId + '\')">\u2795 Ajouter semaine</button>';
+  html += '<button onclick="showCATemplate(\'' + siteId + '\')">\uD83D\uDCE5 Import template</button>';
+  html += '<button onclick="exportCATemplate(\'' + siteId + '\')">\uD83D\uDCE4 Export CSV</button>';
+  html += '</div></div>';
+  
+  // Header row
+  html += '<div class="ca-week-row header"><div>Semaine</div><div>Activit\u00E9s \u20AC</div><div>Bar \u20AC</div><div>BtoB \u20AC</div><div>Total</div><div>\uD83C\uDFD6</div></div>';
+  
+  // Sort weeks
+  const weekKeys = Object.keys(sd.weeks).sort().reverse();
+  if (weekKeys.length === 0) {
+    const key = getWeekKey(cw.year, cw.week);
+    sd.weeks[key] = { activites: 0, bar: 0, btob: 0, holiday: false };
+    weekKeys.push(key);
+  }
+  
+  weekKeys.forEach(wk => {
+    const w = sd.weeks[wk];
+    const total = (w.activites || 0) + (w.bar || 0) + (w.btob || 0);
+    const holidayClass = w.holiday ? ' active' : '';
+    html += '<div class="ca-week-row" data-week="' + wk + '">';
+    html += '<div style="font-weight:600">' + wk + '</div>';
+    html += '<input type="number" value="' + (w.activites || '') + '" placeholder="0" onchange="updateCA(\'' + siteId + '\',\'' + wk + '\',\'activites\',this.value)">';
+    html += '<input type="number" value="' + (w.bar || '') + '" placeholder="0" onchange="updateCA(\'' + siteId + '\',\'' + wk + '\',\'bar\',this.value)">';
+    html += '<input type="number" value="' + (w.btob || '') + '" placeholder="0" onchange="updateCA(\'' + siteId + '\',\'' + wk + '\',\'btob\',this.value)">';
+    html += '<div class="total-cell">' + total.toLocaleString('fr-FR') + ' \u20AC</div>';
+    html += '<div class="holiday-toggle' + holidayClass + '" onclick="toggleHoliday(\'' + siteId + '\',\'' + wk + '\',this)">\uD83C\uDF34</div>';
+    html += '</div>';
+  });
+  
+  html += '</div>';
+  
+  // KPI comparison cards
+  html += renderCAComparison(siteId);
+  
+  container.innerHTML = html;
+};
+
+let renderCAAllSites = (container) => {
+  const sites = Object.keys(caData);
+  if (!sites.length) {
+    container.innerHTML = '<div class="ca-pro-section"><h3>\uD83D\uDCB0 Chiffre d\'Affaires</h3><p style="color:var(--muted-text);font-size:.85rem">S\u00E9lectionnez un site pour saisir le CA</p></div>';
+    return;
+  }
+  const cw = getCurrentWeek();
+  const cwKey = getWeekKey(cw.year, cw.week);
+  const prevWKey = getWeekKey(cw.year, cw.week - 1 > 0 ? cw.week - 1 : 52);
+  
+  let totalAct = 0, totalBar = 0, totalBtob = 0;
+  let weekAct = 0, weekBar = 0, weekBtob = 0;
+  let prevAct = 0, prevBar = 0, prevBtob = 0;
+  let siteRows = '';
+  
+  sites.forEach(s => {
+    const sd = caData[s];
+    if (!sd.weeks) return;
+    let sTotal = 0, sCurr = 0;
+    Object.keys(sd.weeks).forEach(wk => {
+      const w = sd.weeks[wk];
+      const t = (w.activites||0) + (w.bar||0) + (w.btob||0);
+      sTotal += t;
+      totalAct += (w.activites||0); totalBar += (w.bar||0); totalBtob += (w.btob||0);
+      if (wk === cwKey) { weekAct += (w.activites||0); weekBar += (w.bar||0); weekBtob += (w.btob||0); sCurr = t; }
+      if (wk === prevWKey) { prevAct += (w.activites||0); prevBar += (w.bar||0); prevBtob += (w.btob||0); }
+    });
+    const grandTotal = totalAct + totalBar + totalBtob;
+    siteRows += '<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:2px"><span>' + s + '</span><span>' + sTotal.toLocaleString('fr-FR') + ' \u20AC</span></div>';
+    siteRows += '<div class="ca-chart-bar" style="background:var(--border)">';
+    const pAct = grandTotal > 0 ? ((totalAct/grandTotal)*100) : 0;
+    const pBar = grandTotal > 0 ? ((totalBar/grandTotal)*100) : 0;
+    const pBtob = grandTotal > 0 ? ((totalBtob/grandTotal)*100) : 0;
+    siteRows += '</div></div>';
+  });
+  
+  const grandTotal = totalAct + totalBar + totalBtob;
+  const weekTotal = weekAct + weekBar + weekBtob;
+  const prevTotal = prevAct + prevBar + prevBtob;
+  const weekDelta = prevTotal > 0 ? Math.round((weekTotal - prevTotal) / prevTotal * 100) : 0;
+  
+  let html = '<div class="ca-pro-section">';
+  html += '<h3>\uD83D\uDCB0 Chiffre d\'Affaires - Vue globale</h3>';
+  
+  // KPI cards
+  html += '<div class="ca-compare-card">';
+  html += '<div class="ca-kpi-card"><div class="kpi-value">' + grandTotal.toLocaleString('fr-FR') + ' \u20AC</div><div class="kpi-label">CA Total cumul\u00E9</div></div>';
+  html += '<div class="ca-kpi-card"><div class="kpi-value">' + weekTotal.toLocaleString('fr-FR') + ' \u20AC</div><div class="kpi-label">Semaine en cours</div>' + (weekDelta !== 0 ? '<div class="kpi-delta ' + (weekDelta >= 0 ? 'up' : 'down') + '">' + (weekDelta >= 0 ? '\u25B2' : '\u25BC') + ' ' + Math.abs(weekDelta) + '% vs sem. pr\u00E9c.</div>' : '') + '</div>';
+  html += '<div class="ca-kpi-card"><div class="kpi-value">' + totalAct.toLocaleString('fr-FR') + ' \u20AC</div><div class="kpi-label">Activit\u00E9s (' + (grandTotal > 0 ? Math.round(totalAct/grandTotal*100) : 0) + '%)</div></div>';
+  html += '<div class="ca-kpi-card"><div class="kpi-value">' + totalBar.toLocaleString('fr-FR') + ' \u20AC</div><div class="kpi-label">Bar (' + (grandTotal > 0 ? Math.round(totalBar/grandTotal*100) : 0) + '%)</div></div>';
+  html += '<div class="ca-kpi-card"><div class="kpi-value">' + totalBtob.toLocaleString('fr-FR') + ' \u20AC</div><div class="kpi-label">BtoB (' + (grandTotal > 0 ? Math.round(totalBtob/grandTotal*100) : 0) + '%)</div></div>';
+  html += '</div>';
+  
+  // Distribution chart per site
+  html += '<div style="margin-top:12px"><div style="display:flex;gap:12px;margin-bottom:8px;font-size:.75rem">';
+  html += '<span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;background:var(--primary);border-radius:2px;display:inline-block"></span>Activit\u00E9s</span>';
+  html += '<span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;background:var(--success,#22c55e);border-radius:2px;display:inline-block"></span>Bar</span>';
+  html += '<span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;background:#f59e0b;border-radius:2px;display:inline-block"></span>BtoB</span>';
+  html += '</div>';
+  
+  sites.forEach(s => {
+    const sd = caData[s];
+    if (!sd.weeks) return;
+    let sAct = 0, sBar = 0, sBtob = 0;
+    Object.keys(sd.weeks).forEach(wk => { const w = sd.weeks[wk]; sAct += (w.activites||0); sBar += (w.bar||0); sBtob += (w.btob||0); });
+    const sTotal = sAct + sBar + sBtob;
+    html += '<div style="margin-bottom:6px"><div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:2px"><span>' + s + '</span><span>' + sTotal.toLocaleString('fr-FR') + ' \u20AC</span></div>';
+    html += '<div class="ca-chart-bar" style="background:var(--border)">';
+    if (sTotal > 0) {
+      html += '<div style="width:' + (sAct/sTotal*100) + '%;background:var(--primary)" title="Activit\u00E9s: ' + sAct.toLocaleString('fr-FR') + ' \u20AC"></div>';
+      html += '<div style="width:' + (sBar/sTotal*100) + '%;background:var(--success,#22c55e)" title="Bar: ' + sBar.toLocaleString('fr-FR') + ' \u20AC"></div>';
+      html += '<div style="width:' + (sBtob/sTotal*100) + '%;background:#f59e0b" title="BtoB: ' + sBtob.toLocaleString('fr-FR') + ' \u20AC"></div>';
+    }
+    html += '</div></div>';
+  });
   html += '</div></div>';
   container.innerHTML = html;
-  const caInput = document.getElementById('ca-input');
-  const caBarInput = document.getElementById('ca-bar-input');
-  const update = () => {
-    sd.ca = parseFloat(caInput.value) || 0;
-    sd.caBar = parseFloat(caBarInput.value) || 0;
-    caData[siteId] = sd;
-    const t = sd.ca + sd.caBar;
-    container.querySelector('.ca-total').textContent = 'Total: ' + t.toLocaleString('fr-FR') + ' \u20AC' + (t > 0 ? ' | CA: ' + Math.round(sd.ca/t*100) + '% | CA Bar: ' + Math.round(sd.caBar/t*100) + '%' : '');
-    saveCAData();
+};
+
+let renderCAComparison = (siteId) => {
+  const sd = caData[siteId];
+  if (!sd || !sd.weeks) return '';
+  const cw = getCurrentWeek();
+  const cwKey = getWeekKey(cw.year, cw.week);
+  const prevWKey = getWeekKey(cw.year, cw.week > 1 ? cw.week - 1 : 52);
+  const n1Key = getWeekKey(cw.year - 1, cw.week);
+  
+  const sumWeek = (wk) => {
+    const w = sd.weeks[wk];
+    if (!w) return null;
+    return { activites: w.activites||0, bar: w.bar||0, btob: w.btob||0, total: (w.activites||0)+(w.bar||0)+(w.btob||0), holiday: w.holiday };
   };
-  caInput.oninput = update;
-  caBarInput.oninput = update;
+  
+  // Get monthly sums
+  const getMonthSum = (year, month) => {
+    let act = 0, bar = 0, btob = 0;
+    Object.keys(sd.weeks).forEach(wk => {
+      const parts = wk.split('-S');
+      if (parseInt(parts[0]) === year) {
+        const weekNum = parseInt(parts[1]);
+        const d = new Date(year, 0, 1 + (weekNum - 1) * 7);
+        if (d.getMonth() === month) {
+          const w = sd.weeks[wk];
+          act += (w.activites||0); bar += (w.bar||0); btob += (w.btob||0);
+        }
+      }
+    });
+    return { activites: act, bar, btob, total: act + bar + btob };
+  };
+  
+  const curr = sumWeek(cwKey);
+  const prev = sumWeek(prevWKey);
+  const n1 = sumWeek(n1Key);
+  const now = new Date();
+  const currMonth = getMonthSum(now.getFullYear(), now.getMonth());
+  const prevMonth = getMonthSum(now.getFullYear(), now.getMonth() - 1 >= 0 ? now.getMonth() - 1 : 11);
+  
+  const delta = (a, b) => b > 0 ? Math.round((a - b) / b * 100) : 0;
+  const deltaHtml = (d) => d === 0 ? '' : '<div class="kpi-delta ' + (d >= 0 ? 'up' : 'down') + '">' + (d >= 0 ? '\u25B2 +' : '\u25BC ') + d + '%</div>';
+  
+  let html = '<div class="ca-compare-card" style="margin-top:12px">';
+  
+  if (curr) {
+    html += '<div class="ca-kpi-card"><div class="kpi-value">' + curr.total.toLocaleString('fr-FR') + ' \u20AC</div><div class="kpi-label">Sem. actuelle ' + cwKey + (curr.holiday ? ' \uD83C\uDF34' : '') + '</div>';
+    if (prev) html += deltaHtml(delta(curr.total, prev.total));
+    html += '</div>';
+  }
+  if (prev) {
+    html += '<div class="ca-kpi-card"><div class="kpi-value">' + prev.total.toLocaleString('fr-FR') + ' \u20AC</div><div class="kpi-label">Sem. pr\u00E9c. ' + prevWKey + (prev.holiday ? ' \uD83C\uDF34' : '') + '</div></div>';
+  }
+  if (n1) {
+    html += '<div class="ca-kpi-card"><div class="kpi-value">' + n1.total.toLocaleString('fr-FR') + ' \u20AC</div><div class="kpi-label">N-1 ' + n1Key + '</div>';
+    if (curr) html += deltaHtml(delta(curr.total, n1.total));
+    html += '</div>';
+  }
+  if (currMonth.total > 0) {
+    html += '<div class="ca-kpi-card"><div class="kpi-value">' + currMonth.total.toLocaleString('fr-FR') + ' \u20AC</div><div class="kpi-label">Mois en cours</div>';
+    if (prevMonth.total > 0) html += deltaHtml(delta(currMonth.total, prevMonth.total));
+    html += '</div>';
+  }
+  if (prevMonth.total > 0) {
+    html += '<div class="ca-kpi-card"><div class="kpi-value">' + prevMonth.total.toLocaleString('fr-FR') + ' \u20AC</div><div class="kpi-label">Mois pr\u00E9c\u00E9dent</div></div>';
+  }
+  
+  html += '</div>';
+  return html;
+};
+
+let updateCA = (siteId, weekKey, field, value) => {
+  if (!caData[siteId]) caData[siteId] = { weeks: {} };
+  if (!caData[siteId].weeks[weekKey]) caData[siteId].weeks[weekKey] = { activites: 0, bar: 0, btob: 0, holiday: false };
+  caData[siteId].weeks[weekKey][field] = parseFloat(value) || 0;
+  saveCAData();
+  renderCASection(window._kpiSite || siteId);
+};
+
+let toggleHoliday = (siteId, weekKey, el) => {
+  if (!caData[siteId]?.weeks?.[weekKey]) return;
+  caData[siteId].weeks[weekKey].holiday = !caData[siteId].weeks[weekKey].holiday;
+  el.classList.toggle('active');
+  saveCAData();
+};
+
+let addCAWeek = (siteId) => {
+  if (!caData[siteId]) caData[siteId] = { weeks: {} };
+  const existing = Object.keys(caData[siteId].weeks).sort();
+  let newWeek;
+  if (existing.length > 0) {
+    const last = existing[existing.length - 1];
+    const parts = last.split('-S');
+    let y = parseInt(parts[0]), w = parseInt(parts[1]) + 1;
+    if (w > 52) { w = 1; y++; }
+    newWeek = getWeekKey(y, w);
+  } else {
+    const cw = getCurrentWeek();
+    newWeek = getWeekKey(cw.year, cw.week);
+  }
+  caData[siteId].weeks[newWeek] = { activites: 0, bar: 0, btob: 0, holiday: false };
+  saveCAData();
+  renderCASection(siteId);
+};
+
+let showCATemplate = (siteId) => {
+  const overlay = document.createElement('div');
+  overlay.className = 'ca-template-modal';
+  overlay.innerHTML = '<div class="modal-body">' +
+    '<h3>\uD83D\uDCE5 Import CA - ' + siteId + '</h3>' +
+    '<p style="font-size:.85rem;color:var(--muted-text);margin:8px 0">Format CSV : <code>Semaine;Activit\u00E9s;Bar;BtoB;Vacances</code><br>Exemple : <code>2026-S14;12500;8300;4200;0</code><br>Vacances: 1=oui, 0=non</p>' +
+    '<textarea id="ca-template-input" placeholder="2026-S14;12500;8300;4200;0\n2026-S13;11000;7500;3800;1"></textarea>' +
+    '<div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end">' +
+    '<button onclick="this.closest(\'.ca-template-modal\').remove()" style="padding:8px 16px;border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;background:var(--surface);color:var(--text)">Annuler</button>' +
+    '<button onclick="importCATemplate(\'' + siteId + '\')" style="padding:8px 16px;border:none;border-radius:var(--radius);cursor:pointer;background:var(--primary);color:#fff">Importer</button>' +
+    '</div></div>';
+  overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
+  document.body.appendChild(overlay);
+};
+
+let importCATemplate = (siteId) => {
+  const input = document.getElementById('ca-template-input');
+  if (!input) return;
+  const lines = input.value.trim().split('\n');
+  if (!caData[siteId]) caData[siteId] = { weeks: {} };
+  let imported = 0;
+  lines.forEach(line => {
+    const parts = line.split(/[;,\t]/);
+    if (parts.length >= 4) {
+      const weekKey = parts[0].trim();
+      if (weekKey.match(/^\d{4}-S\d{1,2}$/)) {
+        caData[siteId].weeks[weekKey] = {
+          activites: parseFloat(parts[1]) || 0,
+          bar: parseFloat(parts[2]) || 0,
+          btob: parseFloat(parts[3]) || 0,
+          holiday: parts[4] ? parts[4].trim() === '1' : false
+        };
+        imported++;
+      }
+    }
+  });
+  saveCAData();
+  document.querySelector('.ca-template-modal')?.remove();
+  renderCASection(siteId);
+  alert(imported + ' semaine(s) import\u00E9e(s)');
+};
+
+let exportCATemplate = (siteId) => {
+  const sd = caData[siteId];
+  if (!sd?.weeks) return;
+  let csv = 'Semaine;Activites;Bar;BtoB;Vacances\n';
+  Object.keys(sd.weeks).sort().forEach(wk => {
+    const w = sd.weeks[wk];
+    csv += wk + ';' + (w.activites||0) + ';' + (w.bar||0) + ';' + (w.btob||0) + ';' + (w.holiday ? '1' : '0') + '\n';
+  });
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'CA_' + siteId + '.csv';
+  a.click();
 };
 
 let _buildEvolutionChart = (audits, siteId) => {
