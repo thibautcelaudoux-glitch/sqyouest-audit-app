@@ -2183,7 +2183,7 @@ let renderKPIDashboard = () => {
   const sites = Object.keys(siteMap);
   const bar = document.getElementById('kpi-site-bar');
   if (bar) {
-    if (_kpiSite === null && sites.length > 0) _kpiSite = sites[0];
+    if (!_kpiSite && sites.length > 0) _kpiSite = sites[0];
     bar.innerHTML = '<span style="font-size:.78rem;color:#6b7280;align-self:center;margin-right:6px;font-weight:600">\u{1F4CD} Site :</span>' +
       '<button class="kpi-site-btn' + (_kpiSite === null ? ' active' : '') + '" onclick="_kpiSite=null;renderKPIDashboard();renderCASection(\'__all__\')">Tous</button>' +
       sites.map(s => '<button class="kpi-site-btn' + (_kpiSite === s ? ' active' : '') + '" onclick="_kpiSite=\'' + s.replace(/'/g, '') + '\';renderKPIDashboard();renderCASection(window._kpiSite)">'  + (getSiteName(s) || 'Sans nom') + '</button>').join('');
