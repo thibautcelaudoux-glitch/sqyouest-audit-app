@@ -84,8 +84,8 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
 .section-score{font-size:0.8rem;font-weight:500;padding:3px 8px;border-radius:8px;margin-right:8px}
 .section-body{padding:12px;display:none}
 .section-body.open{display:block}
-.item-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-top:8px}
-.item-btn{padding:10px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);cursor:pointer;transition:all 150ms;font-weight:500;font-size:0.8rem;text-align:center;line-height:1.3}
+.item-grid{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.item-btn{padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);cursor:pointer;transition:all 150ms;font-weight:500;font-size:0.9rem;text-align:left;line-height:1.4;width:100%;display:flex;align-items:center;gap:8px}
 .item-btn:hover{border-color:var(--accent);background:var(--surface2)}
 .item-btn.ok{background:#22c55e20;border-color:var(--ok);color:var(--ok)}
 .item-btn.nok{background:#ef444420;border-color:var(--nok);color:var(--nok)}
@@ -232,7 +232,7 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
 }
 @media (max-width:480px) {
   .stats-grid{grid-template-columns:1fr}
-  .item-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}
+  .item-grid{gap:4px}
   .topbar-title{font-size:1rem}
 }
 
@@ -284,6 +284,34 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
 .stamp-auditor{font-size:.6rem;opacity:.7;margin-top:2px}
 .stamp-ring-text{position:absolute;top:-2px;left:50%;transform:translateX(-50%);font-size:.55rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;background:#fff;padding:0 8px}
 .stamp-ring-bottom{position:absolute;bottom:-2px;left:50%;transform:translateX(-50%);font-size:.55rem;font-weight:700;letter-spacing:.1em;background:#fff;padding:0 8px}
+
+/* v5.1 fixes */
+.item-btn .item-label{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item-btn .item-status-icon{font-size:1.1rem;min-width:24px;text-align:center}
+.item-btn .photo-trigger{background:none;border:none;font-size:1.2rem;cursor:pointer;padding:4px 6px;border-radius:4px;opacity:.7;transition:opacity .2s}
+.item-btn .photo-trigger:hover{opacity:1}
+.photo-trigger-row{display:flex;align-items:center;gap:8px;margin-top:6px}
+.photo-preview{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
+.photo-preview img{width:48px;height:48px;object-fit:cover;border-radius:4px;border:1px solid var(--border)}
+.photo-preview .uploading{opacity:.5;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:.5}50%{opacity:.8}}
+.item-body{padding:8px 0}
+.item-body .status-row{display:flex;gap:6px;margin-bottom:6px}
+.item-body .status-row button{flex:1;padding:6px;border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;font-size:.8rem;background:var(--surface)}
+.item-body .status-row button.active-ok{background:var(--success);color:#fff;border-color:var(--success)}
+.item-body .status-row button.active-nok{background:var(--danger);color:#fff;border-color:var(--danger)}
+.item-body .status-row button.active-na{background:var(--muted);color:#fff;border-color:var(--muted)}
+.ca-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-top:16px}
+.ca-section h3{margin:0 0 12px;font-size:1rem}
+.ca-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ca-grid label{font-size:.8rem;color:var(--muted-text)}
+.ca-grid input{width:100%;padding:8px;border:1px solid var(--border);border-radius:var(--radius);font-size:.9rem}
+.ca-total{margin-top:12px;padding:12px;background:var(--bg);border-radius:var(--radius);font-weight:600}
+.ca-bar-chart{margin-top:12px}
+.sortable-ghost{opacity:.4;background:var(--primary-light,#e3f2fd)!important}
+.sortable-drag{box-shadow:0 4px 12px rgba(0,0,0,.15);transform:scale(1.02)}
+.sortable-chosen{background:var(--surface)}
+.item-wrapper{width:100%}
 </style>
 </head>
 <body>
@@ -958,23 +986,22 @@ let renderAuditItems = () => {
   if (typeof Sortable !== 'undefined') {
     Sortable.create(container, {
       animation: 150, ghostClass: 'sortable-ghost', dragClass: 'sortable-drag',
-      handle: '.section-header',
+      handle: '.section-header', forceFallback: true, fallbackTolerance: 3,
       onEnd: evt => {
-        if (evt.oldIndex === evt.newIndex) return;
-        const moved = currentAudit.sections.splice(evt.oldIndex, 1)[0];
+        const [moved] = currentAudit.sections.splice(evt.oldIndex, 1);
         currentAudit.sections.splice(evt.newIndex, 0, moved);
         autoSave();
       }
     });
-    container.querySelectorAll('.section-items').forEach((el, si) => {
+    container.querySelectorAll('.item-grid').forEach((el, si) => {
       Sortable.create(el, {
-        animation: 150, ghostClass: 'sortable-ghost',
+        animation: 150, ghostClass: 'sortable-ghost', dragClass: 'sortable-drag',
+        handle: '.item-btn', forceFallback: true, fallbackTolerance: 3,
+        delay: 150, delayOnTouchOnly: true,
         onEnd: evt => {
-          if (evt.oldIndex === evt.newIndex) return;
-          const sec = currentAudit.sections[si];
-          if (!sec) return;
-          const moved = sec.items.splice(evt.oldIndex, 1)[0];
-          sec.items.splice(evt.newIndex, 0, moved);
+          const items = currentAudit.sections[si].items;
+          const [moved] = items.splice(evt.oldIndex, 1);
+          items.splice(evt.newIndex, 0, moved);
           autoSave();
         }
       });
@@ -1013,35 +1040,68 @@ let createSectionElement = (section) => {
 let createAuditItemEl = (sectionId, item) => {
   const btn = document.createElement('button');
   btn.className = 'item-btn ' + (item.status || 'na');
-  btn.id = `item-${item.id}`;
-  btn.textContent = item.label;
-  btn.onclick = (e) => { e.stopPropagation(); toggleItemBody(sectionId, item.id); };
+  btn.id = 'item-' + item.id;
+  const statusIcon = document.createElement('span');
+  statusIcon.className = 'item-status-icon';
+  statusIcon.textContent = item.status === 'ok' ? '\u2705' : item.status === 'nok' ? '\u274C' : '\u2B1C';
+  const label = document.createElement('span');
+  label.className = 'item-label';
+  label.textContent = item.label;
+  const photoCount = (item.photos && item.photos.length) || 0;
+  const camBtn = document.createElement('span');
+  camBtn.className = 'photo-trigger';
+  camBtn.textContent = '\uD83D\uDCF7' + (photoCount > 0 ? ' ' + photoCount : '');
+  camBtn.title = 'Ajouter photo';
+  const fileInput = document.createElement('input');
+  fileInput.type = 'file';
+  fileInput.accept = 'image/*';
+  fileInput.multiple = true;
+  fileInput.capture = 'environment';
+  fileInput.style.display = 'none';
+  camBtn.onclick = (e) => { e.stopPropagation(); fileInput.click(); };
+  fileInput.onchange = () => { if (fileInput.files.length) addPhotos(item.id, fileInput.files); };
+  btn.appendChild(statusIcon);
+  btn.appendChild(label);
+  btn.appendChild(camBtn);
+  btn.appendChild(fileInput);
+  btn.onclick = (e) => { e.stopPropagation(); toggleItemBody(sectionId, item, btn); };
   const itemBody = document.createElement('div');
-  itemBody.className = 'item-body'; itemBody.id = `item-body-${item.id}`;
-  const statusRow = document.createElement('div'); statusRow.className = 'status-row';
-  const cur = item.status || 'na';
-  statusRow.innerHTML = `
-    <button id="sbtn-ok-${item.id}" class="btn btn-sm ${cur==='ok'?'status-btn-active':''}" style="background:var(--ok);color:#0d1117;flex:1;transition:all 150ms" onclick="setStatus(${item.id},'ok')">✓ OK</button>
-    <button id="sbtn-nok-${item.id}" class="btn btn-sm ${cur==='nok'?'status-btn-active':''}" style="background:var(--nok);color:#fff;flex:1;transition:all 150ms" onclick="setStatus(${item.id},'nok')">✗ NOK</button>
-    <button id="sbtn-na-${item.id}" class="btn btn-sm ${cur==='na'?'status-btn-active':''}" style="background:var(--na);color:#fff;flex:1;transition:all 150ms" onclick="setStatus(${item.id},'na')">— N/A</button>
-  `;
+  itemBody.className = 'item-body';
+  itemBody.style.display = 'none';
+  const statusRow = document.createElement('div');
+  statusRow.className = 'status-row';
+  ['ok','nok','na'].forEach(s => {
+    const sb = document.createElement('button');
+    sb.textContent = s.toUpperCase();
+    sb.className = item.status === s ? 'active-' + s : '';
+    sb.onclick = (e) => {
+      e.stopPropagation();
+      item.status = s;
+      btn.className = 'item-btn ' + s;
+      statusIcon.textContent = s === 'ok' ? '\u2705' : s === 'nok' ? '\u274C' : '\u2B1C';
+      statusRow.querySelectorAll('button').forEach(b => b.className = '');
+      sb.className = 'active-' + s;
+      autoSave();
+    };
+    statusRow.appendChild(sb);
+  });
   itemBody.appendChild(statusRow);
   const commentInput = document.createElement('textarea');
-  commentInput.placeholder = 'Commentaire…'; commentInput.value = item.comment || '';
-  commentInput.rows = 2;
-  commentInput.onchange = () => setComment(item.id, commentInput.value);
+  commentInput.placeholder = 'Commentaire...';
+  commentInput.value = item.comment || '';
+  commentInput.style.cssText = 'width:100%;padding:6px;border:1px solid var(--border);border-radius:var(--radius);font-size:.85rem;resize:vertical;min-height:40px;margin-top:6px';
+  commentInput.oninput = () => { item.comment = commentInput.value; autoSave(); };
+  commentInput.onclick = (e) => e.stopPropagation();
   itemBody.appendChild(commentInput);
-  const photoDiv = document.createElement('div'); photoDiv.style.marginTop = '8px';
-  photoDiv.innerHTML = '<label style="font-size:0.8rem;color:var(--text2)">Photos</label>';
-  const photoInput = document.createElement('input');
-  photoInput.type = 'file'; photoInput.multiple = true; photoInput.accept = 'image/*';
-  photoInput.style.cssText = 'display:block;margin-top:4px;font-size:0.8rem';
-  photoInput.onchange = () => addPhotos(item.id, photoInput.files);
-  photoDiv.appendChild(photoInput);
+  const photoDiv = document.createElement('div');
+  photoDiv.className = 'photo-preview';
   itemBody.appendChild(photoDiv);
-  renderPhotos(item.id, itemBody);
+  if (item.photos && item.photos.length) renderPhotos(item.id, itemBody);
   const wrapper = document.createElement('div');
-  wrapper.appendChild(btn); wrapper.appendChild(itemBody);
+  wrapper.className = 'item-wrapper';
+  wrapper.setAttribute('data-id', item.id);
+  wrapper.appendChild(btn);
+  wrapper.appendChild(itemBody);
   return wrapper;
 };
 
@@ -1051,8 +1111,13 @@ let toggleSection = (sectionId) => {
   body.parentElement.querySelector('.section-header .toggle').classList.toggle('open');
 };
 
-let toggleItemBody = (sectionId, itemId) => {
-  document.getElementById(`item-body-${itemId}`).classList.toggle('open');
+let toggleItemBody = (sectionId, item, btn) => {
+  const wrapper = btn.closest('.item-wrapper');
+  if (!wrapper) return;
+  const body = wrapper.querySelector('.item-body');
+  if (!body) return;
+  const isOpen = body.style.display !== 'none';
+  body.style.display = isOpen ? 'none' : 'block';
 };
 
 let setStatus = (itemId, status) => {
@@ -1094,61 +1159,82 @@ let addPhotos = async (itemId, files) => {
   const item = findItemById(itemId);
   if (!item) return;
   if (!item.photos) item.photos = [];
-  const overlay = document.createElement('div');
-  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.52);display:flex;align-items:center;justify-content:center;z-index:9999';
-  overlay.innerHTML = '<div style="background:#fff;padding:28px 36px;border-radius:18px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.25)"><div class="spinner"></div><p style="margin:14px 0 0;font-size:.9rem;color:#374151">📷 Upload en cours…</p></div>';
-  document.body.appendChild(overlay);
-  const compress = file => new Promise(res => {
-    const reader = new FileReader();
-    reader.onload = e => {
-      const img = new Image();
-      img.onload = () => {
-        const MAX = 1200;
-        let w = img.width, h = img.height;
-        if (w > MAX || h > MAX) {
-          if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
-          else { w = Math.round(w * MAX / h); h = MAX; }
-        }
-        const canvas = document.createElement('canvas');
-        canvas.width = w; canvas.height = h;
-        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-        canvas.toBlob(res, 'image/jpeg', 0.75);
-      };
-      img.src = e.target.result;
+  const compress = (file) => new Promise(res => {
+    const img = new Image();
+    img.onload = () => {
+      const max = 800;
+      let w = img.width, h = img.height;
+      if (w > max || h > max) {
+        if (w > h) { h = Math.round(h * max / w); w = max; }
+        else { w = Math.round(w * max / h); h = max; }
+      }
+      const c = document.createElement('canvas');
+      c.width = w; c.height = h;
+      c.getContext('2d').drawImage(img, 0, 0, w, h);
+      c.toBlob(blob => res(blob), 'image/jpeg', 0.6);
     };
-    reader.readAsDataURL(file);
+    img.src = URL.createObjectURL(file);
   });
-  try {
-    for (const file of Array.from(files)) {
-      const blob = await compress(file);
-      const ts = Date.now();
-      const path = 'audits/' + currentUser.uid + '/' + currentAudit.id + '/' + itemId + '_' + ts + '.jpg';
-      const storageRef = firebase.storage().ref().child(path);
-      await storageRef.put(blob);
-      const url = await storageRef.getDownloadURL();
-      item.photos.push(url);
+  const fileArr = Array.from(files);
+  const photoDiv = document.querySelector('#item-' + itemId)?.closest('.item-wrapper')?.querySelector('.photo-preview');
+  const previews = [];
+  fileArr.forEach(file => {
+    const url = URL.createObjectURL(file);
+    if (photoDiv) {
+      const img = document.createElement('img');
+      img.src = url;
+      img.className = 'uploading';
+      photoDiv.appendChild(img);
+      previews.push(img);
     }
-    renderPhotos(itemId);
-    autoSave();
-  } catch(e) {
-    alert('Erreur upload photo : ' + e.message);
-  } finally {
-    if (overlay.parentNode) document.body.removeChild(overlay);
-  }
+  });
+  const uploads = fileArr.map(async (file, i) => {
+    try {
+      const blob = await compress(file);
+      const ts = Date.now() + '_' + i;
+      const path = 'audits/' + currentUser.uid + '/' + currentAudit.id + '/' + itemId + '_' + ts + '.jpg';
+      const ref = firebase.storage().ref().child(path);
+      await ref.put(blob);
+      const url = await ref.getDownloadURL();
+      item.photos.push(url);
+      if (previews[i]) { previews[i].src = url; previews[i].classList.remove('uploading'); }
+      const camEl = document.querySelector('#item-' + itemId)?.querySelector('.photo-trigger');
+      if (camEl) camEl.textContent = '\uD83D\uDCF7 ' + item.photos.length;
+    } catch(e) {
+      console.error('Upload error:', e);
+      if (previews[i]) previews[i].style.border = '2px solid red';
+    }
+  });
+  await Promise.all(uploads);
+  autoSave();
 };
 
 let renderPhotos = (itemId, container) => {
   const item = findItemById(itemId);
   if (!item || !item.photos?.length) return;
-  let gallery = container.querySelector('.gallery');
-  if (!gallery) { gallery = document.createElement('div'); gallery.className = 'gallery'; container.appendChild(gallery); }
+  let gallery = container.querySelector('.photo-preview');
+  if (!gallery) { gallery = document.createElement('div'); gallery.className = 'photo-preview'; container.appendChild(gallery); }
   gallery.innerHTML = '';
-  item.photos.forEach(photo => {
-    const div = document.createElement('div'); div.className = 'gallery-item';
-    div.innerHTML = `<img src="${photo.data}" onclick="openLightbox('${photo.data}')">`;
-    const del = document.createElement('button'); del.className = 'delete-btn'; del.textContent = '✕';
-    del.onclick = () => deletePhoto(itemId, photo.id);
-    div.appendChild(del); gallery.appendChild(div);
+  item.photos.forEach((url, i) => {
+    const wrap = document.createElement('span');
+    wrap.style.cssText = 'position:relative;display:inline-block';
+    const img = document.createElement('img');
+    img.src = url;
+    img.onclick = (e) => { e.stopPropagation(); window.open(url, '_blank'); };
+    const del = document.createElement('span');
+    del.textContent = '\u00D7';
+    del.style.cssText = 'position:absolute;top:-4px;right:-4px;background:var(--danger,red);color:#fff;border-radius:50%;width:16px;height:16px;font-size:12px;line-height:16px;text-align:center;cursor:pointer';
+    del.onclick = (e) => {
+      e.stopPropagation();
+      item.photos.splice(i, 1);
+      renderPhotos(itemId, container);
+      const camEl = document.querySelector('#item-' + itemId)?.querySelector('.photo-trigger');
+      if (camEl) camEl.textContent = item.photos.length > 0 ? '\uD83D\uDCF7 ' + item.photos.length : '\uD83D\uDCF7';
+      autoSave();
+    };
+    wrap.appendChild(img);
+    wrap.appendChild(del);
+    gallery.appendChild(wrap);
   });
 };
 
@@ -1848,10 +1934,13 @@ let renderKpiHistoryTab = async () => {
         ? db.collection('auditHistory').orderBy('savedAt', 'desc').get()
         : db.collection('auditHistory').where('userId', '==', currentUser.uid).orderBy('savedAt', 'desc').get();
       const snap = await q;
-      historyCache = snap.docs.map(d => d.data());
-    } catch(e) { historyCache = []; }
+      historyCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    } catch(e) { console.error('KPI load error:', e); historyCache = []; }
   }
-  renderKPIDashboard();
+  await loadCAData();
+  renderKPIDashboard(); renderCASection(window._kpiSite || '__all__');
+  const siteId = window._kpiSite || '__all__';
+  renderCASection(siteId);
 };
 
 
@@ -1988,13 +2077,84 @@ let renderKPIDashboard = () => {
   if (bar) {
     if (_kpiSite === null && sites.length > 0) _kpiSite = sites[0];
     bar.innerHTML = '<span style="font-size:.78rem;color:#6b7280;align-self:center;margin-right:6px;font-weight:600">\u{1F4CD} Site :</span>' +
-      '<button class="kpi-site-btn' + (_kpiSite === null ? ' active' : '') + '" onclick="_kpiSite=null;renderKPIDashboard()">Tous</button>' +
-      sites.map(s => '<button class="kpi-site-btn' + (_kpiSite === s ? ' active' : '') + '" onclick="_kpiSite=\'' + s.replace(/'/g, '') + '\';renderKPIDashboard()">' + (s || 'Sans nom') + '</button>').join('');
+      '<button class="kpi-site-btn' + (_kpiSite === null ? ' active' : '') + '" onclick="_kpiSite=null;renderKPIDashboard();renderCASection(\'__all__\')">Tous</button>' +
+      sites.map(s => '<button class="kpi-site-btn' + (_kpiSite === s ? ' active' : '') + '" onclick="_kpiSite=\'' + s.replace(/'/g, '') + '\';renderKPIDashboard();renderCASection(window._kpiSite)">'  + (s || 'Sans nom') + '</button>').join('');
   }
   _buildEvolutionChart(audits, _kpiSite);
   _buildRadarChart(audits, _kpiSite);
   _buildBenchmarkChart(audits);
   _buildNOKTable(audits, _kpiSite);
+};
+
+/* === CA Revenue Management === */
+let caData = {};
+let loadCAData = async () => {
+  try {
+    const doc = await db.collection('appConfig').doc('caData').get();
+    if (doc.exists) caData = doc.data() || {};
+  } catch(e) { console.log('No CA data yet'); caData = {}; }
+};
+let saveCAData = () => {
+  db.collection('appConfig').doc('caData').set(caData).catch(e => console.error('CA save error:', e));
+};
+let renderCASection = (siteId) => {
+  let container = document.getElementById('ca-section-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'ca-section-container';
+    const chartsContainer = document.getElementById('kpi-charts-container');
+    if (chartsContainer) chartsContainer.parentNode.insertBefore(container, chartsContainer);
+  }
+  if (!siteId || siteId === '__all__') {
+    const allSites = Object.keys(caData);
+    if (!allSites.length) { container.innerHTML = '<div class="ca-section"><h3>Chiffre d\'Affaires</h3><p style="color:var(--muted-text);font-size:.85rem">S\u00E9lectionnez un site pour saisir le CA</p></div>'; return; }
+    let totalCA = 0, totalCABar = 0;
+    allSites.forEach(s => { totalCA += (caData[s]?.ca || 0); totalCABar += (caData[s]?.caBar || 0); });
+    const totalAll = totalCA + totalCABar;
+    let html = '<div class="ca-section"><h3>Chiffre d\'Affaires - Tous les sites</h3>';
+    html += '<div class="ca-total">CA Total: ' + totalAll.toLocaleString('fr-FR') + ' \u20AC | CA: ' + totalCA.toLocaleString('fr-FR') + ' \u20AC (' + (totalAll > 0 ? Math.round(totalCA/totalAll*100) : 0) + '%) | CA Bar: ' + totalCABar.toLocaleString('fr-FR') + ' \u20AC (' + (totalAll > 0 ? Math.round(totalCABar/totalAll*100) : 0) + '%)</div>';
+    html += '<div class="ca-bar-chart" style="margin-top:12px">';
+    allSites.forEach(s => {
+      const ca = caData[s]?.ca || 0;
+      const cb = caData[s]?.caBar || 0;
+      const tot = ca + cb;
+      const pct = totalAll > 0 ? Math.round(tot/totalAll*100) : 0;
+      const siteName = allSites.length > 0 ? s : s;
+      html += '<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:2px"><span>' + s + '</span><span>' + tot.toLocaleString('fr-FR') + ' \u20AC (' + pct + '%)</span></div>';
+      html += '<div style="background:var(--border);border-radius:4px;height:20px;display:flex;overflow:hidden">';
+      if (totalAll > 0) {
+        html += '<div style="width:' + (ca/totalAll*100) + '%;background:var(--primary);transition:width .3s" title="CA: ' + ca.toLocaleString('fr-FR') + ' \u20AC"></div>';
+        html += '<div style="width:' + (cb/totalAll*100) + '%;background:var(--success,#22c55e);transition:width .3s" title="CA Bar: ' + cb.toLocaleString('fr-FR') + ' \u20AC"></div>';
+      }
+      html += '</div></div>';
+    });
+    html += '</div><div style="display:flex;gap:12px;margin-top:8px;font-size:.75rem"><span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;background:var(--primary);border-radius:2px;display:inline-block"></span>CA</span><span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;background:var(--success,#22c55e);border-radius:2px;display:inline-block"></span>CA Bar</span></div>';
+    html += '</div>';
+    container.innerHTML = html;
+    return;
+  }
+  if (!caData[siteId]) caData[siteId] = { ca: 0, caBar: 0 };
+  const sd = caData[siteId];
+  const total = sd.ca + sd.caBar;
+  let html = '<div class="ca-section"><h3>Chiffre d\'Affaires - ' + siteId + '</h3>';
+  html += '<div class="ca-grid"><div><label>CA (\u20AC)</label><input type="number" id="ca-input" value="' + (sd.ca || '') + '" placeholder="0"></div>';
+  html += '<div><label>CA Bar (\u20AC)</label><input type="number" id="ca-bar-input" value="' + (sd.caBar || '') + '" placeholder="0"></div></div>';
+  html += '<div class="ca-total">Total: ' + total.toLocaleString('fr-FR') + ' \u20AC';
+  if (total > 0) html += ' | CA: ' + Math.round(sd.ca/total*100) + '% | CA Bar: ' + Math.round(sd.caBar/total*100) + '%';
+  html += '</div></div>';
+  container.innerHTML = html;
+  const caInput = document.getElementById('ca-input');
+  const caBarInput = document.getElementById('ca-bar-input');
+  const update = () => {
+    sd.ca = parseFloat(caInput.value) || 0;
+    sd.caBar = parseFloat(caBarInput.value) || 0;
+    caData[siteId] = sd;
+    const t = sd.ca + sd.caBar;
+    container.querySelector('.ca-total').textContent = 'Total: ' + t.toLocaleString('fr-FR') + ' \u20AC' + (t > 0 ? ' | CA: ' + Math.round(sd.ca/t*100) + '% | CA Bar: ' + Math.round(sd.caBar/t*100) + '%' : '');
+    saveCAData();
+  };
+  caInput.oninput = update;
+  caBarInput.oninput = update;
 };
 
 let _buildEvolutionChart = (audits, siteId) => {
