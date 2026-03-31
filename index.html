@@ -2102,8 +2102,8 @@ let renderCASection = (siteId) => {
   if (!container) {
     container = document.createElement('div');
     container.id = 'ca-section-container';
-    const chartsContainer = document.getElementById('kpi-charts-container');
-    if (chartsContainer) chartsContainer.parentNode.insertBefore(container, chartsContainer);
+    const siteBar = document.getElementById('kpi-site-bar');
+    if (siteBar) siteBar.parentNode.insertBefore(container, siteBar.nextSibling);
   }
   if (!siteId || siteId === '__all__') {
     const allSites = Object.keys(caData);
