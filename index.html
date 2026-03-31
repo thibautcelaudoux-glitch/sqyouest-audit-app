@@ -2173,7 +2173,7 @@ let showToast = (msg) => {
 
 /* ===== KPI Dashboard v5 ===== */
 let _kpiCharts = {};
-let _kpiSite = null;
+var _kpiSite = null;
 
 let getSiteName = (id) => { const s = (typeof allSites !== 'undefined' ? allSites : []).find(x => x.id === id || x.id === String(id)); return s ? s.name : id; };
 let renderKPIDashboard = () => {
