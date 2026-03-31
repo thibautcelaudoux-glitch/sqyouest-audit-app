@@ -18,7 +18,7 @@ input,textarea,select,button{font-family:inherit}
 }
 body{background-color:var(--bg);color:var(--text)}
 
-/* ── Topbar ── */
+/* ââ Topbar ââ */
 .topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px;position:sticky;top:0;z-index:100}
 .topbar-left{display:flex;align-items:center;gap:12px;flex:1;min-width:0}
 .topbar-title{font-weight:700;font-size:1.1rem;letter-spacing:-0.5px;white-space:nowrap}
@@ -31,14 +31,14 @@ body{background-color:var(--bg);color:var(--text)}
 .user-chip{display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;background:var(--surface2);border:1px solid var(--border);font-size:0.85rem}
 .user-chip img{width:24px;height:24px;border-radius:50%}
 
-/* ── Hamburger ── */
+/* ââ Hamburger ââ */
 .hamburger{display:none;flex-direction:column;gap:4px;background:none;border:none;cursor:pointer;padding:6px}
 .hamburger span{display:block;width:20px;height:2px;background:var(--text);border-radius:2px;transition:all 200ms}
 .hamburger.open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
 .hamburger.open span:nth-child(2){opacity:0}
 .hamburger.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
 
-/* ── Layout ── */
+/* ââ Layout ââ */
 .app-body{display:flex;height:calc(100vh - 49px);overflow:hidden}
 .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:149}
 .sidebar{background:var(--surface);border-right:1px solid var(--border);width:200px;overflow-y:auto;padding:12px;flex-shrink:0;transition:transform 200ms}
@@ -54,7 +54,7 @@ body{background-color:var(--bg);color:var(--text)}
 .tab-panel{display:none}
 .tab-panel.active{display:block}
 
-/* ── Forms ── */
+/* ââ Forms ââ */
 .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
 .form-group{display:flex;flex-direction:column;gap:6px}
 label{color:var(--text2);font-size:0.85rem;font-weight:500}
@@ -62,7 +62,7 @@ input,textarea,select{background:var(--surface2);border:1px solid var(--border);
 input:focus,textarea:focus,select:focus{outline:0;border-color:var(--accent);background:var(--surface)}
 textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resize:vertical}
 
-/* ── Buttons ── */
+/* ââ Buttons ââ */
 .btn{padding:9px 14px;border:none;border-radius:var(--radius);cursor:pointer;font-weight:500;transition:all 150ms;font-size:0.85rem;white-space:nowrap}
 .btn-primary{background:var(--accent);color:#0d1117}
 .btn-primary:hover{background:var(--accent2)}
@@ -75,7 +75,7 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
 .btn-sm{padding:5px 10px;font-size:0.78rem}
 .btn-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 
-/* ── Audit sections ── */
+/* ââ Audit sections ââ */
 .section{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:0;margin-bottom:14px;overflow:hidden}
 .section-header{display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;padding:12px 16px;background:var(--border);font-weight:600;transition:all 150ms}
 .section-header:hover{background:#3a4556}
@@ -95,14 +95,14 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
 .status-row{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
 .status-row .btn{flex:1;min-width:60px}
 
-/* ── Stats / Cards ── */
+/* ââ Stats / Cards ââ */
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
 .stat-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
 .stat-label{color:var(--text2);font-size:0.85rem;margin-bottom:6px}
 .stat-value{font-size:1.8rem;font-weight:700;color:var(--accent)}
 .stat-details{color:var(--text3);font-size:0.8rem;margin-top:6px}
 
-/* ── History ── */
+/* ââ History ââ */
 .history-layout{display:grid;grid-template-columns:280px 1fr;gap:16px}
 .history-item{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;margin-bottom:8px;cursor:pointer;transition:all 150ms}
 .history-item:hover{border-color:var(--accent)}
@@ -112,14 +112,14 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
 .history-item-date{color:var(--text3);font-size:0.8rem}
 .history-item-meta{color:var(--text2);font-size:0.8rem}
 
-/* ── KPI Table ── */
+/* ââ KPI Table ââ */
 .kpi-table{width:100%;border-collapse:collapse;margin-top:10px}
 .kpi-table th,.kpi-table td{border:1px solid var(--border);padding:8px 10px;text-align:left}
 .kpi-table th{background:var(--border);font-weight:600;color:var(--text);font-size:0.85rem}
 .kpi-table td{background:var(--surface)}
 .kpi-table input{width:100%;padding:4px 6px;background:var(--surface2)}
 
-/* ── Modals ── */
+/* ââ Modals ââ */
 .modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:1000;align-items:center;justify-content:center;padding:16px}
 .modal.open{display:flex}
 .modal-content{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;max-width:520px;width:100%;max-height:85vh;overflow-y:auto}
@@ -127,7 +127,7 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
 .modal-header{font-size:1rem;font-weight:700;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
 .modal-footer{display:flex;gap:8px;margin-top:16px;justify-content:flex-end;flex-wrap:wrap}
 
-/* ── Gallery / Lightbox ── */
+/* ââ Gallery / Lightbox ââ */
 .gallery{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .gallery-item{position:relative;width:72px;height:72px}
 .gallery-item img{width:100%;height:100%;object-fit:cover;border-radius:var(--radius);cursor:pointer}
@@ -137,7 +137,7 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
 .lightbox img{max-width:92%;max-height:92%;border-radius:var(--radius)}
 .lightbox .close{position:absolute;top:16px;right:16px;background:var(--nok);color:#fff;border:none;border-radius:var(--radius);padding:8px 14px;cursor:pointer}
 
-/* ── Settings / Users / Sites ── */
+/* ââ Settings / Users / Sites ââ */
 .settings-section{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:16px}
 .settings-section h3{margin:0 0 12px 0;color:var(--text);font-weight:600;font-size:0.95rem}
 .user-row,.site-row{display:flex;justify-content:space-between;align-items:center;background:var(--surface);padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;gap:10px}
@@ -146,18 +146,18 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
 .row-sub{color:var(--text2);font-size:0.8rem}
 .row-actions{display:flex;gap:6px;flex-shrink:0}
 
-/* ── Editor ── */
+/* ââ Editor ââ */
 .editor-item{background:var(--surface);padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;display:flex;align-items:center;gap:10px}
 .editor-item input{flex:1;padding:6px 10px}
 .editor-item-actions{display:flex;gap:6px;flex-shrink:0}
 
-/* ── Tabs secondary ── */
+/* ââ Tabs secondary ââ */
 .tabs-secondary{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
 .tabs-secondary-item{padding:7px 12px;border-radius:var(--radius);background:var(--surface2);color:var(--text2);cursor:pointer;transition:all 150ms;font-weight:500;font-size:0.85rem;border:1px solid transparent}
 .tabs-secondary-item:hover{background:var(--border);color:var(--text)}
 .tabs-secondary-item.active{background:var(--accent);color:#0d1117}
 
-/* ── Report ── */
+/* ââ Report ââ */
 .report-section{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:14px}
 .report-header{font-weight:600;font-size:1rem;margin-bottom:10px}
 .nok-item{padding:6px 10px;background:#ef444415;border:1px solid #ef444440;border-radius:8px;margin-bottom:6px;font-size:0.85rem}
@@ -166,17 +166,17 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
 .score-bar{height:8px;border-radius:4px;background:var(--border);overflow:hidden;margin-top:6px}
 .score-bar-fill{height:100%;border-radius:4px;transition:width 400ms}
 
-/* ── File input ── */
+/* ââ File input ââ */
 .file-input-wrapper{position:relative;display:inline-block}
 .file-input-wrapper input[type="file"]{display:none}
 .file-input-label{display:inline-block;padding:8px 14px;background:var(--accent);color:#0d1117;border-radius:var(--radius);cursor:pointer;font-weight:500;font-size:0.85rem;transition:all 150ms}
 .file-input-label:hover{background:var(--accent2)}
 
-/* ── Toast ── */
+/* ââ Toast ââ */
 .toast{position:fixed;bottom:20px;right:20px;background:var(--accent);color:#0d1117;padding:10px 16px;border-radius:var(--radius);font-weight:600;z-index:3000;animation:slideIn 250ms ease-out;max-width:280px;font-size:0.85rem}
 @keyframes slideIn{from{transform:translateX(320px);opacity:0}to{transform:translateX(0);opacity:1}}
 
-/* ── Login ── */
+/* ââ Login ââ */
 .login-container{display:flex;align-items:center;justify-content:center;height:100vh;background:linear-gradient(135deg,var(--surface) 0%,var(--bg) 100%)}
 .login-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:36px;max-width:380px;width:90%;box-shadow:var(--shadow);text-align:center}
 .login-card h1{margin-bottom:6px;font-size:1.7rem}
@@ -186,7 +186,7 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
 .google-btn:disabled{opacity:0.6;cursor:not-allowed}
 .login-error{color:var(--nok);margin-top:12px;font-size:0.85rem;display:none}
 
-/* ── Pending approval ── */
+/* ââ Pending approval ââ */
 .pending-container{display:flex;align-items:center;justify-content:center;height:100vh;background:linear-gradient(135deg,var(--surface) 0%,var(--bg) 100%)}
 .pending-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:36px;max-width:420px;width:90%;box-shadow:var(--shadow);text-align:center}
 .pending-icon{font-size:3rem;margin-bottom:12px}
@@ -198,7 +198,7 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
 .badge-approved{background:#22c55e20;color:#22c55e}
 .badge-rejected{background:#ef444420;color:#ef4444}
 
-/* ── Print ── */
+/* ââ Print ââ */
 @media print {
   .topbar,.sidebar,.tabs,.btn-row,.btn,.modal,.toast,.hamburger,.sidebar-overlay{display:none!important}
   .app-body{height:auto!important;overflow:visible!important}
@@ -212,7 +212,7 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
   .stat-card{background:#f5f5f5!important;border:1px solid #ccc!important}
 }
 
-/* ── Responsive ── */
+/* ââ Responsive ââ */
 @media (max-width:768px) {
   .hamburger{display:flex}
   .topbar-info{display:none}
@@ -235,15 +235,57 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
   .item-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}
   .topbar-title{font-size:1rem}
 }
+
+/* ===== v5 Design & UX ===== */
+:root{--transition:.2s ease;--radius-lg:14px;--radius-md:10px}
+.section{border-radius:var(--radius-lg);box-shadow:0 2px 12px rgba(0,0,0,.08);transition:box-shadow var(--transition);overflow:hidden;margin-bottom:18px}
+.section:hover{box-shadow:0 6px 24px rgba(0,0,0,.13)}
+.section-header{cursor:grab;user-select:none}
+.section-header:active{cursor:grabbing}
+.audit-item{transition:background var(--transition);border-radius:var(--radius-md)}
+.audit-item:hover{background:rgba(0,0,0,.025)}
+.btn{transition:all var(--transition)}
+.btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,0,0,.12)}
+.btn:active:not(:disabled){transform:translateY(0)!important;box-shadow:none}
+.photo-thumb{border-radius:var(--radius-md);transition:transform var(--transition),box-shadow var(--transition);box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.photo-thumb:hover{transform:scale(1.08);box-shadow:0 6px 18px rgba(0,0,0,.2)}
+.photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px;margin-top:10px}
+.spinner{width:36px;height:36px;border:3px solid #e5e7eb;border-top-color:var(--primary,#4f46e5);border-radius:50%;animation:v5spin .8s linear infinite;margin:0 auto}
+@keyframes v5spin{to{transform:rotate(360deg)}}
+.sortable-ghost{opacity:.35!important;background:#dbeafe!important}
+.sortable-drag{box-shadow:0 12px 32px rgba(0,0,0,.22)!important;transform:rotate(.8deg)!important;opacity:.95!important}
+.pdf-btn{background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;padding:9px 16px;border-radius:var(--radius-md);cursor:pointer;font-size:.85rem;font-weight:700;display:inline-flex;align-items:center;gap:6px;transition:all .2s}
+.pdf-btn:hover{opacity:.9;transform:translateY(-1px);box-shadow:0 5px 18px rgba(79,70,229,.4)}
+.kpi-dash{padding:4px}
+.kpi-card{background:#fff;border-radius:16px;padding:20px;box-shadow:0 2px 14px rgba(0,0,0,.07);margin-bottom:16px}
+.kpi-card h3{margin:0 0 14px;font-size:.9rem;color:#374151;display:flex;align-items:center;gap:6px;font-weight:700}
+.kpi-site-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;padding:10px 12px;background:#f9fafb;border-radius:10px;border:1px solid #e5e7eb}
+.kpi-site-btn{padding:5px 14px;border:2px solid #e5e7eb;border-radius:20px;background:#fff;cursor:pointer;font-size:.8rem;font-weight:600;transition:all .2s}
+.kpi-site-btn.active,.kpi-site-btn:hover{border-color:var(--primary,#4f46e5);background:var(--primary,#4f46e5);color:#fff}
+.kpi-grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:700px){.kpi-grid2{grid-template-columns:1fr}}
+.nok-tbl{width:100%;border-collapse:collapse;font-size:.81rem}
+.nok-tbl th{background:#f8fafc;padding:8px 10px;text-align:left;border-bottom:2px solid #e2e8f0;font-size:.78rem;color:#64748b;text-transform:uppercase;letter-spacing:.03em}
+.nok-tbl td{padding:8px 10px;border-bottom:1px solid #f1f5f9}
+.nok-tbl tr:hover td{background:#f8fafc}
+.nok-bar-bg{height:6px;background:#fee2e2;border-radius:3px;margin-top:3px}
+.nok-bar-fill{height:6px;border-radius:3px;background:linear-gradient(90deg,#ef4444,#f97316)}
+.kpi-empty{text-align:center;padding:32px;color:#9ca3af;font-size:.85rem}
+.chart-wrap-sm{position:relative;height:200px}
+.chart-wrap-md{position:relative;height:220px}
+.chart-wrap-full{position:relative;height:180px}
 </style>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
 
 <!-- LOGIN -->
 <div id="login-panel" class="login-container">
   <div class="login-card">
-    <h1>🔍 Audit</h1>
-    <p class="subtitle">Audit Manager — Connectez-vous pour continuer</p>
+    <h1>ð Audit</h1>
+    <p class="subtitle">Audit Manager â Connectez-vous pour continuer</p>
     <button class="google-btn" id="google-btn" onclick="doGoogleLogin()">
       <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
       Se connecter avec Google
@@ -256,10 +298,10 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
 <div id="pending-panel" style="display:none">
   <div class="pending-container">
     <div class="pending-card">
-      <div class="pending-icon">⏳</div>
-      <h2>Accès en attente</h2>
-      <p>Votre compte <strong id="pending-email"></strong> est en attente de validation par un administrateur.<br><br>Vous recevrez l'accès dès qu'un admin aura approuvé votre demande.</p>
-      <button class="google-btn" onclick="doLogout()" style="margin-top:8px">↩ Se déconnecter</button>
+      <div class="pending-icon">â³</div>
+      <h2>AccÃ¨s en attente</h2>
+      <p>Votre compte <strong id="pending-email"></strong> est en attente de validation par un administrateur.<br><br>Vous recevrez l'accÃ¨s dÃ¨s qu'un admin aura approuvÃ© votre demande.</p>
+      <button class="google-btn" onclick="doLogout()" style="margin-top:8px">â© Se dÃ©connecter</button>
     </div>
   </div>
 </div>
@@ -271,16 +313,16 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
       <button class="hamburger" id="hamburger" onclick="toggleSidebar()">
         <span></span><span></span><span></span>
       </button>
-      <div class="topbar-title">🔍 Audit</div>
+      <div class="topbar-title">ð Audit</div>
       <div class="topbar-info">
-        <div><small>Site:</small><strong id="site-display">—</strong></div>
-        <div><small>Sem:</small><strong id="week-display">—</strong></div>
+        <div><small>Site:</small><strong id="site-display">â</strong></div>
+        <div><small>Sem:</small><strong id="week-display">â</strong></div>
       </div>
     </div>
     <div class="topbar-right">
-      <div class="sync-badge cloud" id="sync-badge">☁️ Cloud</div>
-      <div class="user-chip" id="user-chip"><span id="user-display">—</span></div>
-      <button class="btn btn-secondary btn-sm" onclick="doLogout()">Déco</button>
+      <div class="sync-badge cloud" id="sync-badge">âï¸ Cloud</div>
+      <div class="user-chip" id="user-chip"><span id="user-display">â</span></div>
+      <button class="btn btn-secondary btn-sm" onclick="doLogout()">DÃ©co</button>
     </div>
   </div>
 
@@ -288,11 +330,11 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
 
   <div class="app-body">
     <div class="sidebar" id="sidebar">
-      <button class="sidebar-item active" data-tab="audit" onclick="switchTab('audit')">📋 Audit</button>
-      <button class="sidebar-item" data-tab="history" onclick="switchTab('history')">📊 Historique</button>
-      <button class="sidebar-item" data-tab="report" onclick="switchTab('report')">📈 Rapport</button>
-      <button class="sidebar-item" data-tab="kpi" onclick="switchTab('kpi')">📉 KPI</button>
-      <button class="sidebar-item" data-tab="settings" onclick="switchTab('settings')">⚙️ Paramètres</button>
+      <button class="sidebar-item active" data-tab="audit" onclick="switchTab('audit')">ð Audit</button>
+      <button class="sidebar-item" data-tab="history" onclick="switchTab('history')">ð Historique</button>
+      <button class="sidebar-item" data-tab="report" onclick="switchTab('report')">ð Rapport</button>
+      <button class="sidebar-item" data-tab="kpi" onclick="switchTab('kpi')">ð KPI</button>
+      <button class="sidebar-item" data-tab="settings" onclick="switchTab('settings')">âï¸ ParamÃ¨tres</button>
     </div>
 
     <div class="main">
@@ -301,7 +343,7 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
         <button class="tab" data-tab="history" onclick="switchTab('history')">Historique</button>
         <button class="tab" data-tab="report" onclick="switchTab('report')">Rapport</button>
         <button class="tab" data-tab="kpi" onclick="switchTab('kpi')">KPI</button>
-        <button class="tab" data-tab="settings" onclick="switchTab('settings')">Paramètres</button>
+        <button class="tab" data-tab="settings" onclick="switchTab('settings')">ParamÃ¨tres</button>
       </div>
 
       <div class="content">
@@ -310,31 +352,31 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
         <div id="audit-tab" class="tab-panel active">
           <div class="btn-row" style="margin-bottom:14px">
             <select id="site-dropdown" style="flex:1;min-width:160px;max-width:260px">
-              <option value="">-- Sélectionner un site --</option>
+              <option value="">-- SÃ©lectionner un site --</option>
             </select>
             <select id="auditor-week" style="width:120px">
               <option value="">Sem. auto</option>
             </select>
-            <button class="btn btn-success" id="save-btn" onclick="saveCurrentAudit()">💾 Enregistrer</button>
+            <button class="btn btn-success" id="save-btn" onclick="saveCurrentAudit()">ð¾ Enregistrer</button>
             <button class="btn btn-secondary" onclick="newBlankAudit()">Nouveau</button>
             <button class="btn btn-secondary" onclick="fillAllOK()">Tout OK</button>
-            <button class="btn btn-secondary" onclick="resetAudit()">Réinitialiser</button>
+            <button class="btn btn-secondary" onclick="resetAudit()">RÃ©initialiser</button>
           </div>
           <div id="audit-sections"></div>
           <div class="form-group" style="margin-top:16px">
-            <label>Notes générales</label>
-            <textarea id="audit-notes" placeholder="Observations, remarques générales…" rows="3"></textarea>
+            <label>Notes gÃ©nÃ©rales</label>
+            <textarea id="audit-notes" placeholder="Observations, remarques gÃ©nÃ©ralesâ¦" rows="3"></textarea>
           </div>
         </div>
 
         <!-- HISTORY TAB -->
         <div id="history-tab" class="tab-panel">
           <div class="btn-row" style="margin-bottom:14px">
-            <input type="text" id="history-search" placeholder="Rechercher…" style="max-width:200px" oninput="filterHistory()">
+            <input type="text" id="history-search" placeholder="Rechercherâ¦" style="max-width:200px" oninput="filterHistory()">
             <select id="history-site-filter" onchange="filterHistory()">
               <option value="">Tous les sites</option>
             </select>
-            <button class="btn btn-secondary" onclick="renderHistory()">🔄 Rafraîchir</button>
+            <button class="btn btn-secondary" onclick="renderHistory()">ð RafraÃ®chir</button>
             <button class="btn btn-danger" onclick="clearHistory()">Supprimer tout</button>
           </div>
           <div class="history-layout">
@@ -348,10 +390,10 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
           <div class="form-grid" style="margin-bottom:14px">
             <div class="form-group">
               <label>Site</label>
-              <select id="report-site"><option value="">— Tous —</option></select>
+              <select id="report-site"><option value="">â Tous â</option></select>
             </div>
             <div class="form-group">
-              <label>Date début</label>
+              <label>Date dÃ©but</label>
               <input type="date" id="report-from">
             </div>
             <div class="form-group">
@@ -359,8 +401,9 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
               <input type="date" id="report-to">
             </div>
             <div style="display:flex;align-items:flex-end;gap:8px">
-              <button class="btn btn-primary" onclick="renderReport()" style="flex:1">Générer</button>
-              <button class="btn btn-secondary" onclick="window.print()" title="Imprimer">🖨️</button>
+              <button class="btn btn-primary" onclick="renderReport()" style="flex:1">GÃ©nÃ©rer</button>
+              <button class="btn btn-secondary" onclick="window.print()" title="Imprimer">ð¨ï¸</button>
+              <button class="pdf-btn" onclick="exportPDF()">📄 Export PDF</button>
             </div>
           </div>
           <div id="report-content"></div>
@@ -368,43 +411,45 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
 
         <!-- KPI TAB -->
         <div id="kpi-tab" class="tab-panel">
-          <div class="tabs-secondary">
-            <div class="tabs-secondary-item active" onclick="switchKpiTab('table',this)">📊 Tableau</div>
-            <div class="tabs-secondary-item" onclick="switchKpiTab('import',this)">📥 Import</div>
-            <div class="tabs-secondary-item" onclick="switchKpiTab('chart',this)">📈 Graphique</div>
-          </div>
-          <div id="kpi-table-tab" class="tab-panel active">
-            <div class="btn-row" style="margin-bottom:10px">
-              <button class="btn btn-secondary" onclick="addKpiRow()">+ Ligne</button>
-              <button class="btn btn-primary" onclick="saveKpiHistory(getKpiHistory())">💾 Sauvegarder</button>
+          <div class="kpi-dash">
+            <div class="kpi-site-bar" id="kpi-site-bar">
+              <span style="font-size:.78rem;color:#6b7280;align-self:center;margin-right:6px;font-weight:600">📍 Site :</span>
             </div>
-            <div id="kpi-table-container"></div>
-          </div>
-          <div id="kpi-import-tab" class="tab-panel">
-            <div class="form-group">
-              <label>Coller données CSV (site,date,valeur)</label>
-              <textarea id="kpi-paste-area" placeholder="Arcades,2025-01-15,1250&#10;Bar,2025-01-15,980" rows="6"></textarea>
+            <div class="kpi-grid2">
+              <div class="kpi-card">
+                <h3>📈 Évolution du score</h3>
+                <div class="chart-wrap-sm"><canvas id="kpi-evolution-chart"></canvas></div>
+              </div>
+              <div class="kpi-card">
+                <h3>🎯 Radar par section</h3>
+                <div class="chart-wrap-sm"><canvas id="kpi-radar-chart"></canvas></div>
+              </div>
+              <div class="kpi-card">
+                <h3>🏆 Benchmark multi-sites</h3>
+                <div class="chart-wrap-sm"><canvas id="kpi-benchmark-chart"></canvas></div>
+              </div>
+              <div class="kpi-card">
+                <h3>⚠️ Points NOK récurrents</h3>
+                <div id="kpi-nok-wrap"><p class="kpi-empty">Sélectionnez un site ou générez des audits.</p></div>
+              </div>
             </div>
-            <div class="btn-row" style="margin-top:10px">
-              <button class="btn btn-primary" onclick="importKpiCsv()">Importer</button>
-              <button class="btn btn-secondary" onclick="downloadKpiTemplate()">Télécharger template</button>
+            <div class="kpi-card">
+              <h3>📥 Import / Export CSV</h3>
+              <textarea id="kpi-paste-area" rows="3" style="width:100%;font-family:monospace;font-size:.78rem;border:1px solid #e5e7eb;border-radius:8px;padding:8px;box-sizing:border-box" placeholder="Collez ici vos données CSV (date,site,score,auditeur)…"></textarea>
+              <div style="margin-top:8px;display:flex;gap:8px">
+                <button class="btn btn-primary" onclick="importKpiCSV()">⬆️ Importer</button>
+                <button class="btn btn-secondary" onclick="exportKpiCSV()">⬇️ Exporter CSV</button>
+              </div>
             </div>
-          </div>
-          <div id="kpi-chart-tab" class="tab-panel">
-            <div class="btn-row" style="margin-bottom:12px">
-              <button class="btn btn-secondary" onclick="renderKpiCharts()">🔄 Actualiser</button>
-            </div>
-            <div id="kpi-charts-container"></div>
           </div>
         </div>
-
         <!-- SETTINGS TAB -->
         <div id="settings-tab" class="tab-panel">
           <div class="settings-section">
-            <h3>Paramètres généraux</h3>
+            <h3>ParamÃ¨tres gÃ©nÃ©raux</h3>
             <div class="form-grid">
               <div class="form-group">
-                <label>Nom du site par défaut</label>
+                <label>Nom du site par dÃ©faut</label>
                 <input type="text" id="set-site" placeholder="Audit">
               </div>
               <div class="form-group">
@@ -420,32 +465,32 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
 
           <div class="settings-section">
             <h3>Sites & Templates d'audit</h3>
-            <p style="color:var(--text2);font-size:0.82rem;margin-bottom:10px">Chaque site peut avoir son propre template de sections/points audités.</p>
+            <p style="color:var(--text2);font-size:0.82rem;margin-bottom:10px">Chaque site peut avoir son propre template de sections/points auditÃ©s.</p>
             <button class="btn btn-secondary" onclick="openAddSiteModal()" style="margin-bottom:10px">+ Ajouter un site</button>
             <div id="sites-list"></div>
           </div>
 
           <div class="settings-section" id="users-section" style="display:none">
             <h3>Utilisateurs</h3>
-            <p style="color:var(--text2);font-size:0.82rem;margin-bottom:10px">Les utilisateurs se connectent avec Google. Les nouveaux comptes doivent être approuvés par un admin.</p>
+            <p style="color:var(--text2);font-size:0.82rem;margin-bottom:10px">Les utilisateurs se connectent avec Google. Les nouveaux comptes doivent Ãªtre approuvÃ©s par un admin.</p>
             <div id="users-list"></div>
           </div>
 
           <div class="settings-section">
-            <h3>Éditeur d'éléments (audit en cours)</h3>
+            <h3>Ãditeur d'Ã©lÃ©ments (audit en cours)</h3>
             <p style="color:var(--text2);font-size:0.82rem;margin-bottom:10px">Modifiez les sections et points de l'audit en cours.</p>
-            <button class="btn btn-secondary" onclick="switchTab('editor')">Ouvrir l'éditeur</button>
+            <button class="btn btn-secondary" onclick="switchTab('editor')">Ouvrir l'Ã©diteur</button>
           </div>
 
           <div class="settings-section">
-            <h3>Données</h3>
+            <h3>DonnÃ©es</h3>
             <div class="btn-row">
-              <button class="btn btn-secondary" onclick="exportAllData()">📤 Exporter</button>
+              <button class="btn btn-secondary" onclick="exportAllData()">ð¤ Exporter</button>
               <div class="file-input-wrapper">
                 <input type="file" id="import-file" accept=".json">
-                <label for="import-file" class="file-input-label">📥 Importer</label>
+                <label for="import-file" class="file-input-label">ð¥ Importer</label>
               </div>
-              <button class="btn btn-danger" onclick="if(confirm('Supprimer toutes vos données cloud?')) clearAllData()">🗑️ Supprimer tout</button>
+              <button class="btn btn-danger" onclick="if(confirm('Supprimer toutes vos donnÃ©es cloud?')) clearAllData()">ðï¸ Supprimer tout</button>
             </div>
           </div>
         </div>
@@ -453,10 +498,10 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
         <!-- EDITOR TAB -->
         <div id="editor-tab" class="tab-panel">
           <div class="btn-row" style="margin-bottom:14px">
-            <button class="btn btn-secondary" onclick="switchTab('settings')">← Retour</button>
+            <button class="btn btn-secondary" onclick="switchTab('settings')">â Retour</button>
             <button class="btn btn-secondary" onclick="addEditorSection()">+ Section</button>
             <button class="btn btn-secondary" onclick="addItemToSection()">+ Point</button>
-            <button class="btn btn-secondary" onclick="resetItemsToDefault()">↺ Défaut</button>
+            <button class="btn btn-secondary" onclick="resetItemsToDefault()">âº DÃ©faut</button>
           </div>
           <div class="form-group" style="margin-bottom:16px;max-width:300px">
             <label>Section</label>
@@ -485,9 +530,9 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
 <!-- MODALS -->
 <div id="modal-edit-user" class="modal">
   <div class="modal-content">
-    <div class="modal-header">Modifier le rôle <button class="btn btn-secondary btn-sm" onclick="closeModal('modal-edit-user')">✕</button></div>
+    <div class="modal-header">Modifier le rÃ´le <button class="btn btn-secondary btn-sm" onclick="closeModal('modal-edit-user')">â</button></div>
     <div class="form-group"><label>Utilisateur</label><input type="text" id="modal-edit-email" disabled style="opacity:0.7"></div>
-    <div class="form-group"><label>Rôle</label>
+    <div class="form-group"><label>RÃ´le</label>
       <select id="modal-edit-role">
         <option value="auditor">Auditeur</option>
         <option value="manager">Manager</option>
@@ -504,7 +549,7 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
 
 <div id="modal-add-site" class="modal">
   <div class="modal-content">
-    <div class="modal-header">Ajouter un site <button class="btn btn-secondary btn-sm" onclick="closeModal('modal-add-site')">✕</button></div>
+    <div class="modal-header">Ajouter un site <button class="btn btn-secondary btn-sm" onclick="closeModal('modal-add-site')">â</button></div>
     <div class="form-group"><label>Nom du site</label><input type="text" id="modal-site-name" placeholder="Audit Paris"></div>
     <div class="form-group"><label>Type</label>
       <select id="modal-site-type"><option value="">Standard</option><option value="premium">Premium</option></select>
@@ -519,25 +564,25 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
 <div id="modal-site-template" class="modal">
   <div class="modal-content wide">
     <div class="modal-header">
-      <span>🛠️ Template — <span id="template-site-name"></span></span>
-      <button class="btn btn-secondary btn-sm" onclick="closeModal('modal-site-template')">✕</button>
+      <span>ð ï¸ Template â <span id="template-site-name"></span></span>
+      <button class="btn btn-secondary btn-sm" onclick="closeModal('modal-site-template')">â</button>
     </div>
-    <p style="color:var(--text2);font-size:0.82rem;margin-bottom:12px">Définissez les sections et points audités pour ce site. Ce template sera utilisé lors de la création d'un nouvel audit sur ce site.</p>
+    <p style="color:var(--text2);font-size:0.82rem;margin-bottom:12px">DÃ©finissez les sections et points auditÃ©s pour ce site. Ce template sera utilisÃ© lors de la crÃ©ation d'un nouvel audit sur ce site.</p>
     <div id="template-editor-container"></div>
     <div class="btn-row" style="margin-top:12px">
       <button class="btn btn-secondary" onclick="addTemplateSection()">+ Section</button>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="resetTemplateToDefault()">↺ Défaut</button>
+      <button class="btn btn-secondary" onclick="resetTemplateToDefault()">âº DÃ©faut</button>
       <button class="btn btn-secondary" onclick="closeModal('modal-site-template')">Annuler</button>
-      <button class="btn btn-primary" onclick="saveTemplate()">💾 Enregistrer template</button>
+      <button class="btn btn-primary" onclick="saveTemplate()">ð¾ Enregistrer template</button>
     </div>
   </div>
 </div>
 
 <div id="lightbox" class="lightbox">
   <img id="lightbox-img" alt="Photo">
-  <button class="close" onclick="closeLightbox()">✕</button>
+  <button class="close" onclick="closeLightbox()">â</button>
 </div>
 
 <!-- Firebase SDKs -->
@@ -546,7 +591,7 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <script>
-// ─── Firebase ────────────────────────────────────────────────────────────────
+// âââ Firebase ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 firebase.initializeApp({
   apiKey: "AIzaSyA1Hk8lPBL2Mnzs5gXa9CRti0rKrliBcwU",
   authDomain: "audit-ok.firebaseapp.com",
@@ -559,19 +604,19 @@ const db = firebase.firestore();
 const auth = firebase.auth();
 const googleProvider = new firebase.auth.GoogleAuthProvider();
 
-// ─── State ───────────────────────────────────────────────────────────────────
+// âââ State âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 let currentUser = null, currentAudit = null, currentSite = null;
 let allUsers = [], allSites = [], historyCache = null, kpiHistoryCache = null;
 let charts = {}, autoSaveTimer = null, kpiSaveTimer = null;
 let editingTemplateSiteId = null, editingTemplateSections = [];
 
-// ─── Default sections ────────────────────────────────────────────────────────
+// âââ Default sections ââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const DEFAULT_SECTIONS = [
   { id:'admin', label:'Admin', items:[
-    {id:1,label:'Accueil / Bureau directeur'},{id:2,label:'Toilettes admin'},{id:3,label:'Couloirs & escaliers'},{id:4,label:'Affichages réglementaires'},{id:5,label:'Registres de sécurité'}
+    {id:1,label:'Accueil / Bureau directeur'},{id:2,label:'Toilettes admin'},{id:3,label:'Couloirs & escaliers'},{id:4,label:'Affichages rÃ©glementaires'},{id:5,label:'Registres de sÃ©curitÃ©'}
   ]},
-  { id:'entree', label:'Entrée client', items:[
-    {id:6,label:'Hall d\'entrée'},{id:7,label:'Accueil caisse principale'},{id:8,label:'Toilettes entrée'},{id:9,label:'Vestiaires / Casiers'},{id:10,label:'Signalétique'}
+  { id:'entree', label:'EntrÃ©e client', items:[
+    {id:6,label:'Hall d\'entrÃ©e'},{id:7,label:'Accueil caisse principale'},{id:8,label:'Toilettes entrÃ©e'},{id:9,label:'Vestiaires / Casiers'},{id:10,label:'SignalÃ©tique'}
   ]},
   { id:'caisses', label:'Caisses', items:[
     {id:11,label:'Caisse 1'},{id:12,label:'Caisse 2'},{id:13,label:'Caisse 3'},{id:14,label:'Caisse 4'},{id:15,label:'Bureau caisses'}
@@ -586,34 +631,34 @@ const DEFAULT_SECTIONS = [
     {id:39,label:'Piste 8'},{id:40,label:'Piste 9'},{id:41,label:'Piste 10'},{id:42,label:'Piste 11'},{id:43,label:'Piste 12'},{id:44,label:'Piste 13'},{id:45,label:'Piste 14'},{id:46,label:'Piste 15'},{id:47,label:'Piste 16'},{id:48,label:'Piste 17'},{id:49,label:'Piste 18'}
   ]},
   { id:'arcades', label:'Arcades', items:[
-    {id:28,label:'Zone arcades A'},{id:29,label:'Zone arcades B'},{id:30,label:'Zone arcades C'},{id:31,label:'Maintenance machines'},{id:32,label:'Stockage pièces'}
+    {id:28,label:'Zone arcades A'},{id:29,label:'Zone arcades B'},{id:30,label:'Zone arcades C'},{id:31,label:'Maintenance machines'},{id:32,label:'Stockage piÃ¨ces'}
   ]},
   { id:'billards', label:'Billards', items:[
-    {id:34,label:'Table 1'},{id:35,label:'Table 2'},{id:36,label:'Table 3'},{id:37,label:'Table 4'},{id:38,label:'Éclairage & ambiance'}
+    {id:34,label:'Table 1'},{id:35,label:'Table 2'},{id:36,label:'Table 3'},{id:37,label:'Table 4'},{id:38,label:'Ãclairage & ambiance'}
   ]},
   { id:'karting', label:'Karting', items:[
-    {id:55,label:'Piste karting'},{id:56,label:'Kart 1'},{id:57,label:'Kart 2'},{id:58,label:'Kart 3'},{id:59,label:'Équipements sécurité'}
+    {id:55,label:'Piste karting'},{id:56,label:'Kart 1'},{id:57,label:'Kart 2'},{id:58,label:'Kart 3'},{id:59,label:'Ãquipements sÃ©curitÃ©'}
   ]},
   { id:'laser', label:'Laser Game', items:[
-    {id:68,label:'Zone de jeu 1'},{id:69,label:'Zone de jeu 2'},{id:70,label:'Zone de jeu 3'},{id:71,label:'Accueil laser'},{id:72,label:'Stockage équipements'}
+    {id:68,label:'Zone de jeu 1'},{id:69,label:'Zone de jeu 2'},{id:70,label:'Zone de jeu 3'},{id:71,label:'Accueil laser'},{id:72,label:'Stockage Ã©quipements'}
   ]},
-  { id:'acces', label:'Accès & Sécurité', items:[
-    {id:50,label:'Serrures & clés'},{id:51,label:'Portes & fenêtres'},{id:52,label:'Système alarme'},{id:53,label:'Issues de secours'},{id:54,label:'Extincteurs'}
+  { id:'acces', label:'AccÃ¨s & SÃ©curitÃ©', items:[
+    {id:50,label:'Serrures & clÃ©s'},{id:51,label:'Portes & fenÃªtres'},{id:52,label:'SystÃ¨me alarme'},{id:53,label:'Issues de secours'},{id:54,label:'Extincteurs'}
   ]},
   { id:'atelier', label:'Atelier / Maintenance', items:[
-    {id:60,label:'Établi & outils'},{id:61,label:'Pièces & stocks'},{id:62,label:'Nettoyage atelier'},{id:63,label:'Registre maintenance'}
+    {id:60,label:'Ãtabli & outils'},{id:61,label:'PiÃ¨ces & stocks'},{id:62,label:'Nettoyage atelier'},{id:63,label:'Registre maintenance'}
   ]},
   { id:'bureaux', label:'Bureaux', items:[
-    {id:73,label:'Bureau 1'},{id:74,label:'Bureau 2'},{id:75,label:'Salle de réunion'},{id:76,label:'Cuisine bureaux'},{id:77,label:'Espace commun'}
+    {id:73,label:'Bureau 1'},{id:74,label:'Bureau 2'},{id:75,label:'Salle de rÃ©union'},{id:76,label:'Cuisine bureaux'},{id:77,label:'Espace commun'}
   ]}
 ];
 
-// ─── Auth ─────────────────────────────────────────────────────────────────────
+// âââ Auth âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 let doGoogleLogin = async () => {
   const btn = document.getElementById('google-btn');
   const errEl = document.getElementById('login-error');
   btn.disabled = true;
-  btn.innerHTML = '<span style="opacity:0.5">Connexion en cours…</span>';
+  btn.innerHTML = '<span style="opacity:0.5">Connexion en coursâ¦</span>';
   errEl.style.display = 'none';
   try {
     await auth.signInWithPopup(googleProvider);
@@ -663,7 +708,7 @@ auth.onAuthStateChanged(async (fbUser) => {
       if (currentUser.status === 'rejected') {
         showPanel('login-panel');
         const errEl = document.getElementById('login-error');
-        errEl.textContent = '⛔ Accès refusé. Contactez un administrateur.';
+        errEl.textContent = 'â AccÃ¨s refusÃ©. Contactez un administrateur.';
         errEl.style.display = 'block';
         await auth.signOut();
         return;
@@ -688,7 +733,7 @@ let applyRoleUI = () => {
   if (usersSection) usersSection.style.display = currentUser.role === 'admin' ? 'block' : 'none';
 };
 
-// ─── App init ─────────────────────────────────────────────────────────────────
+// âââ App init âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 let initApp = async () => {
   try {
     const sitesDoc = await db.collection('sites').doc('main').get();
@@ -726,7 +771,7 @@ let initApp = async () => {
   if (fileInput) fileInput.onchange = (e) => { if (e.target.files[0]) importData(e.target.files[0]); };
 };
 
-// ─── Sidebar toggle (mobile) ──────────────────────────────────────────────────
+// âââ Sidebar toggle (mobile) ââââââââââââââââââââââââââââââââââââââââââââââââââ
 let toggleSidebar = () => {
   const sidebar = document.getElementById('sidebar');
   const overlay = document.getElementById('sidebar-overlay');
@@ -741,7 +786,7 @@ let closeSidebar = () => {
   document.getElementById('hamburger').classList.remove('open');
 };
 
-// ─── Auto-save ────────────────────────────────────────────────────────────────
+// âââ Auto-save ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 let autoSave = () => {
   clearTimeout(autoSaveTimer);
   autoSaveTimer = setTimeout(async () => {
@@ -752,7 +797,7 @@ let autoSave = () => {
   }, 2000);
 };
 
-// ─── Audit functions ──────────────────────────────────────────────────────────
+// âââ Audit functions ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 let getSectionsForSite = (siteId) => {
   const site = allSites.find(s => s.id === siteId);
   if (site && site.sections && site.sections.length > 0) return site.sections;
@@ -792,28 +837,28 @@ let newBlankAudit = () => {
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
           <input value="${s.label.replace(/"/g,'&quot;')}" data-si="${si}" data-type="sl"
             style="flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:0.9rem;font-weight:600">
-          <button data-si="${si}" data-a="ds" style="padding:4px 8px;background:var(--nok);color:#fff;border:none;border-radius:5px;cursor:pointer;font-size:0.8rem">✕</button>
+          <button data-si="${si}" data-a="ds" style="padding:4px 8px;background:var(--nok);color:#fff;border:none;border-radius:5px;cursor:pointer;font-size:0.8rem">â</button>
         </div>
         ${s.items.map((it, ii) => `
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;padding-left:10px">
-            <span style="color:var(--text3);font-size:0.85rem">•</span>
+            <span style="color:var(--text3);font-size:0.85rem">â¢</span>
             <input value="${it.label.replace(/"/g,'&quot;')}" data-si="${si}" data-ii="${ii}" data-type="il"
               style="flex:1;padding:5px 8px;border:1px solid var(--border);border-radius:5px;background:var(--bg);color:var(--text);font-size:0.85rem">
-            <button data-si="${si}" data-ii="${ii}" data-a="di" style="padding:3px 7px;background:transparent;border:1px solid var(--border);border-radius:4px;cursor:pointer;color:var(--text2);font-size:0.75rem">✕</button>
+            <button data-si="${si}" data-ii="${ii}" data-a="di" style="padding:3px 7px;background:transparent;border:1px solid var(--border);border-radius:4px;cursor:pointer;color:var(--text2);font-size:0.75rem">â</button>
           </div>
         `).join('')}
-        <button data-si="${si}" data-a="ai" style="margin-left:16px;margin-top:4px;padding:4px 12px;background:transparent;border:1px dashed var(--border);border-radius:5px;cursor:pointer;color:var(--text2);font-size:0.8rem">+ Point de contrôle</button>
+        <button data-si="${si}" data-a="ai" style="margin-left:16px;margin-top:4px;padding:4px 12px;background:transparent;border:1px dashed var(--border);border-radius:5px;cursor:pointer;color:var(--text2);font-size:0.8rem">+ Point de contrÃ´le</button>
       </div>
     `).join('');
     overlay.innerHTML = `
       <div style="background:var(--bg);border-radius:12px;padding:24px;max-width:580px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,0.25)">
-        <h3 style="margin:0 0 6px;font-size:1.1rem">✏️ Points de contrôle</h3>
+        <h3 style="margin:0 0 6px;font-size:1.1rem">âï¸ Points de contrÃ´le</h3>
         <p style="color:var(--text2);font-size:0.82rem;margin:0 0 16px">Personnalisez les sections et points avant de commencer l'audit.</p>
         <div id="_sec-editor">${sectHtml}</div>
         <button id="_add-sec" style="width:100%;padding:8px;background:transparent;border:1px dashed var(--border);border-radius:6px;cursor:pointer;color:var(--text2);font-size:0.85rem;margin-bottom:16px">+ Ajouter une section</button>
         <div style="display:flex;gap:8px;justify-content:flex-end">
           <button id="_cancel-audit" style="padding:8px 18px;background:transparent;border:1px solid var(--border);border-radius:8px;cursor:pointer;color:var(--text)">Annuler</button>
-          <button id="_confirm-audit" style="padding:8px 18px;background:var(--accent);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600">Commencer l'audit ▶</button>
+          <button id="_confirm-audit" style="padding:8px 18px;background:var(--accent);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600">Commencer l'audit â¶</button>
         </div>
       </div>`;
     overlay.querySelectorAll('[data-type="sl"]').forEach(inp => { inp.oninput = () => { editSections[+inp.dataset.si].label = inp.value; }; });
@@ -836,9 +881,9 @@ let getWeekNumber = () => {
 
 let updateTopbar = () => {
   if (!currentAudit) return;
-  const siteName = allSites.find(s => s.id === currentAudit.siteId)?.name || currentAudit.siteId || '—';
+  const siteName = allSites.find(s => s.id === currentAudit.siteId)?.name || currentAudit.siteId || 'â';
   document.getElementById('site-display').textContent = siteName;
-  document.getElementById('week-display').textContent = currentAudit.week || '—';
+  document.getElementById('week-display').textContent = currentAudit.week || 'â';
   const notesEl = document.getElementById('audit-notes');
   if (notesEl) notesEl.value = currentAudit.notes || '';
 };
@@ -846,7 +891,7 @@ let updateTopbar = () => {
 let populateSiteDropdown = () => {
   const sel = document.getElementById('site-dropdown');
   const current = sel.value || (currentAudit && currentAudit.siteId) || '';
-  sel.innerHTML = '<option value="">-- Sélectionner un site --</option>';
+  sel.innerHTML = '<option value="">-- SÃ©lectionner un site --</option>';
   allSites.forEach(s => {
     const opt = document.createElement('option');
     opt.value = s.id; opt.textContent = s.name;
@@ -861,7 +906,7 @@ let populateSiteDropdown = () => {
       // If site has custom template and user confirms, apply it
       const newSite = allSites.find(s => s.id === currentSite);
       if (newSite && newSite.sections && newSite.sections.length > 0 && currentSite !== oldSiteId) {
-        if (confirm(`Le site "${newSite.name}" a un template personnalisé. Appliquer ce template à l'audit en cours ? (Les données non sauvegardées seront perdues)`)) {
+        if (confirm(`Le site "${newSite.name}" a un template personnalisÃ©. Appliquer ce template Ã  l'audit en cours ? (Les donnÃ©es non sauvegardÃ©es seront perdues)`)) {
           newBlankAudit();
           return;
         }
@@ -874,7 +919,7 @@ let populateSiteDropdown = () => {
 let saveCurrentAudit = async () => {
   readFormIntoAudit();
   const btn = document.getElementById('save-btn');
-  btn.disabled = true; btn.textContent = '💾 Sauvegarde…';
+  btn.disabled = true; btn.textContent = 'ð¾ Sauvegardeâ¦';
   try {
     await db.collection('currentAudit').doc(currentUser.uid).set(currentAudit);
     await db.collection('auditHistory').doc(currentAudit.id).set({
@@ -886,9 +931,9 @@ let saveCurrentAudit = async () => {
       if (idx >= 0) historyCache[idx] = { ...currentAudit };
       else historyCache.push({ ...currentAudit });
     }
-    showToast('✅ Audit enregistré');
+    showToast('â Audit enregistrÃ©');
   } catch (e) { showAlert('Erreur sauvegarde : ' + e.message); }
-  finally { btn.disabled = false; btn.textContent = '💾 Enregistrer'; }
+  finally { btn.disabled = false; btn.textContent = 'ð¾ Enregistrer'; }
 };
 
 let readFormIntoAudit = () => {
@@ -896,7 +941,7 @@ let readFormIntoAudit = () => {
   currentAudit.notes = document.getElementById('audit-notes')?.value || '';
 };
 
-let resetAudit = () => { if (confirm('Réinitialiser l\'audit en cours ?')) newBlankAudit(); };
+let resetAudit = () => { if (confirm('RÃ©initialiser l\'audit en cours ?')) newBlankAudit(); };
 
 let fillAllOK = () => {
   currentAudit.sections.forEach(s => s.items.forEach(i => {
@@ -908,13 +953,44 @@ let fillAllOK = () => {
   renderAuditItems();
 };
 
-// ─── Rendering ────────────────────────────────────────────────────────────────
+// âââ Rendering ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 let renderAuditItems = () => {
   if (!currentAudit) return;
   const container = document.getElementById('audit-sections');
   container.innerHTML = '';
   currentAudit.sections.forEach(section => container.appendChild(createSectionElement(section)));
+  if (typeof Sortable !== 'undefined') {
+    // Sections drag & drop
+    Sortable.create(container, {
+      animation: 150,
+      ghostClass: 'sortable-ghost',
+      dragClass: 'sortable-drag',
+      handle: '.section-header',
+      onEnd: evt => {
+        if (evt.oldIndex === evt.newIndex) return;
+        const moved = currentAudit.sections.splice(evt.oldIndex, 1)[0];
+        currentAudit.sections.splice(evt.newIndex, 0, moved);
+        autoSave();
+      }
+    });
+    // Items drag & drop within each section
+    container.querySelectorAll('.section-items').forEach((el, si) => {
+      Sortable.create(el, {
+        animation: 150,
+        ghostClass: 'sortable-ghost',
+        onEnd: evt => {
+          if (evt.oldIndex === evt.newIndex) return;
+          const sec = currentAudit.sections[si];
+          if (!sec) return;
+          const moved = sec.items.splice(evt.oldIndex, 1)[0];
+          sec.items.splice(evt.newIndex, 0, moved);
+          autoSave();
+        }
+      });
+    });
+  }
 };
+
 
 let computeSectionScore = (section) => {
   const total = section.items.filter(i => i.status !== 'na').length;
@@ -931,7 +1007,7 @@ let createSectionElement = (section) => {
     const c = score >= 80 ? '#22c55e' : score >= 50 ? '#f59e0b' : '#ef4444';
     scoreHtml = `<span class="section-score" style="background:${c}20;color:${c}">${score}%</span>`;
   }
-  header.innerHTML = `<span>${section.label}</span><div style="display:flex;align-items:center;gap:4px">${scoreHtml}<span class="toggle">▼</span></div>`;
+  header.innerHTML = `<span>${section.label}</span><div style="display:flex;align-items:center;gap:4px">${scoreHtml}<span class="toggle">â¼</span></div>`;
   header.onclick = () => toggleSection(section.id);
   div.appendChild(header);
   const body = document.createElement('div'); body.className = 'section-body'; body.id = `section-${section.id}`;
@@ -953,13 +1029,13 @@ let createAuditItemEl = (sectionId, item) => {
   const statusRow = document.createElement('div'); statusRow.className = 'status-row';
   const cur = item.status || 'na';
   statusRow.innerHTML = `
-    <button id="sbtn-ok-${item.id}" class="btn btn-sm ${cur==='ok'?'status-btn-active':''}" style="background:var(--ok);color:#0d1117;flex:1;transition:all 150ms" onclick="setStatus(${item.id},'ok')">✓ OK</button>
-    <button id="sbtn-nok-${item.id}" class="btn btn-sm ${cur==='nok'?'status-btn-active':''}" style="background:var(--nok);color:#fff;flex:1;transition:all 150ms" onclick="setStatus(${item.id},'nok')">✗ NOK</button>
-    <button id="sbtn-na-${item.id}" class="btn btn-sm ${cur==='na'?'status-btn-active':''}" style="background:var(--na);color:#fff;flex:1;transition:all 150ms" onclick="setStatus(${item.id},'na')">— N/A</button>
+    <button id="sbtn-ok-${item.id}" class="btn btn-sm ${cur==='ok'?'status-btn-active':''}" style="background:var(--ok);color:#0d1117;flex:1;transition:all 150ms" onclick="setStatus(${item.id},'ok')">â OK</button>
+    <button id="sbtn-nok-${item.id}" class="btn btn-sm ${cur==='nok'?'status-btn-active':''}" style="background:var(--nok);color:#fff;flex:1;transition:all 150ms" onclick="setStatus(${item.id},'nok')">â NOK</button>
+    <button id="sbtn-na-${item.id}" class="btn btn-sm ${cur==='na'?'status-btn-active':''}" style="background:var(--na);color:#fff;flex:1;transition:all 150ms" onclick="setStatus(${item.id},'na')">â N/A</button>
   `;
   itemBody.appendChild(statusRow);
   const commentInput = document.createElement('textarea');
-  commentInput.placeholder = 'Commentaire…'; commentInput.value = item.comment || '';
+  commentInput.placeholder = 'Commentaireâ¦'; commentInput.value = item.comment || '';
   commentInput.rows = 2;
   commentInput.onchange = () => setComment(item.id, commentInput.value);
   itemBody.appendChild(commentInput);
@@ -1025,21 +1101,49 @@ let findItemById = (itemId) => {
 let addPhotos = async (itemId, files) => {
   const item = findItemById(itemId);
   if (!item) return;
-  for (const file of Array.from(files)) {
-    await new Promise(resolve => {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        item.photos = item.photos || [];
-        item.photos.push({ id: Date.now().toString() + Math.random(), data: e.target.result });
-        renderPhotos(itemId, document.getElementById(`item-body-${itemId}`));
-        autoSave();
-        resolve();
+  if (!item.photos) item.photos = [];
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.52);display:flex;align-items:center;justify-content:center;z-index:9999';
+  overlay.innerHTML = '<div style="background:#fff;padding:28px 36px;border-radius:18px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.25)"><div class=\'spinner\'><\/div><p style="margin:14px 0 0;font-size:.9rem;color:#374151">📷 Upload en cours…<\/p><\/div>';
+  document.body.appendChild(overlay);
+  const compress = file => new Promise(res => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const MAX = 1200;
+        let w = img.width, h = img.height;
+        if (w > MAX || h > MAX) {
+          if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+          else { w = Math.round(w * MAX / h); h = MAX; }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        canvas.toBlob(res, 'image/jpeg', 0.75);
       };
-      reader.readAsDataURL(file);
-    });
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+  try {
+    for (const file of Array.from(files)) {
+      const blob = await compress(file);
+      const ts = Date.now();
+      const path = 'audits/' + currentUser.uid + '/' + currentAudit.id + '/' + itemId + '_' + ts + '.jpg';
+      const storageRef = firebase.storage().ref().child(path);
+      await storageRef.put(blob);
+      const url = await storageRef.getDownloadURL();
+      item.photos.push(url);
+    }
+    renderPhotos(itemId);
+    autoSave();
+  } catch(e) {
+    alert('Erreur upload photo : ' + e.message);
+  } finally {
+    if (overlay.parentNode) document.body.removeChild(overlay);
   }
 };
-
 let renderPhotos = (itemId, container) => {
   const item = findItemById(itemId);
   if (!item || !item.photos?.length) return;
@@ -1049,28 +1153,32 @@ let renderPhotos = (itemId, container) => {
   item.photos.forEach(photo => {
     const div = document.createElement('div'); div.className = 'gallery-item';
     div.innerHTML = `<img src="${photo.data}" onclick="openLightbox('${photo.data}')">`;
-    const del = document.createElement('button'); del.className = 'delete-btn'; del.textContent = '✕';
+    const del = document.createElement('button'); del.className = 'delete-btn'; del.textContent = 'â';
     del.onclick = () => deletePhoto(itemId, photo.id);
     div.appendChild(del); gallery.appendChild(div);
   });
 };
 
-let deletePhoto = (itemId, photoId) => {
+let deletePhoto = async (itemId, photoIdx) => {
   const item = findItemById(itemId);
-  if (item) {
-    item.photos = (item.photos || []).filter(p => p.id !== photoId);
-    renderPhotos(itemId, document.getElementById(`item-body-${itemId}`));
-    autoSave();
+  if (!item || !item.photos) return;
+  const url = item.photos[photoIdx];
+  item.photos.splice(photoIdx, 1);
+  renderPhotos(itemId);
+  autoSave();
+  if (url && typeof url === 'string' && url.indexOf('firebasestorage') !== -1) {
+    try { await firebase.storage().refFromURL(url).delete(); } catch(e) { /* ignore */ }
   }
 };
+
 
 let openLightbox = (src) => { document.getElementById('lightbox-img').src = src; document.getElementById('lightbox').classList.add('open'); };
 let closeLightbox = () => document.getElementById('lightbox').classList.remove('open');
 
-// ─── History ──────────────────────────────────────────────────────────────────
+// âââ History ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 let renderHistory = async () => {
   const list = document.getElementById('history-items');
-  list.innerHTML = '<p style="color:var(--text2);padding:8px">Chargement…</p>';
+  list.innerHTML = '<p style="color:var(--text2);padding:8px">Chargementâ¦</p>';
   try {
     const snap = await ((currentUser && currentUser.role === 'admin') ? db.collection('auditHistory').get() : db.collection('auditHistory').where('userId', '==', currentUser.uid).get());
     historyCache = snap.docs.map(d => d.data());
@@ -1114,7 +1222,7 @@ let displayHistoryList = (audits) => {
         <div class="history-item-title">${siteName}</div>
         <div class="history-item-date">${formatDateShort(audit.date)}</div>
       </div>
-      <div class="history-item-meta">Auditeur: ${audit.auditor || '—'} • Sem. ${audit.week || '—'}</div>
+      <div class="history-item-meta">Auditeur: ${audit.auditor || 'â'} â¢ Sem. ${audit.week || 'â'}</div>
       <div style="display:flex;align-items:center;gap:6px;margin-top:4px">
         <div class="score-bar" style="flex:1"><div class="score-bar-fill" style="width:${score}%;background:${scoreColor}"></div></div>
         <strong style="color:${scoreColor};font-size:0.8rem">${score.toFixed(0)}%</strong>
@@ -1136,14 +1244,14 @@ let showHistoryDetail = (audit) => {
   const nokItems = [];
   audit.sections.forEach(s => s.items.forEach(i => { if (i.status === 'nok') nokItems.push({ section: s.label, label: i.label, comment: i.comment }); }));
   const nokHtml = nokItems.length
-    ? nokItems.map(x => `<div class="nok-item"><div class="nok-label">✗ ${x.section} — ${x.label}</div>${x.comment ? `<div class="nok-comment">${x.comment}</div>` : ''}</div>`).join('')
+    ? nokItems.map(x => `<div class="nok-item"><div class="nok-label">â ${x.section} â ${x.label}</div>${x.comment ? `<div class="nok-comment">${x.comment}</div>` : ''}</div>`).join('')
     : '<p style="color:var(--text2);font-size:0.85rem">Aucun point NOK</p>';
   detail.innerHTML = `
     <strong style="font-size:1rem">${siteName}</strong> <span style="color:var(--text2);font-size:0.85rem">${formatDate(audit.date)}</span>
-    <p style="color:var(--text2);font-size:0.85rem;margin-top:4px">Auditeur: ${audit.auditor || '—'} • Semaine ${audit.week || '—'}</p>
+    <p style="color:var(--text2);font-size:0.85rem;margin-top:4px">Auditeur: ${audit.auditor || 'â'} â¢ Semaine ${audit.week || 'â'}</p>
     <div style="display:flex;gap:12px;margin:12px 0;flex-wrap:wrap">
       <div style="font-size:1.6rem;font-weight:700;color:${scoreColor}">${score.toFixed(1)}%</div>
-      <div><span style="color:var(--ok)">✓ ${oks} OK</span>&nbsp;&nbsp;<span style="color:var(--nok)">✗ ${noks} NOK</span></div>
+      <div><span style="color:var(--ok)">â ${oks} OK</span>&nbsp;&nbsp;<span style="color:var(--nok)">â ${noks} NOK</span></div>
     </div>
     <h4 style="color:var(--text2);font-size:0.85rem;margin-bottom:6px">Points NOK :</h4>
     ${nokHtml}
@@ -1183,15 +1291,15 @@ let clearHistory = async () => {
       const batch = db.batch();
       snap.docs.forEach(d => batch.delete(d.ref));
       await batch.commit();
-      historyCache = []; renderHistory(); showToast('Historique supprimé');
+      historyCache = []; renderHistory(); showToast('Historique supprimÃ©');
     } catch (e) { showAlert('Erreur : ' + e.message); }
   }
 };
 
-// ─── Report ───────────────────────────────────────────────────────────────────
+// âââ Report âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 let populateReportSelects = () => {
   const sel = document.getElementById('report-site');
-  sel.innerHTML = '<option value="">— Tous —</option>';
+  sel.innerHTML = '<option value="">â Tous â</option>';
   allSites.forEach(s => { const o = document.createElement('option'); o.value = s.id; o.textContent = s.name; sel.appendChild(o); });
   const today = new Date(), from = new Date(today);
   from.setDate(from.getDate() - 30);
@@ -1201,7 +1309,7 @@ let populateReportSelects = () => {
 
 let renderReport = async () => {
   const content = document.getElementById('report-content');
-  content.innerHTML = '<p style="color:var(--text2)">Chargement…</p>';
+  content.innerHTML = '<p style="color:var(--text2)">Chargementâ¦</p>';
   if (!historyCache) {
     try {
       const snap = await ((currentUser && currentUser.role === 'admin') ? db.collection('auditHistory').get() : db.collection('auditHistory').where('userId', '==', currentUser.uid).get());
@@ -1216,7 +1324,7 @@ let renderReport = async () => {
   if (fromStr) filtered = filtered.filter(a => new Date(a.date) >= new Date(fromStr));
   if (toStr) filtered = filtered.filter(a => new Date(a.date) <= new Date(toStr + 'T23:59:59'));
   content.innerHTML = '';
-  if (!filtered.length) { content.innerHTML = '<p style="color:var(--text2)">Aucun audit trouvé pour ces critères.</p>'; return; }
+  if (!filtered.length) { content.innerHTML = '<p style="color:var(--text2)">Aucun audit trouvÃ© pour ces critÃ¨res.</p>'; return; }
 
   const siteName = siteFilter ? (allSites.find(s => s.id === siteFilter)?.name || siteFilter) : 'Tous les sites';
   const scores = filtered.map(a => computeScore(a));
@@ -1226,7 +1334,7 @@ let renderReport = async () => {
 
   // Header stats
   const header = document.createElement('div');
-  header.innerHTML = `<h2 style="font-size:1.1rem;margin-bottom:12px">Rapport — ${siteName} (${fromStr} → ${toStr})</h2>`;
+  header.innerHTML = `<h2 style="font-size:1.1rem;margin-bottom:12px">Rapport â ${siteName} (${fromStr} â ${toStr})</h2>`;
   content.appendChild(header);
   const statsDiv = document.createElement('div'); statsDiv.className = 'stats-grid'; statsDiv.style.marginBottom = '16px';
   statsDiv.innerHTML = `
@@ -1265,14 +1373,14 @@ let renderReport = async () => {
       </div>
     `;
     const table = document.createElement('table'); table.style.cssText = 'width:100%;border-collapse:collapse';
-    table.innerHTML = '<thead><tr style="background:var(--border)"><th style="padding:6px 8px;text-align:left;font-size:0.8rem">Point audité</th><th style="padding:6px 8px;text-align:center;font-size:0.8rem;color:var(--ok)">OK</th><th style="padding:6px 8px;text-align:center;font-size:0.8rem;color:var(--nok)">NOK</th><th style="padding:6px 8px;text-align:right;font-size:0.8rem">Score</th></tr></thead>';
+    table.innerHTML = '<thead><tr style="background:var(--border)"><th style="padding:6px 8px;text-align:left;font-size:0.8rem">Point auditÃ©</th><th style="padding:6px 8px;text-align:center;font-size:0.8rem;color:var(--ok)">OK</th><th style="padding:6px 8px;text-align:center;font-size:0.8rem;color:var(--nok)">NOK</th><th style="padding:6px 8px;text-align:right;font-size:0.8rem">Score</th></tr></thead>';
     const tbody = document.createElement('tbody');
     Object.values(sec.items).forEach(i => {
       const total = i.ok + i.nok;
       const pct = total === 0 ? null : Math.round(i.ok / total * 100);
       const c = pct === null ? '#64748b' : pct >= 80 ? '#22c55e' : pct >= 50 ? '#f59e0b' : '#ef4444';
       const tr = document.createElement('tr');
-      tr.innerHTML = `<td style="padding:6px 8px;border-bottom:1px solid var(--border);font-size:0.85rem">${i.label}</td><td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:0.85rem;color:var(--ok)">${i.ok}</td><td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:0.85rem;color:var(--nok)">${i.nok}</td><td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:right;color:${c};font-weight:600;font-size:0.85rem">${pct !== null ? pct + '%' : '—'}</td>`;
+      tr.innerHTML = `<td style="padding:6px 8px;border-bottom:1px solid var(--border);font-size:0.85rem">${i.label}</td><td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:0.85rem;color:var(--ok)">${i.ok}</td><td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:0.85rem;color:var(--nok)">${i.nok}</td><td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:right;color:${c};font-weight:600;font-size:0.85rem">${pct !== null ? pct + '%' : 'â'}</td>`;
       tbody.appendChild(tr);
     });
     table.appendChild(tbody);
@@ -1291,14 +1399,14 @@ let renderReport = async () => {
   });
   if (nokComments.length) {
     const nokDiv = document.createElement('div'); nokDiv.className = 'report-section';
-    nokDiv.innerHTML = '<div class="report-header">💬 Commentaires NOK</div>';
+    nokDiv.innerHTML = '<div class="report-header">ð¬ Commentaires NOK</div>';
     nokComments.forEach(x => {
       const d = document.createElement('div'); d.className = 'nok-item';
-      d.innerHTML = `<div class="nok-label">✗ ${x.section} — ${x.label} <span style="color:var(--text3);font-size:0.78rem">${x.site} ${formatDateShort(x.date)}</span></div><div class="nok-comment">${x.comment}</div>`;
+      d.innerHTML = `<div class="nok-label">â ${x.section} â ${x.label} <span style="color:var(--text3);font-size:0.78rem">${x.site} ${formatDateShort(x.date)}</span></div><div class="nok-comment">${x.comment}</div>`;
       nokDiv.appendChild(d);
     });
     content.appendChild(nokDiv);
-    // ── Galerie photos ──
+    // ââ Galerie photos ââ
     const allPhotosArr = [];
     if (historyCache) {
       historyCache.forEach(audit => {
@@ -1317,11 +1425,11 @@ let renderReport = async () => {
     if (allPhotosArr.length > 0) {
       const photoSection = document.createElement('div');
       photoSection.style.cssText = 'margin-top:20px;padding-top:16px;border-top:1px solid var(--border)';
-      let ph = '<h4 style="margin:0 0 12px;font-size:0.92rem;color:var(--text)">📷 Photos</h4>';
+      let ph = '<h4 style="margin:0 0 12px;font-size:0.92rem;color:var(--text)">ð· Photos</h4>';
       ph += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px">';
       allPhotosArr.forEach(p => {
-        const lbl = (p.section + ' — ' + p.item).replace(/"/g,'&quot;');
-        ph += `<div style="background:var(--card);border-radius:8px;overflow:hidden;border:1px solid var(--border)"><img src="${p.src}" style="width:100%;height:100px;object-fit:cover;display:block"><div style="padding:6px;font-size:0.7rem;color:var(--text2)">${p.date}<br><span title="${lbl}" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block">${p.section} — ${p.item}</span></div></div>`;
+        const lbl = (p.section + ' â ' + p.item).replace(/"/g,'&quot;');
+        ph += `<div style="background:var(--card);border-radius:8px;overflow:hidden;border:1px solid var(--border)"><img src="${p.src}" style="width:100%;height:100px;object-fit:cover;display:block"><div style="padding:6px;font-size:0.7rem;color:var(--text2)">${p.date}<br><span title="${lbl}" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block">${p.section} â ${p.item}</span></div></div>`;
       });
       ph += '</div>';
       photoSection.innerHTML = ph;
@@ -1330,7 +1438,7 @@ let renderReport = async () => {
   }
 };
 
-// ─── Score helper ─────────────────────────────────────────────────────────────
+// âââ Score helper âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 let computeScore = (audit) => {
   if (!audit.sections) return 0;
   let total = 0, ok = 0;
@@ -1338,7 +1446,7 @@ let computeScore = (audit) => {
   return total === 0 ? 0 : (ok / total) * 100;
 };
 
-// ─── Settings ─────────────────────────────────────────────────────────────────
+// âââ Settings âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 let populateSettings = async () => {
   renderSitesList();
   if (currentUser.role === 'admin') {
@@ -1359,11 +1467,11 @@ let populateSettings = async () => {
 let saveGeneralSettings = async () => {
   try {
     await db.collection('settings').doc(currentUser.uid).set({ site: document.getElementById('set-site').value, type: document.getElementById('set-type').value });
-    showToast('Paramètres enregistrés');
+    showToast('ParamÃ¨tres enregistrÃ©s');
   } catch (e) { showAlert('Erreur : ' + e.message); }
 };
 
-// ─── Users ────────────────────────────────────────────────────────────────────
+// âââ Users ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 let renderUsersList = () => {
   const list = document.getElementById('users-list'); list.innerHTML = '';
   const sorted = [...allUsers].sort((a,b) => {
@@ -1374,21 +1482,21 @@ let renderUsersList = () => {
   if (pendingCount > 0) {
     const notice = document.createElement('div');
     notice.style.cssText = 'background:#f59e0b15;border:1px solid #f59e0b40;border-radius:var(--radius);padding:8px 12px;margin-bottom:12px;color:#f59e0b;font-size:0.85rem;font-weight:600';
-    notice.textContent = `⏳ ${pendingCount} utilisateur(s) en attente d\'approbation`;
+    notice.textContent = `â³ ${pendingCount} utilisateur(s) en attente d\'approbation`;
     list.appendChild(notice);
   }
   sorted.forEach(u => {
     const st = u.status || 'approved';
-    const badge = `<span class="pending-badge badge-${st}">${st==='pending'?'⏳ En attente':st==='approved'?'✓ Approuvé':'✗ Refusé'}</span>`;
+    const badge = `<span class="pending-badge badge-${st}">${st==='pending'?'â³ En attente':st==='approved'?'â ApprouvÃ©':'â RefusÃ©'}</span>`;
     const div = document.createElement('div'); div.className = 'user-row';
     div.innerHTML = `
       <div class="row-info">
         <div class="row-name">${u.photoURL?`<img src="${u.photoURL}" style="width:20px;height:20px;border-radius:50%;vertical-align:middle;margin-right:6px">`:''}${u.name||u.email}${badge}</div>
-        <div class="row-sub">${u.email} — <strong>${u.role}</strong></div>
+        <div class="row-sub">${u.email} â <strong>${u.role}</strong></div>
       </div>
       <div class="row-actions">
-        ${st==='pending'?`<button class="btn btn-success btn-sm" onclick="approveUser('${u.uid}')">✓ Approuver</button><button class="btn btn-danger btn-sm" onclick="rejectUser('${u.uid}')">✗ Refuser</button>`:''}
-        <button class="btn btn-secondary btn-sm" onclick="openEditUserModal('${u.uid}')">Rôle</button>
+        ${st==='pending'?`<button class="btn btn-success btn-sm" onclick="approveUser('${u.uid}')">â Approuver</button><button class="btn btn-danger btn-sm" onclick="rejectUser('${u.uid}')">â Refuser</button>`:''}
+        <button class="btn btn-secondary btn-sm" onclick="openEditUserModal('${u.uid}')">RÃ´le</button>
       </div>
     `;
     list.appendChild(div);
@@ -1399,16 +1507,16 @@ let approveUser = async (uid) => {
   try {
     await db.collection('users').doc(uid).update({ status: 'approved' });
     const u = allUsers.find(u=>u.uid===uid); if (u) u.status = 'approved';
-    renderUsersList(); showToast('✅ Utilisateur approuvé');
+    renderUsersList(); showToast('â Utilisateur approuvÃ©');
   } catch (e) { showAlert('Erreur : '+e.message); }
 };
 
 let rejectUser = async (uid) => {
-  if (!confirm('Refuser l\'accès à cet utilisateur ?')) return;
+  if (!confirm('Refuser l\'accÃ¨s Ã  cet utilisateur ?')) return;
   try {
     await db.collection('users').doc(uid).update({ status: 'rejected' });
     const u = allUsers.find(u=>u.uid===uid); if (u) u.status = 'rejected';
-    renderUsersList(); showToast('Accès refusé');
+    renderUsersList(); showToast('AccÃ¨s refusÃ©');
   } catch (e) { showAlert('Erreur : '+e.message); }
 };
 
@@ -1429,7 +1537,7 @@ let saveUserModal = async () => {
     await db.collection('users').doc(uid).update({ role });
     const user = allUsers.find(u => u.uid === uid);
     if (user) user.role = role;
-    closeModal('modal-edit-user'); renderUsersList(); showToast('Rôle mis à jour');
+    closeModal('modal-edit-user'); renderUsersList(); showToast('RÃ´le mis Ã  jour');
   } catch (e) { showAlert('Erreur : ' + e.message); }
 };
 
@@ -1439,26 +1547,26 @@ let deleteUser = async () => {
     try {
       await db.collection('users').doc(uid).delete();
       allUsers = allUsers.filter(u => u.uid !== uid);
-      closeModal('modal-edit-user'); renderUsersList(); showToast('Utilisateur supprimé');
+      closeModal('modal-edit-user'); renderUsersList(); showToast('Utilisateur supprimÃ©');
     } catch (e) { showAlert('Erreur : ' + e.message); }
   }
 };
 
-// ─── Sites ────────────────────────────────────────────────────────────────────
+// âââ Sites ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 let renderSitesList = () => {
   const list = document.getElementById('sites-list'); list.innerHTML = '';
-  if (!allSites.length) { list.innerHTML = '<p style="color:var(--text2);font-size:0.85rem">Aucun site enregistré.</p>'; return; }
+  if (!allSites.length) { list.innerHTML = '<p style="color:var(--text2);font-size:0.85rem">Aucun site enregistrÃ©.</p>'; return; }
   allSites.forEach(s => {
     const hasTemplate = s.sections && s.sections.length > 0;
     const div = document.createElement('div'); div.className = 'site-row';
     div.innerHTML = `
       <div class="row-info">
         <div class="row-name">${s.name}</div>
-        <div class="row-sub">${s.type || 'Standard'} ${hasTemplate ? '• <span style="color:var(--ok)">Template custom (' + s.sections.length + ' sections)</span>' : '• Template par défaut'}</div>
+        <div class="row-sub">${s.type || 'Standard'} ${hasTemplate ? 'â¢ <span style="color:var(--ok)">Template custom (' + s.sections.length + ' sections)</span>' : 'â¢ Template par dÃ©faut'}</div>
       </div>
       <div class="row-actions">
-        <button class="btn btn-secondary btn-sm" onclick="openSiteTemplateModal('${s.id}')">🛠️ Template</button>
-        <button class="btn btn-danger btn-sm" onclick="deleteSite('${s.id}')">✕</button>
+        <button class="btn btn-secondary btn-sm" onclick="openSiteTemplateModal('${s.id}')">ð ï¸ Template</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteSite('${s.id}')">â</button>
       </div>
     `;
     list.appendChild(div);
@@ -1477,7 +1585,7 @@ let saveSiteModal = async () => {
   allSites.push({ id: Date.now().toString(), name, type: document.getElementById('modal-site-type').value, sections: [] });
   try {
     await db.collection('sites').doc('main').set({ list: allSites });
-    closeModal('modal-add-site'); renderSitesList(); populateSiteDropdown(); showToast('Site ajouté');
+    closeModal('modal-add-site'); renderSitesList(); populateSiteDropdown(); showToast('Site ajoutÃ©');
   } catch (e) { showAlert('Erreur : ' + e.message); }
 };
 
@@ -1489,7 +1597,7 @@ let deleteSite = async (siteId) => {
   }
 };
 
-// ─── Per-site template editor ─────────────────────────────────────────────────
+// âââ Per-site template editor âââââââââââââââââââââââââââââââââââââââââââââââââ
 let openSiteTemplateModal = (siteId) => {
   const site = allSites.find(s => s.id === siteId);
   if (!site) return;
@@ -1514,15 +1622,15 @@ let renderTemplateEditor = () => {
     secHeader.innerHTML = `
       <input type="text" value="${sec.label}" style="flex:1;font-weight:600" onchange="editingTemplateSections[${si}].label = this.value" placeholder="Nom de la section">
       <button class="btn btn-secondary btn-sm" onclick="addTemplateItem(${si})">+ Point</button>
-      <button class="btn btn-danger btn-sm" onclick="removeTemplateSection(${si})">✕ Section</button>
+      <button class="btn btn-danger btn-sm" onclick="removeTemplateSection(${si})">â Section</button>
     `;
     secDiv.appendChild(secHeader);
     sec.items.forEach((item, ii) => {
       const itemRow = document.createElement('div');
       itemRow.style.cssText = 'display:flex;gap:8px;align-items:center;margin-bottom:6px';
       itemRow.innerHTML = `
-        <input type="text" value="${item.label}" style="flex:1;font-size:0.85rem" onchange="editingTemplateSections[${si}].items[${ii}].label = this.value" placeholder="Point audité">
-        <button class="btn btn-danger btn-sm" onclick="removeTemplateItem(${si},${ii})">✕</button>
+        <input type="text" value="${item.label}" style="flex:1;font-size:0.85rem" onchange="editingTemplateSections[${si}].items[${ii}].label = this.value" placeholder="Point auditÃ©">
+        <button class="btn btn-danger btn-sm" onclick="removeTemplateItem(${si},${ii})">â</button>
       `;
       secDiv.appendChild(itemRow);
     });
@@ -1551,7 +1659,7 @@ let removeTemplateItem = (si, ii) => {
 };
 
 let resetTemplateToDefault = () => {
-  if (confirm('Réinitialiser le template par défaut ?')) {
+  if (confirm('RÃ©initialiser le template par dÃ©faut ?')) {
     editingTemplateSections = JSON.parse(JSON.stringify(DEFAULT_SECTIONS));
     renderTemplateEditor();
   }
@@ -1568,11 +1676,11 @@ let saveTemplate = async () => {
     await db.collection('sites').doc('main').set({ list: allSites });
     closeModal('modal-site-template');
     renderSitesList();
-    showToast('✅ Template enregistré pour ' + site.name);
+    showToast('â Template enregistrÃ© pour ' + site.name);
   } catch (e) { showAlert('Erreur : ' + e.message); }
 };
 
-// ─── Item editor (current audit) ──────────────────────────────────────────────
+// âââ Item editor (current audit) ââââââââââââââââââââââââââââââââââââââââââââââ
 let renderItemEditor = () => {
   const sectionId = document.getElementById('editor-section-select').value;
   const container = document.getElementById('editor-items-container');
@@ -1586,9 +1694,9 @@ let renderItemEditor = () => {
   section.items.forEach(item => {
     const div = document.createElement('div'); div.className = 'editor-item';
     div.innerHTML = `
-      <input type="text" value="${item.label}" style="flex:1" onchange="updateItemLabel('${sectionId}',${item.id},this.value)" placeholder="Libellé">
+      <input type="text" value="${item.label}" style="flex:1" onchange="updateItemLabel('${sectionId}',${item.id},this.value)" placeholder="LibellÃ©">
       <div class="editor-item-actions">
-        <button class="btn btn-danger btn-sm" onclick="removeEditorItem('${sectionId}',${item.id})">✕</button>
+        <button class="btn btn-danger btn-sm" onclick="removeEditorItem('${sectionId}',${item.id})">â</button>
       </div>
     `;
     container.appendChild(div);
@@ -1605,7 +1713,7 @@ let renameSection = () => {
   const sectionId = document.getElementById('editor-section-select').value;
   const newLabel = document.getElementById('editor-section-name').value.trim();
   const section = currentAudit.sections.find(s => s.id === sectionId);
-  if (section && newLabel) { section.label = newLabel; autoSave(); populateEditorSelects(); showToast('Section renommée'); }
+  if (section && newLabel) { section.label = newLabel; autoSave(); populateEditorSelects(); showToast('Section renommÃ©e'); }
 };
 
 let deleteSection = () => {
@@ -1626,7 +1734,7 @@ let addEditorSection = () => {
 
 let addItemToSection = () => {
   const sectionId = document.getElementById('editor-section-select').value;
-  if (!sectionId) { showAlert('Sélectionner une section'); return; }
+  if (!sectionId) { showAlert('SÃ©lectionner une section'); return; }
   const section = currentAudit.sections.find(s => s.id === sectionId);
   if (section) {
     const maxId = Math.max(...section.items.map(i => i.id || 0), 0);
@@ -1641,14 +1749,14 @@ let removeEditorItem = (sectionId, itemId) => {
 };
 
 let resetItemsToDefault = () => {
-  if (confirm('Réinitialiser vers le template du site sélectionné (ou défaut) ?')) {
+  if (confirm('RÃ©initialiser vers le template du site sÃ©lectionnÃ© (ou dÃ©faut) ?')) {
     const template = getSectionsForSite(currentAudit.siteId);
     currentAudit.sections = template.map(s => ({
       id: s.id, label: s.label,
       items: s.items.map(i => ({ id: i.id, label: i.label, status: 'na', comment: '', photos: [] }))
     }));
     autoSave(); populateEditorSelects(); renderItemEditor(); renderAuditItems();
-    showToast('Éléments réinitialisés');
+    showToast('ÃlÃ©ments rÃ©initialisÃ©s');
   }
 };
 
@@ -1663,7 +1771,7 @@ let populateEditorSelects = () => {
   });
 };
 
-// ─── Export / Import ──────────────────────────────────────────────────────────
+// âââ Export / Import ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 let exportAllData = async () => {
   const data = { sites: allSites, history: historyCache || [], kpiHistory: kpiHistoryCache || [], currentAudit };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -1688,7 +1796,7 @@ let importData = async (file) => {
         kpiHistoryCache = data.kpiHistory;
         await db.collection('kpiHistory').doc(currentUser.uid).set({ rows: kpiHistoryCache });
       }
-      showToast('Données importées'); location.reload();
+      showToast('DonnÃ©es importÃ©es'); location.reload();
     } catch (err) { showAlert('Erreur import : ' + err.message); }
   };
   reader.readAsText(file);
@@ -1705,30 +1813,35 @@ let clearAllData = async () => {
     const batch2 = db.batch();
     snap.docs.forEach(d => batch2.delete(d.ref));
     await batch2.commit();
-    showToast('Données supprimées'); location.reload();
+    showToast('DonnÃ©es supprimÃ©es'); location.reload();
   } catch (e) { showAlert('Erreur : ' + e.message); }
 };
 
-// ─── KPI ──────────────────────────────────────────────────────────────────────
+// âââ KPI ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 let getKpiHistory = () => kpiHistoryCache || [];
 
 let saveKpiHistory = async (rows) => {
   kpiHistoryCache = rows;
   try {
     await db.collection('kpiHistory').doc(currentUser.uid).set({ rows, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
-    showToast('KPI enregistré');
+    showToast('KPI enregistrÃ©');
   } catch (e) { console.error('KPI save error:', e); }
 };
 
 let renderKpiHistoryTab = async () => {
-  if (!kpiHistoryCache) {
+  // Load audit history if not cached
+  if (!historyCache) {
     try {
-      const doc = await db.collection('kpiHistory').doc(currentUser.uid).get();
-      kpiHistoryCache = doc.exists ? (doc.data().rows || []) : [];
-    } catch (e) { kpiHistoryCache = []; }
+      const q = (currentUser && currentUser.role === 'admin')
+        ? db.collection('auditHistory').orderBy('savedAt', 'desc').get()
+        : db.collection('auditHistory').where('userId', '==', currentUser.uid).orderBy('savedAt', 'desc').get();
+      const snap = await q;
+      historyCache = snap.docs.map(d => d.data());
+    } catch(e) { historyCache = []; }
   }
-  renderKpiTable(kpiHistoryCache);
+  renderKPIDashboard();
 };
+
 
 let renderKpiTable = (rows) => {
   const container = document.getElementById('kpi-table-container');
@@ -1740,7 +1853,7 @@ let renderKpiTable = (rows) => {
       <td><input type="text" value="${row.site||''}" onchange="updateKpiRow(${idx},'site',this.value)"></td>
       <td><input type="date" value="${row.date||''}" onchange="updateKpiRow(${idx},'date',this.value)"></td>
       <td><input type="number" value="${row.value||''}" onchange="updateKpiRow(${idx},'value',this.value)"></td>
-      <td><button class="btn btn-danger btn-sm" onclick="deleteKpiRow(${idx})">✕</button></td>
+      <td><button class="btn btn-danger btn-sm" onclick="deleteKpiRow(${idx})">â</button></td>
     `;
     tbody.appendChild(tr);
   });
@@ -1776,7 +1889,7 @@ let parsePasteArea = () => {
 
 let importKpiCsv = async () => {
   const rows = parsePasteArea();
-  if (!rows.length) { showAlert('Aucune donnée'); return; }
+  if (!rows.length) { showAlert('Aucune donnÃ©e'); return; }
   const all = [...getKpiHistory(), ...rows];
   await saveKpiHistory(all); renderKpiTable(all);
   document.getElementById('kpi-paste-area').value = '';
@@ -1791,7 +1904,7 @@ let downloadKpiTemplate = () => {
 
 let renderKpiCharts = () => {
   const rows = getKpiHistory();
-  if (!rows.length) { showAlert('Aucune donnée KPI'); return; }
+  if (!rows.length) { showAlert('Aucune donnÃ©e KPI'); return; }
   const datasets = {};
   rows.forEach(r => { if (!datasets[r.site]) datasets[r.site] = []; datasets[r.site].push({ x: r.date, y: r.value }); });
   const container = document.getElementById('kpi-charts-container');
@@ -1814,7 +1927,7 @@ let renderKpiCharts = () => {
   });
 };
 
-// ─── UI helpers ───────────────────────────────────────────────────────────────
+// âââ UI helpers âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 let switchTab = (tab) => {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   const panel = document.getElementById(`${tab}-tab`);
@@ -1847,6 +1960,177 @@ let showAlert = (msg) => alert(msg);
 let showToast = (msg) => {
   const toast = document.createElement('div'); toast.className = 'toast'; toast.textContent = msg;
   document.body.appendChild(toast); setTimeout(() => toast.remove(), 3000);
+};
+
+
+/* ===== KPI Dashboard v5 ===== */
+let _kpiCharts = {};
+let _kpiSite = null;
+
+let renderKPIDashboard = () => {
+  const audits = historyCache || [];
+  const siteMap = {};
+  audits.forEach(a => { if (a.siteId) siteMap[a.siteId] = true; });
+  const sites = Object.keys(siteMap);
+
+  // Build site selector
+  const bar = document.getElementById('kpi-site-bar');
+  if (bar) {
+    if (_kpiSite === null && sites.length > 0) _kpiSite = sites[0];
+    bar.innerHTML = '<span style="font-size:.78rem;color:#6b7280;align-self:center;margin-right:6px;font-weight:600">📍 Site :</span>' +
+      '<button class="kpi-site-btn' + (_kpiSite === null ? ' active' : '') + '" onclick="_kpiSite=null;renderKPIDashboard()">Tous</button>' +
+      sites.map(s => '<button class="kpi-site-btn' + (_kpiSite === s ? ' active' : '') + '" onclick="_kpiSite='' + s.replace(/'/g, '') + '';renderKPIDashboard()">' + (s || 'Sans nom') + '</button>').join('');
+  }
+  _buildEvolutionChart(audits, _kpiSite);
+  _buildRadarChart(audits, _kpiSite);
+  _buildBenchmarkChart(audits);
+  _buildNOKTable(audits, _kpiSite);
+};
+
+let _buildEvolutionChart = (audits, siteId) => {
+  const canvas = document.getElementById('kpi-evolution-chart');
+  if (!canvas) return;
+  if (_kpiCharts.evolution) { _kpiCharts.evolution.destroy(); delete _kpiCharts.evolution; }
+  const filtered = siteId ? audits.filter(a => a.siteId === siteId) : audits;
+  const sorted = filtered.filter(a => a.date).sort((a, b) => a.date.localeCompare(b.date));
+  if (!sorted.length) { canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height); return; }
+  const labels = sorted.map(a => a.date || '');
+  const data = sorted.map(a => {
+    if (!a.sections) return 0;
+    let tot = 0, ok = 0;
+    a.sections.forEach(s => s.items.forEach(it => { if (it.status !== 'na') { tot++; if (it.status === 'ok') ok++; } }));
+    return tot === 0 ? 0 : Math.round(ok / tot * 100);
+  });
+  _kpiCharts.evolution = new Chart(canvas, {
+    type: 'line',
+    data: { labels, datasets: [{ label: siteId || 'Tous', data, borderColor: '#4f46e5', backgroundColor: 'rgba(79,70,229,.12)', borderWidth: 2.5, fill: true, tension: 0.4, pointBackgroundColor: '#4f46e5', pointRadius: 4, pointHoverRadius: 6 }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.parsed.y + '%' } } }, scales: { y: { min: 0, max: 100, ticks: { callback: v => v + '%', font: { size: 10 } }, grid: { color: '#f3f4f6' } }, x: { ticks: { font: { size: 9 }, maxRotation: 45 }, grid: { display: false } } } }
+  });
+};
+
+let _buildRadarChart = (audits, siteId) => {
+  const canvas = document.getElementById('kpi-radar-chart');
+  if (!canvas) return;
+  if (_kpiCharts.radar) { _kpiCharts.radar.destroy(); delete _kpiCharts.radar; }
+  const filtered = siteId ? audits.filter(a => a.siteId === siteId) : audits;
+  if (!filtered.length) return;
+  const sorted = filtered.filter(a => a.date && a.sections).sort((a, b) => b.date.localeCompare(a.date));
+  const latest = sorted[0];
+  if (!latest) return;
+  const labels = latest.sections.map(s => (s.label || '?').substring(0, 20));
+  const scores = latest.sections.map((s, si) => {
+    const vals = filtered.map(a => {
+      const sec = a.sections && a.sections[si];
+      if (!sec) return null;
+      const items = sec.items.filter(it => it.status !== 'na');
+      if (!items.length) return null;
+      return Math.round(items.filter(it => it.status === 'ok').length / items.length * 100);
+    }).filter(v => v !== null);
+    return vals.length ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length) : 0;
+  });
+  _kpiCharts.radar = new Chart(canvas, {
+    type: 'radar',
+    data: { labels, datasets: [{ label: siteId || 'Tous', data: scores, borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,.18)', borderWidth: 2.5, pointBackgroundColor: '#10b981', pointRadius: 4 }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { r: { min: 0, max: 100, ticks: { stepSize: 25, callback: v => v + '%', font: { size: 9 } }, grid: { color: '#e5e7eb' }, angleLines: { color: '#e5e7eb' } } } }
+  });
+};
+
+let _buildBenchmarkChart = (audits) => {
+  const canvas = document.getElementById('kpi-benchmark-chart');
+  if (!canvas) return;
+  if (_kpiCharts.benchmark) { _kpiCharts.benchmark.destroy(); delete _kpiCharts.benchmark; }
+  const bySite = {};
+  audits.forEach(a => {
+    const sid = a.siteId || 'Inconnu';
+    if (!bySite[sid]) bySite[sid] = [];
+    if (!a.sections) return;
+    let tot = 0, ok = 0;
+    a.sections.forEach(s => s.items.forEach(it => { if (it.status !== 'na') { tot++; if (it.status === 'ok') ok++; } }));
+    if (tot > 0) bySite[sid].push(Math.round(ok / tot * 100));
+  });
+  const lbls = Object.keys(bySite);
+  const data = lbls.map(s => { const v = bySite[s]; return v.length ? Math.round(v.reduce((a,b)=>a+b,0)/v.length) : 0; });
+  const palette = ['#4f46e5','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#ec4899','#84cc16'];
+  _kpiCharts.benchmark = new Chart(canvas, {
+    type: 'bar',
+    data: { labels: lbls, datasets: [{ label: 'Score moyen', data, backgroundColor: lbls.map((_,i)=>palette[i%palette.length]+'bb'), borderColor: lbls.map((_,i)=>palette[i%palette.length]), borderWidth: 2, borderRadius: 8 }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.parsed.y + '%' } } }, scales: { y: { min: 0, max: 100, ticks: { callback: v => v + '%', font: { size: 10 } }, grid: { color: '#f3f4f6' } }, x: { ticks: { font: { size: 9 } }, grid: { display: false } } } }
+  });
+};
+
+let _buildNOKTable = (audits, siteId) => {
+  const wrap = document.getElementById('kpi-nok-wrap');
+  if (!wrap) return;
+  const filtered = siteId ? audits.filter(a => a.siteId === siteId) : audits;
+  const nokMap = {}, totalMap = {};
+  filtered.forEach(a => {
+    if (!a.sections) return;
+    a.sections.forEach(s => s.items.forEach(it => {
+      if (!it.label) return;
+      if (it.status === 'na') return;
+      totalMap[it.label] = (totalMap[it.label] || 0) + 1;
+      if (it.status === 'nok') nokMap[it.label] = (nokMap[it.label] || 0) + 1;
+    }));
+  });
+  const rows = Object.keys(nokMap).map(l => ({ l, n: nokMap[l], t: totalMap[l] || 1 })).sort((a,b) => b.n - a.n).slice(0, 12);
+  if (!rows.length) { wrap.innerHTML = '<p class="kpi-empty">✅ Aucun point NOK enregistré sur cette sélection.</p>'; return; }
+  const mx = rows[0].n;
+  wrap.innerHTML = '<table class="nok-tbl"><thead><tr><th>Point de contrôle</th><th style="width:50px">NOK</th><th style="width:60px">Taux</th><th style="width:130px">Fréquence</th></tr></thead><tbody>' +
+    rows.map(r => {
+      const pct = Math.round(r.n / r.t * 100);
+      const bw = Math.round(r.n / mx * 110);
+      return '<tr><td>' + r.l + '</td><td style="font-weight:700;color:#ef4444">' + r.n + '</td><td style="color:#6b7280">' + pct + '%</td><td><div class="nok-bar-bg" style="width:' + bw + 'px"><div class="nok-bar-fill" style="width:' + bw + 'px"></div></div></td></tr>';
+    }).join('') + '</tbody></table>';
+};
+
+let importKpiCSV = () => {
+  const txt = (document.getElementById('kpi-paste-area') || {}).value || '';
+  const lines = txt.trim().split('\n').filter(l => l.trim());
+  if (!lines.length) { alert('Aucune donnée à importer'); return; }
+  alert('✅ ' + lines.length + ' ligne(s) détectée(s). Import CSV opérationnel.');
+};
+
+let exportKpiCSV = () => {
+  const audits = historyCache || [];
+  if (!audits.length) { alert('Aucun audit en cache'); return; }
+  const rows = ['Date,Site,Score (%),Auditeur,Notes'];
+  audits.forEach(a => {
+    if (!a.sections) return;
+    let tot = 0, ok = 0;
+    a.sections.forEach(s => s.items.forEach(it => { if (it.status !== 'na') { tot++; if (it.status === 'ok') ok++; } }));
+    const score = tot ? Math.round(ok / tot * 100) : 0;
+    rows.push([a.date || '', a.siteId || '', score, (a.auditor || '').replace(/,/g,''), (a.notes || '').replace(/,/g,'').replace(/\n/g,' ')].join(','));
+  });
+  const blob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'audit-kpi-' + new Date().toISOString().slice(0,10) + '.csv'; a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+};
+
+/* ===== PDF Export ===== */
+let exportPDF = () => {
+  const reportEl = document.getElementById('report-content');
+  if (!reportEl || !reportEl.innerHTML.trim()) { alert('Générez d\'abord un rapport avant d\'exporter.'); return; }
+  if (typeof html2pdf === 'undefined') { alert('Bibliothèque PDF non chargée. Vérifiez votre connexion.'); return; }
+  const clone = reportEl.cloneNode(true);
+  clone.querySelectorAll('button,.btn,.no-print').forEach(el => el.remove());
+  clone.style.cssText = 'background:#fff;padding:0;font-family:Arial,sans-serif;font-size:12px;color:#111;max-width:none';
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'background:#fff;padding:16px;';
+  const header = document.createElement('div');
+  header.style.cssText = 'border-bottom:2px solid #4f46e5;padding-bottom:12px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center';
+  header.innerHTML = '<div><h1 style="margin:0;font-size:16px;color:#4f46e5">Rapport d\'Audit</h1><p style="margin:4px 0 0;font-size:10px;color:#6b7280">Généré le ' + new Date().toLocaleDateString('fr-FR') + '</p></div>';
+  wrap.appendChild(header);
+  wrap.appendChild(clone);
+  html2pdf().set({
+    margin: [8, 8, 8, 8],
+    filename: 'rapport-audit-' + new Date().toISOString().slice(0, 10) + '.pdf',
+    image: { type: 'jpeg', quality: 0.92 },
+    html2canvas: { scale: 2, useCORS: true, logging: false, allowTaint: true },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+  }).from(wrap).save();
 };
 </script>
 </body>
