@@ -2045,9 +2045,8 @@ let renderKpiHistoryTab = async () => {
     } catch(e) { console.error('KPI load error:', e); historyCache = []; }
   }
   await loadCAData();
-  renderKPIDashboard(); renderCASection(window._kpiSite || '__all__');
-  const siteId = window._kpiSite || '__all__';
-  renderCASection(siteId);
+  renderKPIDashboard(); setTimeout(function(){ renderCASection(window._kpiSite || '__all__'); },50);
+  // renderCASection already called above via setTimeout
 };
 
 
@@ -2185,8 +2184,8 @@ let renderKPIDashboard = () => {
   if (bar) {
     if (!_kpiSite && sites.length > 0) _kpiSite = sites[0];
     bar.innerHTML = '<span style="font-size:.78rem;color:#6b7280;align-self:center;margin-right:6px;font-weight:600">\u{1F4CD} Site :</span>' +
-      '<button class="kpi-site-btn' + (_kpiSite === null ? ' active' : '') + '" onclick="_kpiSite=null;renderKPIDashboard();renderCASection(\'__all__\')">Tous</button>' +
-      sites.map(s => '<button class="kpi-site-btn' + (_kpiSite === s ? ' active' : '') + '" onclick="_kpiSite=\'' + s.replace(/'/g, '') + '\';renderKPIDashboard();renderCASection(window._kpiSite)">'  + (getSiteName(s) || 'Sans nom') + '</button>').join('');
+      '<button class="kpi-site-btn' + (_kpiSite === null ? ' active' : '') + '" onclick="_kpiSite=null;renderKPIDashboard();setTimeout(function(){renderCASection(\'__all__\')},50)">Tous</button>' +
+      sites.map(s => '<button class="kpi-site-btn' + (_kpiSite === s ? ' active' : '') + '" onclick="_kpiSite=\'' + s.replace(/'/g, '') + '\';renderKPIDashboard();setTimeout(function(){renderCASection(window._kpiSite)},50)">'  + (getSiteName(s) || 'Sans nom') + '</button>').join('');
   }
   _buildEvolutionChart(audits, _kpiSite);
   _buildRadarChart(audits, _kpiSite);
