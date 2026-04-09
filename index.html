@@ -1253,6 +1253,23 @@ let findItemById = (itemId) => {
   return null;
 };
 
+let compressImage = (file, maxSize, quality) => new Promise((resolve) => {
+  const img = new Image();
+  const url = URL.createObjectURL(file);
+  img.onload = () => {
+    URL.revokeObjectURL(url);
+    let w = img.width, h = img.height;
+    if (w > maxSize || h > maxSize) {
+      if (w > h) { h = Math.round(h * maxSize / w); w = maxSize; }
+      else { w = Math.round(w * maxSize / h); h = maxSize; }
+    }
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+    canvas.toBlob(blob => resolve(blob), 'image/jpeg', quality);
+  };
+  img.src = url;
+});
 let addPhotos = async (itemId, files) => {
   const item = findItemById(itemId);
   if (!item) return;
@@ -1437,7 +1454,7 @@ let showHistoryDetail = (audit) => {
   const nokItems = [];
   audit.sections.forEach(s => s.items.forEach(i => { if (i.status === 'nok') nokItems.push({ section: s.label, label: i.label, comment: i.comment }); }));
   const nokHtml = nokItems.length
-    ? nokItems.map(x => `<div class="nok-item"><div class="nok-label">✗ ${x.section} — ${x.label}</div>${x.comment ? `<div class="nok-comment">${x.comment}</div>` : ''}</div>`).join('')
+    ? nokItems.map(x => `<div class="nok-item"><div class="nok-label">${x.status === "nok" ? "✗" : x.status === "ok" ? "✓" : "○"} ${x.section} — ${x.label}</div>${x.comment ? `<div class="nok-comment">${x.comment}</div>` : ''}</div>`).join('')
     : '<p style="color:var(--text2);font-size:0.85rem">Aucun point NOK</p>';
   detail.innerHTML = `
     <strong style="font-size:1rem">${siteName}</strong> <span style="color:var(--text2);font-size:0.85rem">${formatDate(audit.date)}</span>
@@ -1589,17 +1606,17 @@ let renderReport = async () => {
   });
   content.appendChild(sectionsDiv);
 
-  // NOK details with comments
+  // Items with comments
   const nokComments = [];
   filtered.forEach(audit => {
     const sn = allSites.find(s => s.id === audit.siteId)?.name || audit.siteId;
     audit.sections.forEach(s => s.items.forEach(i => {
-      if (i.status === 'nok' && i.comment) nokComments.push({ site: sn, date: audit.date, section: s.label, label: i.label, comment: i.comment });
+      if (i.comment) nokComments.push({ site: sn, date: audit.date, section: s.label, label: i.label, comment: i.comment, status: i.status });
     }));
   });
   if (nokComments.length) {
     const nokDiv = document.createElement('div'); nokDiv.className = 'report-section';
-    nokDiv.innerHTML = '<div class="report-header">💬 Commentaires NOK</div>';
+    nokDiv.innerHTML = '<div class="report-header">💬 Commentaires</div>';
     nokComments.forEach(x => {
       const d = document.createElement('div'); d.className = 'nok-item';
       d.innerHTML = `<div class="nok-label">✗ ${x.section} — ${x.label} <span style="color:var(--text3);font-size:0.78rem">${x.site} ${formatDateShort(x.date)}</span></div><div class="nok-comment">${x.comment}</div>`;
