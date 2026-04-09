@@ -317,7 +317,7 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
 .ca-pro-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin:12px 0}
 .ca-pro-section h3{margin:0 0 12px;font-size:1rem;display:flex;align-items:center;gap:8px}
 .ca-pro-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px}
-.ca-week-row{display:grid;grid-template-columns:100px 1fr 1fr 1fr 120px 40px;gap:6px;align-items:center;padding:8px;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:4px;font-size:.85rem}
+.ca-week-row{display:grid;grid-template-columns:80px 1fr 1fr 1fr 100px 65px 55px 36px;gap:6px;align-items:center;padding:8px;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:4px;font-size:.85rem}
 .ca-week-row.header{background:var(--primary);color:#fff;font-weight:700;border:none;font-size:.8rem}
 .ca-week-row input{width:100%;padding:5px;border:1px solid var(--border);border-radius:4px;font-size:.85rem;background:var(--bg);color:var(--text)}
 .ca-week-row .total-cell{font-weight:700;text-align:right;font-size:.9rem}
@@ -398,6 +398,8 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
       <button class="sidebar-item" data-tab="history" onclick="switchTab('history')">📊 Historique</button>
       <button class="sidebar-item" data-tab="report" onclick="switchTab('report')">📈 Rapport</button>
       <button class="sidebar-item" data-tab="kpi" onclick="switchTab('kpi')">📉 KPI</button>
+      <button class="sidebar-item" data-tab="alertes" onclick="switchTab('alertes')">🚨 Alertes</button>
+      <button class="sidebar-item" data-tab="actions" onclick="switchTab('actions')">📋 Actions</button>
       <button class="sidebar-item" data-tab="settings" onclick="switchTab('settings')">⚙️ Paramètres</button>
     </div>
 
@@ -494,7 +496,28 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
           </div>
         </div>
         <!-- SETTINGS TAB -->
-        <div id="settings-tab" class="tab-panel">
+             <div id="alertes-tab" class="tab-panel">
+        <div style="padding:16px">
+          <h2 style="margin:0 0 16px 0;font-size:1.3rem">🚨 Dashboard Alertes & Suivi Multi-sites</h2>
+          <div id="alertes-content"><p style="color:var(--text2)">Chargement des alertes...</p></div>
+        </div>
+      </div>
+     <div id="actions-tab" class="tab-panel">
+        <div style="padding:16px">
+          <h2 style="margin:0 0 16px 0;font-size:1.3rem">📋 Plan d'Action Corrective</h2>
+          <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+            <button class="btn" onclick="showAddActionModal()" style="background:var(--accent);color:#fff;border:none;padding:8px 16px;border-radius:var(--radius);cursor:pointer">➕ Nouvelle Action</button>
+            <select id="action-filter-status" onchange="renderActions()" style="padding:6px 10px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text)">
+              <option value="all">Tous les statuts</option>
+              <option value="open">🔴 Ouvert</option>
+              <option value="in_progress">🟡 En cours</option>
+              <option value="resolved">🟢 Résolu</option>
+            </select>
+          </div>
+          <div id="actions-list"></div>
+        </div>
+      </div>
+<div id="settings-tab" class="tab-panel">
           <div class="settings-section">
             <h3>Paramètres généraux</h3>
             <div class="form-grid">
@@ -817,6 +840,7 @@ let initApp = async () => {
   } catch (e) {}
 
   populateSiteDropdown();
+  window._auditSaisieMode = true;
   renderAuditItems();
   updateTopbar();
 
@@ -842,10 +866,31 @@ let closeSidebar = () => {
 // ─── Auto-save ────────────────────────────────────────────────────────────────
 let autoSave = () => {
   clearTimeout(autoSaveTimer);
+  let indicator = document.getElementById('autosave-indicator');
+  if (!indicator) {
+    indicator = document.createElement('div');
+    indicator.id = 'autosave-indicator';
+    indicator.style.cssText = 'position:fixed;bottom:16px;right:16px;padding:6px 14px;border-radius:8px;font-size:12px;z-index:9999;transition:opacity 0.3s;pointer-events:none';
+    document.body.appendChild(indicator);
+  }
+  indicator.textContent = '\u23F3 Sauvegarde...';
+  indicator.style.background = 'var(--accent)';
+  indicator.style.color = '#fff';
+  indicator.style.opacity = '1';
   autoSaveTimer = setTimeout(async () => {
     if (currentAudit && currentUser) {
-      try { await db.collection('currentAudit').doc(currentUser.uid).set(currentAudit); }
-      catch (e) { console.error('Auto-save error:', e); }
+      try {
+        await db.collection('currentAudit').doc(currentUser.uid).set(currentAudit);
+        indicator.textContent = '\u2705 Sauvegard\u00E9';
+        indicator.style.background = '#22c55e';
+        setTimeout(() => { indicator.style.opacity = '0'; }, 1500);
+      }
+      catch (e) {
+        console.error('Auto-save error:', e);
+        indicator.textContent = '\u274C Erreur sauvegarde';
+        indicator.style.background = '#ef4444';
+        setTimeout(() => { indicator.style.opacity = '0'; }, 3000);
+      }
     }
   }, 2000);
 };
@@ -879,6 +924,7 @@ let newBlankAudit = () => {
       notes: ''
     };
     autoSave();
+    window._auditSaisieMode = false;
     renderAuditItems();
     updateTopbar();
   };
@@ -1011,8 +1057,21 @@ let renderAuditItems = () => {
   if (!currentAudit) return;
   const container = document.getElementById('audit-sections');
   container.innerHTML = '';
+  const modeBar = document.createElement('div');
+  modeBar.style.cssText = 'display:flex;justify-content:flex-end;margin-bottom:8px;gap:8px;align-items:center';
+  const modeLabel = document.createElement('span');
+  modeLabel.style.cssText = 'font-size:12px;color:var(--text2)';
+  modeLabel.textContent = window._auditSaisieMode ? '\u270F\uFE0F Mode Saisie' : '\u2195\uFE0F Mode Organisation';
+  const modeBtn = document.createElement('button');
+  modeBtn.className = 'btn btn-sm';
+  modeBtn.style.cssText = 'font-size:11px;padding:4px 10px;border-radius:6px;background:var(--bg2);color:var(--text);border:1px solid var(--border)';
+  modeBtn.textContent = window._auditSaisieMode ? 'Activer r\u00E9organisation' : 'Activer saisie';
+  modeBtn.onclick = () => { window._auditSaisieMode = !window._auditSaisieMode; renderAuditItems(); };
+  modeBar.appendChild(modeLabel);
+  modeBar.appendChild(modeBtn);
+  container.appendChild(modeBar);
   currentAudit.sections.forEach(section => container.appendChild(createSectionElement(section)));
-  if (typeof Sortable !== 'undefined') {
+  if (typeof Sortable !== 'undefined' && !window._auditSaisieMode) {
     Sortable.create(container, {
       animation: 150, ghostClass: 'sortable-ghost', dragClass: 'sortable-drag',
       handle: '.section-header', forceFallback: true, fallbackTolerance: 3,
@@ -1051,11 +1110,14 @@ let createSectionElement = (section) => {
   const div = document.createElement('div'); div.className = 'section';
   const header = document.createElement('div'); header.className = 'section-header';
   let scoreHtml = '';
+  const completedItems = section.items ? section.items.filter(it => it.status !== undefined && it.status !== '').length : 0;
+  const totalItems = section.items ? section.items.length : 0;
+  const progressHtml = totalItems > 0 ? `<span style="font-size:11px;padding:2px 8px;border-radius:10px;background:var(--bg2);color:var(--text2);margin-left:6px">${completedItems}/${totalItems}</span>` : '';
   if (score !== null) {
     const c = score >= 80 ? '#22c55e' : score >= 50 ? '#f59e0b' : '#ef4444';
     scoreHtml = `<span class="section-score" style="background:${c}20;color:${c}">${score}%</span>`;
   }
-  header.innerHTML = `<span>${section.label}</span><div style="display:flex;align-items:center;gap:4px">${scoreHtml}<span class="toggle">▼</span></div>`;
+  header.innerHTML = `<span>${section.label}</span><div style="display:flex;align-items:center;gap:4px">${scoreHtml}${progressHtml}<span class="toggle">▼</span></div>`;
   header.onclick = () => toggleSection(section.id);
   div.appendChild(header);
   const body = document.createElement('div'); body.className = 'section-body'; body.id = `section-${section.id}`;
@@ -1136,8 +1198,15 @@ let createAuditItemEl = (sectionId, item) => {
 
 let toggleSection = (sectionId) => {
   const body = document.getElementById(`section-${sectionId}`);
-  body.classList.toggle('open');
-  body.parentElement.querySelector('.section-header .toggle').classList.toggle('open');
+  const isOpen = body.classList.contains('open');
+  document.querySelectorAll('.section-body.open').forEach(sb => {
+    sb.classList.remove('open');
+    sb.parentElement.querySelector('.section-header .toggle').classList.remove('open');
+  });
+  if (!isOpen) {
+    body.classList.add('open');
+    body.parentElement.querySelector('.section-header .toggle').classList.add('open');
+  }
 };
 
 let toggleItemBody = (sectionId, item, btn) => {
@@ -1188,6 +1257,15 @@ let addPhotos = async (itemId, files) => {
   const item = findItemById(itemId);
   if (!item) return;
   if (!item.photos) item.photos = [];
+  let indicator = document.getElementById('autosave-indicator');
+  if (!indicator) {
+    indicator = document.createElement('div');
+    indicator.id = 'autosave-indicator';
+    indicator.style.cssText = 'position:fixed;bottom:16px;right:16px;padding:6px 14px;border-radius:8px;font-size:12px;z-index:9999;transition:opacity 0.3s;pointer-events:none';
+    document.body.appendChild(indicator);
+  }
+  const totalFiles = files.length;
+  let uploadedCount = 0;
   const compress = (file) => new Promise(res => {
     const img = new Image();
     img.onload = () => {
@@ -1226,6 +1304,11 @@ let addPhotos = async (itemId, files) => {
       await ref.put(blob);
       const url = await ref.getDownloadURL();
       item.photos.push(url);
+      uploadedCount++;
+      indicator.textContent = '\u{1F4F7} Upload ' + uploadedCount + '/' + totalFiles;
+      indicator.style.background = 'var(--accent)';
+      indicator.style.color = '#fff';
+      indicator.style.opacity = '1';
       if (previews[i]) { previews[i].src = url; previews[i].classList.remove('uploading'); }
       const camEl = document.querySelector('#item-' + itemId)?.querySelector('.photo-trigger');
       if (camEl) camEl.textContent = '\uD83D\uDCF7 ' + item.photos.length;
@@ -1268,6 +1351,7 @@ let renderPhotos = (itemId, container) => {
 };
 
 let deletePhoto = async (itemId, photoIdx) => {
+  if (!confirm('Supprimer cette photo ?')) return;
   const item = findItemById(itemId);
   if (!item || !item.photos) return;
   const url = item.photos[photoIdx];
@@ -1445,6 +1529,13 @@ let renderReport = async () => {
   const header = document.createElement('div');
   header.innerHTML = `<h2 style="font-size:1.1rem;margin-bottom:12px">Rapport — ${siteName} (${fromStr} → ${toStr})</h2>`;
   content.appendChild(header);
+  const notesEl = document.getElementById('audit-notes');
+  if (notesEl && notesEl.value && notesEl.value.trim()) {
+    const notesDiv = document.createElement('div');
+    notesDiv.style.cssText = 'background:var(--bg2);border-left:4px solid var(--accent);padding:12px 16px;margin:12px 0;border-radius:var(--radius)';
+    notesDiv.innerHTML = '<strong style="display:block;margin-bottom:4px">\u{1F4DD} Notes g\u00E9n\u00E9rales</strong><p style="margin:0;white-space:pre-wrap;font-size:.9rem">' + notesEl.value.replace(/</g,'&lt;') + '</p>';
+    content.appendChild(notesDiv);
+  }
   const statsDiv = document.createElement('div'); statsDiv.className = 'stats-grid'; statsDiv.style.marginBottom = '16px';
   statsDiv.innerHTML = `
     <div class="stat-card"><div class="stat-label">Score moyen</div><div class="stat-value" style="color:${scoreColor}">${avgScore.toFixed(1)}%</div><div class="stat-details">${filtered.length} audit(s)</div></div>
@@ -2138,6 +2229,9 @@ let renderKpiCharts = () => {
 // ─── UI helpers ───────────────────────────────────────────────────────────────
 let switchTab = (tab) => {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
+  const activeBtn = document.querySelector('.sidebar-item[data-tab="' + tab + '"]');
+  if (activeBtn) activeBtn.classList.add('active');
   const panel = document.getElementById(`${tab}-tab`);
   if (panel) {
     panel.classList.add('active');
@@ -2145,6 +2239,8 @@ let switchTab = (tab) => {
     if (tab === 'report') populateReportSelects();
     if (tab === 'history') renderHistory();
     if (tab === 'kpi') renderKpiHistoryTab();
+    if (tab === 'alertes') renderAlertes();
+    if (tab === 'actions') renderActions();
     if (tab === 'editor') populateEditorSelects();
   }
   document.querySelectorAll('[data-tab]').forEach(el => {
@@ -2185,7 +2281,7 @@ let renderKPIDashboard = () => {
     if (!_kpiSite && sites.length > 0) _kpiSite = sites[0];
     bar.innerHTML = '<span style="font-size:.78rem;color:#6b7280;align-self:center;margin-right:6px;font-weight:600">\u{1F4CD} Site :</span>' +
       '<button class="kpi-site-btn' + (_kpiSite === null ? ' active' : '') + '" onclick="_kpiSite=null;renderKPIDashboard();setTimeout(function(){renderCASection(\'__all__\')},50)">Tous</button>' +
-      sites.map(s => '<button class="kpi-site-btn' + (_kpiSite === s ? ' active' : '') + '" onclick="_kpiSite=\'' + s.replace(/'/g, '') + '\';renderKPIDashboard();setTimeout(function(){renderCASection(window._kpiSite)},50)">'  + (getSiteName(s) || 'Sans nom') + '</button>').join('');
+      sites.map(s => '<button class="kpi-site-btn' + (_kpiSite === s ? ' active' : '') + '" onclick="_kpiSite=\'' + s.replace(/'/g, '') + '\';renderKPIDashboard();setTimeout(function(){renderCASection(window._kpiSite)},50)">'  + (getSiteName(s) || 'Sans nom') + '</button>').join('') + '<button class="kpi-site-btn" style="margin-left:auto;background:var(--accent);color:#fff" onclick="exportKPIPDF()">\u{1F4E5} Export PDF</button>';
   }
   _buildEvolutionChart(audits, _kpiSite);
   _buildRadarChart(audits, _kpiSite);
@@ -2240,7 +2336,7 @@ let renderCASection = (siteId) => {
   html += '</div></div>';
   
   // Header row
-  html += '<div class="ca-week-row header"><div>Semaine</div><div>Activit\u00E9s \u20AC</div><div>Bar \u20AC</div><div>BtoB \u20AC</div><div>Total</div><div>\uD83C\uDFD6</div></div>';
+  html += '<div class="ca-week-row header"><div>Semaine</div><div>Activit\u00E9s \u20AC</div><div>Bar \u20AC</div><div>BtoB \u20AC</div><div>Total</div><div>H. Staff</div><div>Ratio</div><div>\uD83C\uDFD6</div></div>';
   
   // Sort weeks
   const weekKeys = Object.keys(sd.weeks).sort().reverse();
@@ -2260,6 +2356,10 @@ let renderCASection = (siteId) => {
     html += '<input type="number" value="' + (w.bar || '') + '" placeholder="0" onchange="updateCA(\'' + siteId + '\',\'' + wk + '\',\'bar\',this.value)">';
     html += '<input type="number" value="' + (w.btob || '') + '" placeholder="0" onchange="updateCA(\'' + siteId + '\',\'' + wk + '\',\'btob\',this.value)">';
     html += '<div class="total-cell">' + total.toLocaleString('fr-FR') + ' \u20AC</div>';
+    html += '<input type="number" value="' + (w.staffHours || '') + '" placeholder="0" style="width:55px;text-align:center" onchange="updateCA(\'' + siteId + '\',\'' + wk + '\',\'staffHours\',this.value)">';
+    var _sRatio = (w.staffHours && total > 0) ? ((w.staffHours * 12) / total * 100).toFixed(1) : null;
+    var _sColor = _sRatio !== null ? (_sRatio > 35 ? '#ef4444' : _sRatio > 25 ? '#f59e0b' : '#22c55e') : 'var(--text2)';
+    html += '<div style="font-weight:600;color:' + _sColor + ';font-size:11px">' + (_sRatio !== null ? _sRatio + '%' : '-') + '</div>';
     html += '<div class="holiday-toggle' + holidayClass + '" onclick="toggleHoliday(\'' + siteId + '\',\'' + wk + '\',this)">\uD83C\uDF34</div>';
     html += '</div>';
   });
@@ -2607,6 +2707,23 @@ let exportPDF = () => {
   const clone = reportEl.cloneNode(true);
   clone.querySelectorAll('button,.btn,.no-print').forEach(el => el.remove());
   clone.style.cssText = 'background:#fff;padding:0;font-family:Arial,sans-serif;font-size:12px;color:#111;max-width:none';
+  clone.querySelectorAll('*').forEach(el => {
+    if (!el.style.color || el.style.color.includes('var(')) el.style.color = '#111';
+    if (!el.style.backgroundColor || el.style.backgroundColor.includes('var(')) el.style.backgroundColor = '#fff';
+    if (el.style.background && el.style.background.includes('var(')) el.style.background = '#fff';
+    if (el.style.borderColor && el.style.borderColor.includes('var(')) el.style.borderColor = '#ddd';
+    if (el.tagName === 'CANVAS') { el.style.backgroundColor = '#fff'; }
+  });
+  clone.querySelectorAll('[style*="background"]').forEach(el => {
+    if (el.style.background.includes('var(--')) el.style.background = '#f8f8f8';
+  });
+  clone.querySelectorAll('img').forEach(img => {
+    img.crossOrigin = 'anonymous';
+    img.style.maxWidth = '200px';
+    img.style.maxHeight = '150px';
+    img.style.borderRadius = '4px';
+    img.style.margin = '4px';
+  });
   const wrap = document.createElement('div');
   wrap.style.cssText = 'background:#fff;padding:16px;';
   const header = document.createElement('div');
@@ -2628,6 +2745,188 @@ let buildAuditStamp = (score, siteName, auditorName, dateStr) => {
   div.className = 'audit-stamp';
   div.innerHTML = '<div class="audit-stamp-inner ' + color + '"><span class="stamp-ring-text">AUDIT OFFICIEL</span><span class="stamp-score">' + score + '%</span><span class="stamp-label">Score global</span><span class="stamp-grade">' + grade + '</span><span class="stamp-site">' + (siteName || 'Tous sites') + '</span><span class="stamp-date">' + (dateStr || new Date().toLocaleDateString('fr-FR')) + '</span><span class="stamp-auditor">' + (auditorName || '') + '</span><span class="stamp-ring-bottom">\u2713 VALID\u00c9</span></div>';
   return div;
+};
+
+// ── KPI PDF Export ──
+let exportKPIPDF = () => {
+  if (typeof html2pdf === 'undefined') { alert('Biblioth\u00E8que PDF non charg\u00E9e.'); return; }
+  const kpiPanel = document.getElementById('kpi-panel');
+  if (!kpiPanel) { alert('Aucun KPI \u00E0 exporter.'); return; }
+  const clone = kpiPanel.cloneNode(true);
+  clone.querySelectorAll('button,.btn,.no-print,input').forEach(el => el.remove());
+  clone.style.cssText = 'background:#fff;padding:0;color:#111;font-family:Arial,sans-serif;font-size:12px;max-width:none';
+  clone.querySelectorAll('*').forEach(el => {
+    el.style.color = el.style.color || '#111';
+    el.style.background = el.style.background || '#fff';
+  });
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'background:#fff;padding:16px;';
+  const header = document.createElement('div');
+  header.style.cssText = 'text-align:center;margin-bottom:16px;';
+  const siteName = window._kpiSite === '__all__' ? 'Tous les sites' : (typeof getSiteName === 'function' ? getSiteName(window._kpiSite) : window._kpiSite);
+  header.innerHTML = '<h1 style="font-size:20px;color:#111">KPI Dashboard - ' + siteName + '</h1><p style="font-size:12px;color:#444">Export\u00E9 le ' + new Date().toLocaleDateString('fr-FR') + '</p>';
+  wrap.appendChild(header);
+  wrap.appendChild(clone);
+  html2pdf().set({
+    margin:[8,8,8,8], filename:'kpi-' + (siteName).replace(/\s+/g,'-').toLowerCase() + '-' + new Date().toISOString().slice(0,10) + '.pdf',
+    image:{type:'jpeg',quality:0.92}, html2canvas:{scale:2,useCORS:true,logging:false,allowTaint:true},
+    jsPDF:{unit:'mm',format:'a4',orientation:'landscape'}, pagebreak:{mode:['avoid-all','css','legacy']}
+  }).from(wrap).save();
+};
+
+
+// ── Dashboard Alertes & Suivi Multi-sites ──
+let renderAlertes = () => {
+  const container = document.getElementById('alertes-content');
+  if (!container) return;
+  const audits = historyCache || [];
+  const allSitesArr = typeof allSites !== 'undefined' ? allSites : [];
+  const siteData = {};
+  allSitesArr.forEach(site => { siteData[site.id] = { name: site.name, lastAudit: null, avgScore: 0, audits: [], nokCount: 0, trend: 'stable' }; });
+  audits.forEach(a => {
+    if (!a.siteId || !siteData[a.siteId]) return;
+    siteData[a.siteId].audits.push(a);
+    if (!siteData[a.siteId].lastAudit || (a.date && a.date > siteData[a.siteId].lastAudit)) siteData[a.siteId].lastAudit = a.date;
+  });
+  Object.keys(siteData).forEach(sId => {
+    const sd = siteData[sId];
+    if (!sd.audits.length) return;
+    let totalScore = 0, count = 0;
+    sd.audits.forEach(a => {
+      if (a.sections) a.sections.forEach(sec => { if (sec.items) sec.items.forEach(item => { if (item.status === 'nok') sd.nokCount++; }); });
+      if (a.score !== undefined) { totalScore += a.score; count++; }
+    });
+    sd.avgScore = count > 0 ? Math.round(totalScore / count) : 0;
+    if (sd.audits.length >= 2) {
+      const sorted = sd.audits.sort((a,b) => (b.date||'').localeCompare(a.date||''));
+      if (sorted[0].score > sorted[1].score) sd.trend = 'up';
+      else if (sorted[0].score < sorted[1].score) sd.trend = 'down';
+    }
+  });
+  let alerts = [];
+  const now = Date.now(), DAY = 86400000;
+  Object.keys(siteData).forEach(sId => {
+    const sd = siteData[sId];
+    const daysSince = sd.lastAudit ? Math.floor((now - new Date(sd.lastAudit).getTime()) / DAY) : 999;
+    if (daysSince > 30) alerts.push({ type: 'warning', site: sd.name, msg: 'Aucun audit depuis ' + daysSince + ' jours', priority: 2 });
+    if (sd.avgScore > 0 && sd.avgScore < 50) alerts.push({ type: 'danger', site: sd.name, msg: 'Score moyen critique: ' + sd.avgScore + '%', priority: 3 });
+    if (sd.nokCount > 5) alerts.push({ type: 'warning', site: sd.name, msg: sd.nokCount + ' points NOK r\u00E9currents', priority: 2 });
+    if (sd.trend === 'down') alerts.push({ type: 'info', site: sd.name, msg: 'Tendance en baisse', priority: 1 });
+  });
+  alerts.sort((a,b) => b.priority - a.priority);
+  let html = '<div style="margin-bottom:24px"><h3 style="margin:0 0 12px">\u26A0\uFE0F Alertes actives (' + alerts.length + ')</h3>';
+  if (!alerts.length) html += '<div style="padding:16px;background:var(--bg2);border-radius:var(--radius);text-align:center;color:var(--text2)">\u2705 Aucune alerte - Tout est en ordre !</div>';
+  else alerts.forEach(a => {
+    const colors = { danger: '#ef4444', warning: '#f59e0b', info: '#3b82f6' };
+    const icons = { danger: '\u{1F534}', warning: '\u{1F7E1}', info: '\u{1F535}' };
+    html += '<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;margin-bottom:6px;background:' + colors[a.type] + '15;border-left:4px solid ' + colors[a.type] + ';border-radius:var(--radius)">';
+    html += '<span>' + icons[a.type] + '</span><div><strong>' + a.site + '</strong><br><span style="font-size:.85rem;color:var(--text2)">' + a.msg + '</span></div></div>';
+  });
+  html += '</div>';
+  html += '<h3 style="margin:0 0 12px">\u{1F3E5} Sant\u00E9 des sites</h3><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">';
+  Object.keys(siteData).forEach(sId => {
+    const sd = siteData[sId];
+    const scoreColor = sd.avgScore >= 80 ? '#22c55e' : sd.avgScore >= 50 ? '#f59e0b' : '#ef4444';
+    const trendIcon = sd.trend === 'up' ? '\u2197\uFE0F' : sd.trend === 'down' ? '\u2198\uFE0F' : '\u27A1\uFE0F';
+    const daysSince = sd.lastAudit ? Math.floor((now - new Date(sd.lastAudit).getTime()) / DAY) : null;
+    html += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px">';
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><strong style="font-size:1.05rem">' + sd.name + '</strong><span style="font-size:1.4rem">' + trendIcon + '</span></div>';
+    html += '<div style="display:flex;gap:12px;margin-bottom:8px">';
+    html += '<div style="text-align:center;flex:1;padding:8px;background:' + scoreColor + '15;border-radius:6px"><div style="font-size:1.5rem;font-weight:700;color:' + scoreColor + '">' + (sd.avgScore || '-') + '%</div><div style="font-size:.75rem;color:var(--text2)">Score moyen</div></div>';
+    html += '<div style="text-align:center;flex:1;padding:8px;background:var(--bg2);border-radius:6px"><div style="font-size:1.5rem;font-weight:700">' + sd.audits.length + '</div><div style="font-size:.75rem;color:var(--text2)">Audits</div></div>';
+    html += '<div style="text-align:center;flex:1;padding:8px;background:#ef444415;border-radius:6px"><div style="font-size:1.5rem;font-weight:700;color:#ef4444">' + sd.nokCount + '</div><div style="font-size:.75rem;color:var(--text2)">NOK</div></div></div>';
+    html += '<div style="font-size:.8rem;color:var(--text2)">Dernier audit: ' + (daysSince !== null ? 'il y a ' + daysSince + ' jours' : 'Jamais') + '</div></div>';
+  });
+  html += '</div>';
+  container.innerHTML = html;
+};
+
+// ── Plan d'Action Corrective ──
+let _actionsCache = null;
+let loadActions = async () => {
+  if (!currentUser) return [];
+  try { const snap = await db.collection('correctiveActions').orderBy('createdAt', 'desc').get(); _actionsCache = snap.docs.map(d => ({id: d.id, ...d.data()})); }
+  catch(e) { _actionsCache = []; }
+  return _actionsCache;
+};
+let renderActions = async () => {
+  const list = document.getElementById('actions-list');
+  if (!list) return;
+  if (!_actionsCache) await loadActions();
+  const actions = _actionsCache || [];
+  const filterEl = document.getElementById('action-filter-status');
+  const filter = filterEl ? filterEl.value : 'all';
+  const filtered = filter === 'all' ? actions : actions.filter(a => a.status === filter);
+  if (!filtered.length) { list.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text2)">Aucune action corrective.</div>'; return; }
+  let html = '';
+  filtered.forEach(action => {
+    const statusIcons = { open: '\u{1F534}', in_progress: '\u{1F7E1}', resolved: '\u{1F7E2}' };
+    const statusLabels = { open: 'Ouvert', in_progress: 'En cours', resolved: 'R\u00E9solu' };
+    const icon = statusIcons[action.status] || '\u26AA';
+    const label = statusLabels[action.status] || action.status;
+    const isOverdue = action.deadline && new Date(action.deadline) < new Date() && action.status !== 'resolved';
+    html += '<div style="background:var(--surface);border:1px solid ' + (isOverdue ? '#ef4444' : 'var(--border)') + ';border-radius:var(--radius);padding:14px;margin-bottom:8px">';
+    html += '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div style="flex:1"><strong>' + (action.title || 'Sans titre') + '</strong>';
+    if (action.siteId) html += ' <span style="font-size:.75rem;padding:2px 6px;background:var(--bg2);border-radius:4px">' + (typeof getSiteName === "function" ? getSiteName(action.siteId) : action.siteId) + '</span>';
+    html += '</div><span style="font-size:.85rem">' + icon + ' ' + label + '</span></div>';
+    if (action.description) html += '<p style="margin:0 0 8px;font-size:.9rem;color:var(--text2)">' + action.description + '</p>';
+    html += '<div style="display:flex;gap:12px;font-size:.8rem;color:var(--text2);flex-wrap:wrap">';
+    if (action.assignee) html += '<span>\u{1F464} ' + action.assignee + '</span>';
+    if (action.deadline) html += '<span' + (isOverdue ? ' style="color:#ef4444;font-weight:600"' : '') + '>\u{1F4C5} ' + action.deadline + (isOverdue ? ' (en retard!)' : '') + '</span>';
+    if (action.sectionLabel) html += '<span>\u{1F4C2} ' + action.sectionLabel + '</span>';
+    html += '</div>';
+    if (action.photoBefore || action.photoAfter) {
+      html += '<div style="display:flex;gap:8px;margin-top:8px">';
+      if (action.photoBefore) html += '<div style="text-align:center"><img src="' + action.photoBefore + '" style="width:100px;height:75px;object-fit:cover;border-radius:4px"><div style="font-size:.7rem">Avant</div></div>';
+      if (action.photoAfter) html += '<div style="text-align:center"><img src="' + action.photoAfter + '" style="width:100px;height:75px;object-fit:cover;border-radius:4px"><div style="font-size:.7rem">Apr\u00E8s</div></div>';
+      html += '</div>';
+    }
+    html += '<div style="display:flex;gap:6px;margin-top:10px">';
+    if (action.status !== 'resolved') {
+      const nextStatus = action.status === 'open' ? 'in_progress' : 'resolved';
+      const nextLabel = action.status === 'open' ? 'D\u00E9marrer' : 'R\u00E9soudre';
+      html += '<button onclick="updateActionStatus(\'' + action.id + '\',\'' + nextStatus + '\')" style="font-size:.8rem;padding:4px 10px;border:1px solid var(--border);border-radius:4px;background:var(--bg2);color:var(--text);cursor:pointer">' + nextLabel + '</button>';
+    }
+    html += '<button onclick="deleteAction(\'' + action.id + '\')" style="font-size:.8rem;padding:4px 10px;border:1px solid #ef4444;border-radius:4px;background:#ef444415;color:#ef4444;cursor:pointer">Supprimer</button></div></div>';
+  });
+  list.innerHTML = html;
+};
+let showAddActionModal = () => {
+  const sites = typeof allSites !== 'undefined' ? allSites : [];
+  let siteOpts = '<option value="">-- S\u00E9lectionner --</option>';
+  sites.forEach(s => { siteOpts += '<option value="' + s.id + '">' + s.name + '</option>'; });
+  const modal = document.createElement('div'); modal.className = 'modal active'; modal.id = 'modal-add-action';
+  modal.innerHTML = '<div class="modal-content" style="max-width:500px"><div class="modal-header">Nouvelle Action Corrective <button class="close" onclick="document.getElementById(\'modal-add-action\').remove()">\u2715</button></div>' +
+    '<div style="padding:16px;display:flex;flex-direction:column;gap:12px">' +
+    '<input id="action-title" placeholder="Titre" style="padding:8px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text)">' +
+    '<textarea id="action-desc" placeholder="Description" rows="3" style="padding:8px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text)"></textarea>' +
+    '<select id="action-site" style="padding:8px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text)">' + siteOpts + '</select>' +
+    '<input id="action-assignee" placeholder="Responsable" style="padding:8px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text)">' +
+    '<input id="action-deadline" type="date" style="padding:8px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text)">' +
+    '<button onclick="saveNewAction()" style="padding:10px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;font-weight:600">Cr\u00E9er</button></div></div>';
+  document.body.appendChild(modal);
+};
+let saveNewAction = async () => {
+  const title = document.getElementById('action-title').value.trim();
+  if (!title) { alert('Titre requis'); return; }
+  try {
+    await db.collection('correctiveActions').add({
+      title, description: document.getElementById('action-desc').value.trim(),
+      siteId: document.getElementById('action-site').value, assignee: document.getElementById('action-assignee').value.trim(),
+      deadline: document.getElementById('action-deadline').value, status: 'open',
+      createdAt: new Date().toISOString(), createdBy: currentUser ? currentUser.uid : '', photoBefore: '', photoAfter: ''
+    });
+    _actionsCache = null; document.getElementById('modal-add-action').remove(); renderActions();
+  } catch(e) { alert('Erreur: ' + e.message); }
+};
+let updateActionStatus = async (actionId, newStatus) => {
+  try { await db.collection('correctiveActions').doc(actionId).update({ status: newStatus, updatedAt: new Date().toISOString() }); _actionsCache = null; renderActions(); }
+  catch(e) { alert('Erreur: ' + e.message); }
+};
+let deleteAction = async (actionId) => {
+  if (!confirm('Supprimer cette action ?')) return;
+  try { await db.collection('correctiveActions').doc(actionId).delete(); _actionsCache = null; renderActions(); }
+  catch(e) { alert('Erreur: ' + e.message); }
 };
 </script>
 </body>
