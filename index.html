@@ -341,6 +341,48 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
 .ca-template-modal textarea{width:100%;min-height:150px;padding:8px;border:1px solid var(--border);border-radius:var(--radius);font-family:monospace;font-size:.8rem}
 @media print{.ca-week-row .holiday-toggle{font-size:.9rem}.no-print{display:none!important}.print-only{display:block!important}.photo-in-report{display:none!important}}
 .print-only{display:none}
+
+/* Enhanced responsive */
+@media (max-width:768px) {
+  .tab-panel{padding:10px}
+  .section-header{padding:10px 12px;font-size:0.9rem}
+  .item-btn{padding:8px 10px;font-size:0.85rem}
+  .item-grid{grid-template-columns:1fr !important}
+  .modal-content{width:95vw !important;max-width:95vw !important;margin:10px}
+  .modal-content.wide{width:95vw !important}
+  .report-section{padding:8px}
+  .stat-card{padding:10px}
+  .stats-grid{grid-template-columns:1fr 1fr !important}
+  .topbar{padding:0 10px}
+  .topbar h1{font-size:1rem}
+  .action-bar{flex-direction:column;gap:8px}
+  .action-bar select,.action-bar input,.action-bar button{width:100%;min-width:0}
+  .ca-week-row{grid-template-columns:60px 1fr 1fr 1fr 80px 55px 45px 30px !important;font-size:0.75rem}
+  .kpi-site-bar{flex-direction:column;align-items:stretch}
+  .kpi-site-bar select{width:100%}
+}
+@media (max-width:480px) {
+  .stats-grid{grid-template-columns:1fr !important}
+  .section-header{font-size:0.85rem;padding:8px 10px}
+  .item-btn{font-size:0.8rem;padding:6px 8px}
+  .item-status-icon{font-size:1.2rem}
+  .topbar h1{font-size:0.9rem}
+  .sidebar{width:85vw}
+  .tab-panel{padding:6px}
+  .modal-content{padding:12px}
+  .modal-header{font-size:0.95rem}
+  body{font-size:13px}
+  .ca-week-row{grid-template-columns:50px 1fr 1fr 70px 50px 40px 28px !important;font-size:0.7rem;gap:2px}
+  .report-header{font-size:1rem}
+  table{font-size:0.75rem}
+  table th,table td{padding:4px 5px}
+}
+@media (max-width:360px) {
+  .topbar{height:44px}
+  .topbar h1{font-size:0.85rem}
+  .section-header span{font-size:0.8rem}
+  .hamburger{width:36px;height:36px}
+}
 </style>
 </head>
 <body>
@@ -1107,12 +1149,12 @@ let computeSectionScore = (section) => {
 
 let createSectionElement = (section) => {
   const score = computeSectionScore(section);
-  const div = document.createElement('div'); div.className = 'section';
+  const div = document.createElement('div'); div.className = 'section'; div.dataset.sectionId = section.id;
   const header = document.createElement('div'); header.className = 'section-header';
   let scoreHtml = '';
   const completedItems = section.items ? section.items.filter(it => it.status === 'ok' || it.status === 'nok').length : 0;
   const totalItems = section.items ? section.items.length : 0;
-  const progressHtml = totalItems > 0 ? `<span style="font-size:11px;padding:2px 8px;border-radius:10px;background:var(--bg2);color:var(--text2);margin-left:6px">${completedItems}/${totalItems}</span>` : '';
+  const progressHtml = totalItems > 0 ? `<span style="font-size:11px;padding:2px 8px;border-radius:10px;background:var(--bg2);color:var(--text2);margin-left:6px" class="progress-badge">${completedItems}/${totalItems}</span>` : '';
   if (score !== null) {
     const c = score >= 80 ? '#22c55e' : score >= 50 ? '#f59e0b' : '#ef4444';
     scoreHtml = `<span class="section-score" style="background:${c}20;color:${c}">${score}%</span>`;
@@ -1239,6 +1281,16 @@ let setStatus = (itemId, status) => {
       header.style.background = c + '20'; header.style.color = c; header.textContent = score + '%';
     }
   }
+  // Update progress counter
+  if (currentAudit) {
+    currentAudit.sections.forEach(sec => {
+      const hdr = document.querySelector('[data-section-id="' + sec.id + '"] .progress-badge');
+      if (hdr) {
+        const done = sec.items.filter(it => it.status === 'ok' || it.status === 'nok').length;
+        hdr.textContent = done + '/' + sec.items.length;
+      }
+    });
+  }
   autoSave();
 };
 
@@ -1293,7 +1345,7 @@ let addPhotos = async (itemId, files) => {
         reader.onloadend = () => resolve(reader.result);
         reader.readAsDataURL(blob);
       });
-      item.photos.push(base64);
+      if (!item.photos.includes(base64)) item.photos.push(base64);
       if (photoDiv) {
         const img = document.createElement('img');
         img.src = base64;
@@ -1582,16 +1634,33 @@ let renderReport = async () => {
   filtered.forEach(audit => {
     const sn = allSites.find(s => s.id === audit.siteId)?.name || audit.siteId;
     audit.sections.forEach(s => s.items.forEach(i => {
-      if (i.comment) nokComments.push({ site: sn, date: audit.date, section: s.label, label: i.label, comment: i.comment, status: i.status });
+      if (i.comment) nokComments.push({ site: sn, date: audit.date, section: s.label, label: i.label, comment: i.comment, status: i.status, hasPhotos: (i.photos && i.photos.length > 0) });
     }));
   });
   if (nokComments.length) {
     const nokDiv = document.createElement('div'); nokDiv.className = 'report-section';
     nokDiv.innerHTML = '<div class="report-header">💬 Commentaires</div>';
+    // Group by section
+    const grouped = {};
     nokComments.forEach(x => {
-      const d = document.createElement('div'); d.className = 'nok-item';
-      d.innerHTML = `<div class="nok-label">✗ ${x.section} — ${x.label} <span style="color:var(--text3);font-size:0.78rem">${x.site} ${formatDateShort(x.date)}</span></div><div class="nok-comment">${x.comment}</div>`;
-      nokDiv.appendChild(d);
+      if (!grouped[x.section]) grouped[x.section] = [];
+      grouped[x.section].push(x);
+    });
+    Object.entries(grouped).forEach(([secName, items]) => {
+      const secDiv = document.createElement('div');
+      secDiv.style.cssText = 'margin-bottom:12px';
+      secDiv.innerHTML = '<div style="font-weight:700;font-size:0.9rem;padding:6px 0;border-bottom:1px solid var(--border);margin-bottom:6px">' + secName + '</div>';
+      items.forEach(x => {
+        const statusColor = x.status === 'ok' ? '#22c55e' : x.status === 'nok' ? '#ef4444' : '#f59e0b';
+        const statusIcon = x.status === 'ok' ? '\u2713' : x.status === 'nok' ? '\u2717' : '\u25CB';
+        const statusLabel = (x.status || 'na').toUpperCase();
+        const photoTag = x.hasPhotos ? ' \uD83D\uDCF7' : '';
+        const d = document.createElement('div');
+        d.style.cssText = 'padding:6px 8px;margin:3px 0;border-radius:6px;border-left:3px solid ' + statusColor + ';background:var(--bg2)';
+        d.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center"><span><b style="color:' + statusColor + '">' + statusIcon + ' ' + statusLabel + '</b> ' + x.label + photoTag + '</span><span style="color:var(--text3);font-size:0.75rem">' + x.site + ' ' + formatDateShort(x.date) + '</span></div><div style="color:var(--text2);font-size:0.83rem;margin-top:3px">' + x.comment + '</div>';
+        secDiv.appendChild(d);
+      });
+      nokDiv.appendChild(secDiv);
     });
     content.appendChild(nokDiv);
 
