@@ -601,6 +601,7 @@ h2,h3{margin:8px 0 4px!important;font-size:14px!important}
 
           <div class="settings-section" id="users-section" style="display:none">
             <h3>Utilisateurs</h3>
+            <button class="btn btn-primary btn-sm" onclick="openAddUserModal()" style="margin-bottom:12px">+ Ajouter un utilisateur</button>
             <p style="color:var(--text2);font-size:0.82rem;margin-bottom:10px">Les utilisateurs se connectent avec Google. Les nouveaux comptes doivent être approuvés par un admin.</p>
             <div id="users-list"></div>
           </div>
@@ -670,7 +671,7 @@ h2,h3{margin:8px 0 4px!important;font-size:14px!important}
       </select>
     </div>
     <div class="form-group" id="lecteur-sites-group" style="display:none">
-      <label>Sites autoris\u00e9s</label>
+      <label>Sites autorisés</label>
       <div id="lecteur-sites-checkboxes" style="display:flex;flex-direction:column;gap:6px;margin-top:4px"></div>
     </div>
 
@@ -678,6 +679,33 @@ h2,h3{margin:8px 0 4px!important;font-size:14px!important}
       <button class="btn btn-danger" onclick="deleteUser()">Supprimer</button>
       <button class="btn btn-secondary" onclick="closeModal('modal-edit-user')">Annuler</button>
       <button class="btn btn-primary" onclick="saveUserModal()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<div id="modal-add-user" class="modal-overlay">
+  <div class="modal" style="max-width:420px">
+    <h3>Ajouter un utilisateur</h3>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="add-user-email" placeholder="email@exemple.com" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:var(--radius)">
+    </div>
+    <div class="form-group">
+      <label>R\u00f4le</label>
+      <select id="add-user-role" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:var(--radius)">
+        <option value="auditor">Auditeur</option>
+        <option value="manager">Manager</option>
+        <option value="admin">Admin</option>
+        <option value="lecteur">Lecteur</option>
+      </select>
+    </div>
+    <div class="form-group" id="add-user-sites-group">
+      <label>Sites autoris\u00e9s</label>
+      <div id="add-user-sites-checkboxes" style="display:flex;flex-direction:column;gap:6px;margin-top:4px"></div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
+      <button class="btn btn-secondary" onclick="closeModal('modal-add-user')">Annuler</button>
+      <button class="btn btn-primary" onclick="saveNewUser()">Ajouter</button>
     </div>
   </div>
 </div>
@@ -820,7 +848,20 @@ auth.onAuthStateChanged(async (fbUser) => {
       let snap = await db.collection('users').doc(fbUser.uid).get();
       if (!snap.exists) {
         const isAdmin = fbUser.email === 'thibaut.celaudoux@gmail.com';
-        const profile = { uid: fbUser.uid, email: fbUser.email, name: fbUser.displayName || fbUser.email.split('@')[0], role: isAdmin ? 'admin' : 'auditor', status: isAdmin ? 'approved' : 'pending', photoURL: fbUser.photoURL || '', createdAt: new Date().toISOString() };
+        let preRole = isAdmin ? 'admin' : 'auditor';
+        let preStatus = isAdmin ? 'approved' : 'pending';
+        let preAllowedSites = [];
+        try {
+          const preDoc = await db.collection('preApproved').doc(fbUser.email.toLowerCase()).get();
+          if (preDoc.exists) {
+            const pre = preDoc.data();
+            preRole = pre.role || preRole;
+            preStatus = 'approved';
+            preAllowedSites = pre.allowedSites || [];
+            await db.collection('preApproved').doc(fbUser.email.toLowerCase()).delete();
+          }
+        } catch(pe) {}
+        const profile = { uid: fbUser.uid, email: fbUser.email, name: fbUser.displayName || '', photoURL: fbUser.photoURL || '', role: preRole, status: preStatus, allowedSites: preAllowedSites };
         await db.collection('users').doc(fbUser.uid).set(profile);
         currentUser = profile;
       } else {
@@ -865,11 +906,31 @@ auth.onAuthStateChanged(async (fbUser) => {
 let applyRoleUI = () => {
   const chip = document.getElementById('user-chip');
   if (chip) chip.innerHTML = currentUser.photoURL
-    ? `<img src="${currentUser.photoURL}" style="width:22px;height:22px;border-radius:50%"> <span>${currentUser.name}</span>`
-    : `<span>${currentUser.name || currentUser.email}</span>`;
-  const usersSection = document.getElementById('users-section');
-  if (usersSection) usersSection.style.display = currentUser.role === 'admin' ? 'block' : 'none';
-};
+    ? '<img src="' + currentUser.photoURL + '" style="width:22px;height:22px;border-radius:50%"> <span>' + currentUser.name + '</span>'
+    : '<span>' + (currentUser.name || currentUser.email) + '</span>';
+  const isAdmin = currentUser.role === 'admin';
+  const isLecteur = currentUser.role === 'lecteur';
+  const ut = document.getElementById('users-tab');
+  if (ut) ut.style.display = isAdmin ? '' : 'none';
+  const sn = document.getElementById('settings-nav');
+  if (sn) sn.style.display = isAdmin ? 'block' : 'none';
+  if (isLecteur) {
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      const t = btn.getAttribute('onclick') || '';
+      if (!t.includes('report')) btn.style.display = 'none';
+    });
+    document.querySelectorAll('.action-btn, .fab-add').forEach(b => b.style.display = 'none');
+  }
+  if (!isAdmin && currentUser.allowedSites && currentUser.allowedSites.length > 0) {
+    const allowed = currentUser.allowedSites;
+    setTimeout(() => {
+      document.querySelectorAll('.site-card, .site-item, [data-site-id]').forEach(el => {
+        const sid = el.getAttribute('data-site-id') || el.dataset.siteId;
+        if (sid && !allowed.includes(sid)) el.style.display = 'none';
+      });
+    }, 500);
+  }
+};;
 
 // ─── App init ─────────────────────────────────────────────────────────────────
 let initApp = async () => {
@@ -877,6 +938,11 @@ let initApp = async () => {
     const sitesDoc = await db.collection('sites').doc('main').get();
     allSites = sitesDoc.exists ? (sitesDoc.data().list || []) : [];
   } catch (e) { allSites = []; }
+
+  // Filter sites for non-admin users with allowedSites
+  if (currentUser.role !== 'admin' && currentUser.allowedSites && currentUser.allowedSites.length > 0) {
+    allSites = allSites.filter(s => currentUser.allowedSites.includes(s.id));
+  }
 
   if (currentUser.role === 'admin') {
     try {
@@ -1922,6 +1988,41 @@ let rejectUser = async (uid) => {
   } catch (e) { showAlert('Erreur : '+e.message); }
 };
 
+let openAddUserModal = () => {
+  document.getElementById('add-user-email').value = '';
+  document.getElementById('add-user-role').value = 'auditor';
+  const sitesDiv = document.getElementById('add-user-sites-checkboxes');
+  sitesDiv.innerHTML = '';
+  allSites.forEach(site => {
+    const lbl = document.createElement('label');
+    lbl.style.cssText = 'display:flex;align-items:center;gap:6px;cursor:pointer';
+    const cb = document.createElement('input');
+    cb.type = 'checkbox'; cb.value = site.id;
+    lbl.appendChild(cb);
+    lbl.appendChild(document.createTextNode(site.name));
+    sitesDiv.appendChild(lbl);
+  });
+  document.getElementById('modal-add-user').classList.add('open');
+};
+
+let saveNewUser = async () => {
+  const email = document.getElementById('add-user-email').value.trim().toLowerCase();
+  if (!email) { alert('Veuillez entrer un email'); return; }
+  const role = document.getElementById('add-user-role').value;
+  const cbs = document.querySelectorAll('#add-user-sites-checkboxes input[type="checkbox"]:checked');
+  const allowedSites = Array.from(cbs).map(cb => cb.value);
+  try {
+    const existing = await db.collection('users').where('email', '==', email).get();
+    if (!existing.empty) { alert('Cet utilisateur existe d\u00e9j\u00e0'); closeModal('modal-add-user'); return; }
+    await db.collection('preApproved').doc(email).set({ email, role, allowedSites, status: 'approved', createdBy: currentUser.email, createdAt: new Date().toISOString() });
+    alert('Utilisateur pr\u00e9-approuv\u00e9 ajout\u00e9. Il pourra se connecter avec Google.');
+    closeModal('modal-add-user');
+  } catch (e) {
+    console.error('Error adding user:', e);
+    alert('Erreur: ' + e.message);
+  }
+};
+
 let openEditUserModal = (uid) => {
   const user = allUsers.find(u => u.uid === uid);
   if (!user) return;
@@ -1942,9 +2043,9 @@ let openEditUserModal = (uid) => {
     sitesDiv.appendChild(lbl);
   });
   const grp = document.getElementById('lecteur-sites-group');
-  grp.style.display = (user.role === 'lecteur') ? 'block' : 'none';
+  grp.style.display = 'block';
   const roleSelect = document.getElementById('modal-edit-role');
-  roleSelect.onchange = () => { grp.style.display = (roleSelect.value === 'lecteur') ? 'block' : 'none'; };
+  roleSelect.onchange = () => { grp.style.display = 'block'; };
   document.getElementById('modal-edit-user').classList.add('open');
 };
 
@@ -1953,12 +2054,8 @@ let saveUserModal = async () => {
   const role = document.getElementById('modal-edit-role').value;
   try {
     const updateData = { role };
-    if (role === 'lecteur') {
-      const cbs = document.querySelectorAll('#lecteur-sites-checkboxes input[type="checkbox"]:checked');
-      updateData.allowedSites = Array.from(cbs).map(cb => cb.value);
-    } else {
-      updateData.allowedSites = firebase.firestore.FieldValue.delete();
-    }
+    const cbs = document.querySelectorAll('#lecteur-sites-checkboxes input[type="checkbox"]:checked');
+    updateData.allowedSites = Array.from(cbs).map(cb => cb.value);
     await db.collection('users').doc(uid).update(updateData);
     const user = allUsers.find(u => u.uid === uid);
     if (user) { user.role = role; if (updateData.allowedSites && Array.isArray(updateData.allowedSites)) user.allowedSites = updateData.allowedSites; }
