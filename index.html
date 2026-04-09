@@ -2912,7 +2912,7 @@ let showAddActionModal = () => {
   const sites = typeof allSites !== 'undefined' ? allSites : [];
   let siteOpts = '<option value="">-- S\u00E9lectionner --</option>';
   sites.forEach(s => { siteOpts += '<option value="' + s.id + '">' + s.name + '</option>'; });
-  const modal = document.createElement('div'); modal.className = 'modal active'; modal.id = 'modal-add-action';
+  const modal = document.createElement('div'); modal.className = 'modal open'; modal.id = 'modal-add-action';
   modal.innerHTML = '<div class="modal-content" style="max-width:500px"><div class="modal-header">Nouvelle Action Corrective <button class="close" onclick="document.getElementById(\'modal-add-action\').remove()">\u2715</button></div>' +
     '<div style="padding:16px;display:flex;flex-direction:column;gap:12px">' +
     '<input id="action-title" placeholder="Titre" style="padding:8px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text)">' +
