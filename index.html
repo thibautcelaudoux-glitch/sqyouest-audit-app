@@ -914,6 +914,8 @@ let applyRoleUI = () => {
   if (ut) ut.style.display = isAdmin ? '' : 'none';
   const sn = document.getElementById('settings-nav');
   if (sn) sn.style.display = isAdmin ? 'block' : 'none';
+  const us = document.getElementById('users-section');
+  if (us) us.style.display = isAdmin ? '' : 'none';
   if (isLecteur) {
     document.querySelectorAll('.tab-btn').forEach(btn => {
       const t = btn.getAttribute('onclick') || '';
