@@ -1110,7 +1110,7 @@ let createSectionElement = (section) => {
   const div = document.createElement('div'); div.className = 'section';
   const header = document.createElement('div'); header.className = 'section-header';
   let scoreHtml = '';
-  const completedItems = section.items ? section.items.filter(it => it.status !== undefined && it.status !== '').length : 0;
+  const completedItems = section.items ? section.items.filter(it => it.status === 'ok' || it.status === 'nok').length : 0;
   const totalItems = section.items ? section.items.length : 0;
   const progressHtml = totalItems > 0 ? `<span style="font-size:11px;padding:2px 8px;border-radius:10px;background:var(--bg2);color:var(--text2);margin-left:6px">${completedItems}/${totalItems}</span>` : '';
   if (score !== null) {
@@ -1278,64 +1278,35 @@ let addPhotos = async (itemId, files) => {
   if (!indicator) {
     indicator = document.createElement('div');
     indicator.id = 'autosave-indicator';
-    indicator.style.cssText = 'position:fixed;bottom:16px;right:16px;padding:6px 14px;border-radius:8px;font-size:12px;z-index:9999;transition:opacity 0.3s;pointer-events:none';
     document.body.appendChild(indicator);
   }
-  const totalFiles = files.length;
-  let uploadedCount = 0;
-  const compress = (file) => new Promise(res => {
-    const img = new Image();
-    img.onload = () => {
-      const max = 800;
-      let w = img.width, h = img.height;
-      if (w > max || h > max) {
-        if (w > h) { h = Math.round(h * max / w); w = max; }
-        else { w = Math.round(w * max / h); h = max; }
-      }
-      const c = document.createElement('canvas');
-      c.width = w; c.height = h;
-      c.getContext('2d').drawImage(img, 0, 0, w, h);
-      c.toBlob(blob => res(blob), 'image/jpeg', 0.6);
-    };
-    img.src = URL.createObjectURL(file);
-  });
+  indicator.textContent = '\u23F3 Upload 0/' + files.length;
+  indicator.style.cssText = 'position:fixed;bottom:20px;right:20px;padding:8px 16px;border-radius:8px;background:var(--accent);color:#fff;font-size:13px;z-index:9999';
+  indicator.style.display = 'block';
   const fileArr = Array.from(files);
-  const photoDiv = document.querySelector('#item-' + itemId)?.closest('.item-wrapper')?.querySelector('.photo-preview');
-  const previews = [];
-  fileArr.forEach(file => {
-    const url = URL.createObjectURL(file);
-    if (photoDiv) {
-      const img = document.createElement('img');
-      img.src = url;
-      img.className = 'uploading';
-      photoDiv.appendChild(img);
-      previews.push(img);
-    }
-  });
-  const uploads = fileArr.map(async (file, i) => {
+  const photoDiv = document.querySelector(`.item-photos[data-id="${itemId}"]`);
+  for (let i = 0; i < fileArr.length; i++) {
     try {
-      const blob = await compress(file);
-      const ts = Date.now() + '_' + i;
-      const path = 'audits/' + currentUser.uid + '/' + currentAudit.id + '/' + itemId + '_' + ts + '.jpg';
-      const ref = firebase.storage().ref().child(path);
-      await ref.put(blob);
-      const url = await ref.getDownloadURL();
-      item.photos.push(url);
-      uploadedCount++;
-      indicator.textContent = '\u{1F4F7} Upload ' + uploadedCount + '/' + totalFiles;
-      indicator.style.background = 'var(--accent)';
-      indicator.style.color = '#fff';
-      indicator.style.opacity = '1';
-      if (previews[i]) { previews[i].src = url; previews[i].classList.remove('uploading'); }
-      const camEl = document.querySelector('#item-' + itemId)?.querySelector('.photo-trigger');
-      if (camEl) camEl.textContent = '\uD83D\uDCF7 ' + item.photos.length;
+      const blob = await compressImage(fileArr[i], 800, 0.6);
+      const base64 = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.readAsDataURL(blob);
+      });
+      item.photos.push(base64);
+      if (photoDiv) {
+        const img = document.createElement('img');
+        img.src = base64;
+        photoDiv.appendChild(img);
+      }
+      indicator.textContent = '\u23F3 Upload ' + (i+1) + '/' + fileArr.length;
     } catch(e) {
-      console.error('Upload error:', e);
-      if (previews[i]) previews[i].style.border = '2px solid red';
+      console.error('Photo error:', e);
     }
-  });
-  await Promise.all(uploads);
-  autoSave();
+  }
+  await autoSave();
+  indicator.textContent = '\u2705 Photos enregistr\u00E9es';
+  setTimeout(() => indicator.style.display = 'none', 2000);
 };
 
 let renderPhotos = (itemId, container) => {
@@ -1623,6 +1594,34 @@ let renderReport = async () => {
       nokDiv.appendChild(d);
     });
     content.appendChild(nokDiv);
+
+    // ── Actions correctives ──
+    if (typeof _actionsCache !== 'undefined' && _actionsCache.length > 0) {
+      const actDiv = document.createElement('div'); actDiv.className = 'report-section';
+      let actHtml = '<div class="report-header">\uD83D\uDCCB Actions Correctives</div>';
+      actHtml += '<table style="width:100%;border-collapse:collapse;font-size:0.85rem"><thead><tr>';
+      actHtml += '<th style="padding:6px 8px;text-align:left;border-bottom:2px solid var(--border)">Action</th>';
+      actHtml += '<th style="padding:6px 8px;text-align:left;border-bottom:2px solid var(--border)">Site</th>';
+      actHtml += '<th style="padding:6px 8px;text-align:center;border-bottom:2px solid var(--border)">Responsable</th>';
+      actHtml += '<th style="padding:6px 8px;text-align:center;border-bottom:2px solid var(--border)">Deadline</th>';
+      actHtml += '<th style="padding:6px 8px;text-align:center;border-bottom:2px solid var(--border)">Statut</th>';
+      actHtml += '</tr></thead><tbody>';
+      const sFilter = document.getElementById('report-site')?.value;
+      _actionsCache.filter(a => !sFilter || a.siteId === sFilter).forEach(a => {
+        const sName = (typeof allSites !== 'undefined' ? allSites : []).find(s => s.id === a.siteId)?.name || a.siteId || '-';
+        const stLabel = a.status === 'resolved' ? '\u2705 R\u00E9solu' : a.status === 'in_progress' ? '\uD83D\uDFE1 En cours' : '\uD83D\uDD34 Ouvert';
+        const overdue = a.deadline && new Date(a.deadline) < new Date() && a.status !== 'resolved';
+        actHtml += '<tr><td style="padding:6px 8px;border-bottom:1px solid var(--border)">' + a.title + (a.description ? '<br><span style=\"font-size:0.75rem;color:var(--text3)\">' + a.description + '</span>' : '') + '</td>';
+        actHtml += '<td style="padding:6px 8px;border-bottom:1px solid var(--border)">' + sName + '</td>';
+        actHtml += '<td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center">' + (a.assignee || '-') + '</td>';
+        actHtml += '<td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center;' + (overdue ? 'color:#ef4444;font-weight:600' : '') + '">' + (a.deadline || '-') + '</td>';
+        actHtml += '<td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center">' + stLabel + '</td></tr>';
+      });
+      actHtml += '</tbody></table>';
+      actDiv.innerHTML = actHtml;
+      content.appendChild(actDiv);
+    }
+
     // ── Galerie photos ──
     const allPhotosArr = [];
     if (historyCache) {
