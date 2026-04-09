@@ -339,7 +339,21 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
 .ca-template-modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:999}
 .ca-template-modal .modal-body{background:var(--surface);border-radius:var(--radius);padding:24px;max-width:600px;width:90%;max-height:80vh;overflow-y:auto}
 .ca-template-modal textarea{width:100%;min-height:150px;padding:8px;border:1px solid var(--border);border-radius:var(--radius);font-family:monospace;font-size:.8rem}
-@media print{.ca-week-row .holiday-toggle{font-size:.9rem}.no-print{display:none!important}.print-only{display:block!important}.photo-in-report{display:none!important}}
+@media print{
+body{background:#fff!important;font-size:12px!important;margin:0!important;padding:0!important}
+.sidebar,.topbar,.tab-bar,.action-bar,.no-print,.photo-row,.status-row,button:not(.print-only),.modal,.fab,input,textarea,select,.autosave-indicator,#autosave-indicator,.hamburger,.nav-tabs,.tab-content>div:not(.active){display:none!important}
+.print-only{display:block!important}
+.photo-in-report{display:none!important}
+#report-content{display:block!important;width:100%!important;max-width:100%!important;padding:0!important;margin:0!important;overflow:visible!important}
+.main-content,.content-wrapper,.tab-content,.app-container{margin:0!important;padding:0!important;width:100%!important;max-width:100%!important;overflow:visible!important}
+.report-section{page-break-inside:avoid;margin-bottom:8px}
+table{width:100%!important;border-collapse:collapse!important;font-size:11px!important}
+table th,table td{border:1px solid #ccc!important;padding:4px 6px!important}
+h2,h3{margin:8px 0 4px!important;font-size:14px!important}
+.kpi-card,.stat-card{border:1px solid #ddd!important;padding:8px!important;background:#fff!important;box-shadow:none!important}
+*{color:#000!important;background:transparent!important;box-shadow:none!important;text-shadow:none!important}
+@page{margin:1cm}
+}
 .print-only{display:none}
 
 /* Enhanced responsive */
@@ -510,7 +524,7 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
             </div>
             <div style="display:flex;align-items:flex-end;gap:8px">
               <button class="btn btn-primary" onclick="renderReport()" style="flex:1">Générer</button>
-              <button class="btn btn-secondary" onclick="window.print()" title="Imprimer">🖨️</button>
+              <button class="btn btn-secondary" onclick="printReport()" title="Imprimer">🖨️</button>
               <button class="pdf-btn" onclick="exportPDF()">📄 Export PDF</button>
             </div>
           </div>
@@ -652,8 +666,14 @@ textarea{min-height:80px;font-family:'DM Mono',monospace;font-size:0.85rem;resiz
         <option value="auditor">Auditeur</option>
         <option value="manager">Manager</option>
         <option value="admin">Admin</option>
+        <option value="lecteur">Lecteur</option>
       </select>
     </div>
+    <div class="form-group" id="lecteur-sites-group" style="display:none">
+      <label>Sites autoris\u00e9s</label>
+      <div id="lecteur-sites-checkboxes" style="display:flex;flex-direction:column;gap:6px;margin-top:4px"></div>
+    </div>
+
     <div class="modal-footer">
       <button class="btn btn-danger" onclick="deleteUser()">Supprimer</button>
       <button class="btn btn-secondary" onclick="closeModal('modal-edit-user')">Annuler</button>
@@ -961,7 +981,7 @@ let newBlankAudit = () => {
       auditor: currentUser ? currentUser.email : '',
       sections: sections.map(s => ({
         id: s.id, label: s.label,
-        items: s.items.map(i => ({ id: i.id, label: i.label, status: 'na', comment: '', photos: [] }))
+        items: s.items.map(i => ({ id: i.id, label: i.label, status: '', comment: '', photos: [] }))
       })),
       notes: ''
     };
@@ -1172,11 +1192,11 @@ let createSectionElement = (section) => {
 
 let createAuditItemEl = (sectionId, item) => {
   const btn = document.createElement('button');
-  btn.className = 'item-btn ' + (item.status || 'na');
+  btn.className = 'item-btn' + (item.status ? ' ' + item.status : '');
   btn.id = 'item-' + item.id;
   const statusIcon = document.createElement('span');
   statusIcon.className = 'item-status-icon';
-  statusIcon.textContent = item.status === 'ok' ? '\u2705' : item.status === 'nok' ? '\u274C' : '\u2B1C';
+  statusIcon.textContent = item.status === 'ok' ? '\u2705' : item.status === 'nok' ? '\u274C' : item.status === 'na' ? '\u2B1C' : '\u2796';
   const label = document.createElement('span');
   label.className = 'item-label';
   label.textContent = item.label;
@@ -1413,7 +1433,7 @@ let renderHistory = async () => {
   const list = document.getElementById('history-items');
   list.innerHTML = '<p style="color:var(--text2);padding:8px">Chargement…</p>';
   try {
-    const snap = await ((currentUser && currentUser.role === 'admin') ? db.collection('auditHistory').get() : db.collection('auditHistory').where('userId', '==', currentUser.uid).get());
+    const snap = await ((currentUser && (currentUser.role === 'admin' || currentUser.role === 'lecteur')) ? db.collection('auditHistory').get() : db.collection('auditHistory').where('userId', '==', currentUser.uid).get());
     historyCache = snap.docs.map(d => d.data());
   } catch (e) { historyCache = []; }
   populateHistoryFilters();
@@ -1520,7 +1540,7 @@ let deleteHistoryItem = async (auditId) => {
 let clearHistory = async () => {
   if (confirm('Supprimer tout l\'historique ?')) {
     try {
-      const snap = await ((currentUser && currentUser.role === 'admin') ? db.collection('auditHistory').get() : db.collection('auditHistory').where('userId', '==', currentUser.uid).get());
+      const snap = await ((currentUser && (currentUser.role === 'admin' || currentUser.role === 'lecteur')) ? db.collection('auditHistory').get() : db.collection('auditHistory').where('userId', '==', currentUser.uid).get());
       const batch = db.batch();
       snap.docs.forEach(d => batch.delete(d.ref));
       await batch.commit();
@@ -1545,7 +1565,7 @@ let renderReport = async () => {
   content.innerHTML = '<p style="color:var(--text2)">Chargement…</p>';
   if (!historyCache) {
     try {
-      const snap = await ((currentUser && currentUser.role === 'admin') ? db.collection('auditHistory').get() : db.collection('auditHistory').where('userId', '==', currentUser.uid).get());
+      const snap = await ((currentUser && (currentUser.role === 'admin' || currentUser.role === 'lecteur')) ? db.collection('auditHistory').get() : db.collection('auditHistory').where('userId', '==', currentUser.uid).get());
       historyCache = snap.docs.map(d => d.data());
     } catch (e) { historyCache = []; }
   }
@@ -1909,6 +1929,22 @@ let openEditUserModal = (uid) => {
   el.value = user.name ? `${user.name} (${user.email})` : user.email;
   el.setAttribute('data-uid', uid);
   document.getElementById('modal-edit-role').value = user.role;
+  const sitesDiv = document.getElementById('lecteur-sites-checkboxes');
+  sitesDiv.innerHTML = '';
+  allSites.forEach(site => {
+    const lbl = document.createElement('label');
+    lbl.style.cssText = 'display:flex;align-items:center;gap:6px;cursor:pointer';
+    const cb = document.createElement('input');
+    cb.type = 'checkbox'; cb.value = site.id;
+    cb.checked = (user.allowedSites || []).includes(site.id);
+    lbl.appendChild(cb);
+    lbl.appendChild(document.createTextNode(site.name));
+    sitesDiv.appendChild(lbl);
+  });
+  const grp = document.getElementById('lecteur-sites-group');
+  grp.style.display = (user.role === 'lecteur') ? 'block' : 'none';
+  const roleSelect = document.getElementById('modal-edit-role');
+  roleSelect.onchange = () => { grp.style.display = (roleSelect.value === 'lecteur') ? 'block' : 'none'; };
   document.getElementById('modal-edit-user').classList.add('open');
 };
 
@@ -1916,9 +1952,16 @@ let saveUserModal = async () => {
   const uid = document.getElementById('modal-edit-email').getAttribute('data-uid');
   const role = document.getElementById('modal-edit-role').value;
   try {
-    await db.collection('users').doc(uid).update({ role });
+    const updateData = { role };
+    if (role === 'lecteur') {
+      const cbs = document.querySelectorAll('#lecteur-sites-checkboxes input[type="checkbox"]:checked');
+      updateData.allowedSites = Array.from(cbs).map(cb => cb.value);
+    } else {
+      updateData.allowedSites = firebase.firestore.FieldValue.delete();
+    }
+    await db.collection('users').doc(uid).update(updateData);
     const user = allUsers.find(u => u.uid === uid);
-    if (user) user.role = role;
+    if (user) { user.role = role; if (updateData.allowedSites && Array.isArray(updateData.allowedSites)) user.allowedSites = updateData.allowedSites; }
     closeModal('modal-edit-user'); renderUsersList(); showToast('Rôle mis à jour');
   } catch (e) { showAlert('Erreur : ' + e.message); }
 };
@@ -2191,7 +2234,7 @@ let clearAllData = async () => {
     batch.delete(db.collection('kpiHistory').doc(currentUser.uid));
     batch.delete(db.collection('settings').doc(currentUser.uid));
     await batch.commit();
-    const snap = await ((currentUser && currentUser.role === 'admin') ? db.collection('auditHistory').get() : db.collection('auditHistory').where('userId', '==', currentUser.uid).get());
+    const snap = await ((currentUser && (currentUser.role === 'admin' || currentUser.role === 'lecteur')) ? db.collection('auditHistory').get() : db.collection('auditHistory').where('userId', '==', currentUser.uid).get());
     const batch2 = db.batch();
     snap.docs.forEach(d => batch2.delete(d.ref));
     await batch2.commit();
@@ -2785,6 +2828,18 @@ let exportKpiCSV = () => {
 };
 
 /* ===== PDF Export ===== */
+let printReport = () => {
+  const reportTab = document.querySelector('[onclick*="report"]');
+  if (reportTab) reportTab.click();
+  setTimeout(() => {
+    document.querySelectorAll('.photo-in-report, .report-photo').forEach(el => el.style.display = 'none');
+    window.print();
+    setTimeout(() => {
+      document.querySelectorAll('.photo-in-report, .report-photo').forEach(el => el.style.display = '');
+    }, 500);
+  }, 800);
+};
+
 let exportPDF = () => {
   const reportEl = document.getElementById('report-content');
   if (!reportEl || !reportEl.innerHTML.trim()) { alert('G\u00e9n\u00e9rez d\'abord un rapport.'); return; }
