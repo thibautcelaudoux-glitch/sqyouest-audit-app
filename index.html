@@ -521,8 +521,8 @@ h2,h3{margin:8px 0 4px!important;font-size:14px!important}
       <button class="sidebar-item" data-tab="kpi" onclick="switchTab('kpi')">📉 KPI</button>
       <button class="sidebar-item" data-tab="alertes" onclick="switchTab('alertes')">🚨 Alertes</button>
       <button class="sidebar-item" data-tab="actions" onclick="switchTab('actions')">📋 Actions</button>
-      <button onclick="switchTab('dashboard')" class="tab-btn" role="button" aria-label="Tableau de bord"><span>📊</span> Dashboard</button>
-      <button onclick="switchTab('calendar')" class="tab-btn" role="button" aria-label="Calendrier"><span>📅</span> Calendrier</button>
+      <button onclick="switchTab('dashboard')" class="sidebar-item" data-tab="dashboard" role="button" aria-label="Tableau de bord"><span>📊</span> Dashboard</button>
+      <button onclick="switchTab('calendar')" class="sidebar-item" data-tab="calendar" role="button" aria-label="Calendrier"><span>📅</span> Calendrier</button>
       <button class="sidebar-item" data-tab="settings" onclick="switchTab('settings')">⚙️ Paramètres</button>
     </div>
 
@@ -2731,6 +2731,8 @@ let switchTab = (tab) => {
     if (tab === 'kpi') renderKpiHistoryTab();
     if (tab === 'alertes') renderAlertes();
     if (tab === 'actions') renderActions();
+    if (tab === 'dashboard') renderDashboard();
+    if (tab === 'calendar') renderCalendar();
     if (tab === 'editor') populateEditorSelects();
   }
   document.querySelectorAll('[data-tab]').forEach(el => {
@@ -2902,11 +2904,11 @@ let renderCAAllSites = (container) => {
   
   // KPI cards
   html += '<div class="ca-compare-card">';
-  html += '<div class="ca-kpi-card"><div class="kpi-value">' + grandTotal.toLocaleString('fr-FR') + ' \u20AC</div><div class="kpi-label">CA Total cumul\u00E9</div></div>';
+    html += '<div class="ca-kpi-card"><div class="kpi-value">' + prevTotal.toLocaleString('fr-FR') + ' \u20AC</div><div class="kpi-label">Semaine pr\u00E9c\u00E9dente</div></div>';
   html += '<div class="ca-kpi-card"><div class="kpi-value">' + weekTotal.toLocaleString('fr-FR') + ' \u20AC</div><div class="kpi-label">Semaine en cours</div>' + (weekDelta !== 0 ? '<div class="kpi-delta ' + (weekDelta >= 0 ? 'up' : 'down') + '">' + (weekDelta >= 0 ? '\u25B2' : '\u25BC') + ' ' + Math.abs(weekDelta) + '% vs sem. pr\u00E9c.</div>' : '') + '</div>';
-  html += '<div class="ca-kpi-card"><div class="kpi-value">' + totalAct.toLocaleString('fr-FR') + ' \u20AC</div><div class="kpi-label">Activit\u00E9s (' + (grandTotal > 0 ? Math.round(totalAct/grandTotal*100) : 0) + '%)</div></div>';
-  html += '<div class="ca-kpi-card"><div class="kpi-value">' + totalBar.toLocaleString('fr-FR') + ' \u20AC</div><div class="kpi-label">Bar (' + (grandTotal > 0 ? Math.round(totalBar/grandTotal*100) : 0) + '%)</div></div>';
-  html += '<div class="ca-kpi-card"><div class="kpi-value">' + totalBtob.toLocaleString('fr-FR') + ' \u20AC</div><div class="kpi-label">BtoB (' + (grandTotal > 0 ? Math.round(totalBtob/grandTotal*100) : 0) + '%)</div></div>';
+  html += '<div class="ca-kpi-card"><div class="kpi-value">' + weekAct.toLocaleString('fr-FR') + ' \u20AC</div><div class="kpi-label">Activit\u00E9s (' + (weekTotal > 0 ? Math.round(weekAct/weekTotal*100) : 0) + '%)</div></div>';
+  html += '<div class="ca-kpi-card"><div class="kpi-value">' + weekBar.toLocaleString('fr-FR') + ' \u20AC</div><div class="kpi-label">Bar (' + (weekTotal > 0 ? Math.round(weekBar/weekTotal*100) : 0) + '%)</div></div>';
+  html += '<div class="ca-kpi-card"><div class="kpi-value">' + weekBtob.toLocaleString('fr-FR') + ' \u20AC</div><div class="kpi-label">BtoB (' + (weekTotal > 0 ? Math.round(weekBtob/weekTotal*100) : 0) + '%)</div></div>';
   html += '</div>';
   
   // Distribution chart per site
