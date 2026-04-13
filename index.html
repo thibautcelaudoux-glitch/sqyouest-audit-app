@@ -3747,7 +3747,7 @@ const initNewFeatures = () => {
     bell.style.cssText = 'position:relative;background:none;border:none;color:var(--text);font-size:20px;cursor:pointer;margin-left:auto;padding:4px 8px';
     bell.innerHTML = '\ud83d\udd14<span id="notif-badge" class="notif-badge" style="display:none">0</span>';
     const decoBtn = topbar.querySelector('button[onclick*="Logout"], button[onclick*="logout"], .topbar button:last-child');
-    if (decoBtn) topbar.insertBefore(bell, decoBtn);
+    if (decoBtn) decoBtn.parentNode.insertBefore(bell, decoBtn);
     else topbar.appendChild(bell);
   }
   enhanceAccessibility();
