@@ -1310,7 +1310,7 @@ let populateSiteDropdown = () => {
     if (s.id === current) opt.selected = true;
     sel.appendChild(opt);
   });
-  sel.onchange = () => {
+  sel.onchange = async () => {
     const oldSiteId = currentSite;
     currentSite = sel.value;
     if (currentAudit) {
@@ -1353,7 +1353,7 @@ let readFormIntoAudit = () => {
   currentAudit.notes = document.getElementById('audit-notes')?.value || '';
 };
 
-let resetAudit = () => { if (await showConfirm('Réinitialiser l\'audit en cours ?')) newBlankAudit(); };
+let resetAudit = async () => { if (await showConfirm('Réinitialiser l\'audit en cours ?')) newBlankAudit(); };
 
 let fillAllOK = () => {
   currentAudit.sections.forEach(s => s.items.forEach(i => {
@@ -2445,7 +2445,7 @@ let removeTemplateItem = (si, ii) => {
   renderTemplateEditor();
 };
 
-let resetTemplateToDefault = () => {
+let resetTemplateToDefault = async () => {
   if (await showConfirm('Réinitialiser le template par défaut ?')) {
     editingTemplateSections = JSON.parse(JSON.stringify(DEFAULT_SECTIONS));
     renderTemplateEditor();
@@ -2503,7 +2503,7 @@ let renameSection = () => {
   if (section && newLabel) { section.label = newLabel; autoSave(); populateEditorSelects(); showToast('Section renommée'); }
 };
 
-let deleteSection = () => {
+let deleteSection = async () => {
   const sectionId = document.getElementById('editor-section-select').value;
   if (await showConfirm('Supprimer cette section ?')) {
     currentAudit.sections = currentAudit.sections.filter(s => s.id !== sectionId);
@@ -2535,7 +2535,7 @@ let removeEditorItem = (sectionId, itemId) => {
   if (section) { section.items = section.items.filter(i => i.id !== itemId); autoSave(); renderItemEditor(); }
 };
 
-let resetItemsToDefault = () => {
+let resetItemsToDefault = async () => {
   if (await showConfirm('Réinitialiser vers le template du site sélectionné (ou défaut) ?')) {
     const template = getSectionsForSite(currentAudit.siteId);
     currentAudit.sections = template.map(s => ({
