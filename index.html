@@ -1630,10 +1630,12 @@ let populateReportSelects = () => {
 
 let renderReport = async () => {
   const content = document.getElementById('report-content');
-  content.innerHTML = '<p style="color:var(--text2)">Chargement…</p>';
+  content.innerHTML = '<p style="color:var(--text2)">Chargement\u2026</p>';
   if (!historyCache) {
     try {
-      const snap = await ((currentUser && (currentUser.role === 'admin' || currentUser.role === 'lecteur')) ? db.collection('auditHistory').get() : db.collection('auditHistory').where('userId', '==', currentUser.uid).get());
+      const snap = await ((currentUser && (currentUser.role === 'admin' || currentUser.role === 'lecteur'))
+        ? db.collection('auditHistory').get()
+        : db.collection('auditHistory').where('userId', '==', currentUser.uid).get());
       historyCache = snap.docs.map(d => d.data());
     } catch (e) { historyCache = []; }
   }
@@ -1645,34 +1647,57 @@ let renderReport = async () => {
   if (fromStr) filtered = filtered.filter(a => new Date(a.date) >= new Date(fromStr));
   if (toStr) filtered = filtered.filter(a => new Date(a.date) <= new Date(toStr + 'T23:59:59'));
   content.innerHTML = '';
-  if (!filtered.length) { content.innerHTML = '<p style="color:var(--text2)">Aucun audit trouvé pour ces critères.</p>'; return; }
-
+  if (!filtered.length) { content.innerHTML = '<p style="color:var(--text2)">Aucun audit trouv\u00e9 pour ces crit\u00e8res.</p>'; return; }
   const siteName = siteFilter ? (allSites.find(s => s.id === siteFilter)?.name || siteFilter) : 'Tous les sites';
   const scores = filtered.map(a => computeScore(a));
   const avgScore = scores.reduce((a, b) => a + b, 0) / scores.length;
   const minScore = Math.min(...scores), maxScore = Math.max(...scores);
   const scoreColor = avgScore >= 80 ? '#22c55e' : avgScore >= 50 ? '#f59e0b' : '#ef4444';
+  const scoreBadge = avgScore >= 90 ? '\u2b50 EXCELLENT' : avgScore >= 75 ? '\u2705 CONFORME' : avgScore >= 50 ? '\u26a0\ufe0f \u00c0 AM\u00c9LIORER' : '\u274c NON CONFORME';
+  const badgeColor = avgScore >= 75 ? '#22c55e' : avgScore >= 50 ? '#f59e0b' : '#ef4444';
 
   // Header stats
   const header = document.createElement('div');
-  header.innerHTML = `<h2 style="font-size:1.1rem;margin-bottom:12px">Rapport — ${siteName} (${fromStr} → ${toStr})</h2>`;
+  header.innerHTML = '<h2 style="font-size:1.1rem;margin-bottom:12px">Rapport \u2014 ' + siteName + ' (' + fromStr + ' \u2192 ' + toStr + ')</h2>';
   content.appendChild(header);
+
+  // Score badge
+  const badgeDiv = document.createElement('div');
+  badgeDiv.style.cssText = 'display:flex;align-items:center;gap:16px;margin-bottom:16px;padding:16px;background:linear-gradient(135deg,' + badgeColor + '11,' + badgeColor + '22);border:2px solid ' + badgeColor + ';border-radius:12px';
+  badgeDiv.innerHTML = '<div style="font-size:2.2rem;font-weight:800;color:' + scoreColor + '">' + avgScore.toFixed(1) + '%</div><div><div style="font-size:1.1rem;font-weight:700;color:' + badgeColor + '">' + scoreBadge + '</div><div style="font-size:.85rem;color:var(--text2)">' + filtered.length + ' audit(s) \u2022 ' + siteName + '</div></div>';
+  content.appendChild(badgeDiv);
+
   const notesEl = document.getElementById('audit-notes');
   if (notesEl && notesEl.value && notesEl.value.trim()) {
     const notesDiv = document.createElement('div');
     notesDiv.style.cssText = 'background:var(--bg2);border-left:4px solid var(--accent);padding:12px 16px;margin:12px 0;border-radius:var(--radius)';
-    notesDiv.innerHTML = '<strong style="display:block;margin-bottom:4px">\u{1F4DD} Notes g\u00E9n\u00E9rales</strong><p style="margin:0;white-space:pre-wrap;font-size:.9rem">' + notesEl.value.replace(/</g,'&lt;') + '</p>';
+    notesDiv.innerHTML = '<strong style="display:block;margin-bottom:4px">\ud83d\udcdd Notes g\u00e9n\u00e9rales</strong><p style="margin:0;white-space:pre-wrap;font-size:.9rem">' + notesEl.value.replace(/</g,'&lt;') + '</p>';
     content.appendChild(notesDiv);
   }
-  const statsDiv = document.createElement('div'); statsDiv.className = 'stats-grid'; statsDiv.style.marginBottom = '16px';
-  statsDiv.innerHTML = `
-    <div class="stat-card"><div class="stat-label">Score moyen</div><div class="stat-value" style="color:${scoreColor}">${avgScore.toFixed(1)}%</div><div class="stat-details">${filtered.length} audit(s)</div></div>
-    <div class="stat-card"><div class="stat-label">Score min / max</div><div class="stat-value" style="font-size:1.3rem">${minScore.toFixed(0)}% / ${maxScore.toFixed(0)}%</div></div>
-    <div class="stat-card"><div class="stat-label">Points NOK total</div><div class="stat-value" style="color:var(--nok)">${filtered.reduce((a, aud) => a + aud.sections.reduce((b, s) => b + s.items.filter(i => i.status === 'nok').length, 0), 0)}</div></div>
-  `;
+
+  const statsDiv = document.createElement('div');
+  statsDiv.className = 'stats-grid';
+  statsDiv.style.marginBottom = '16px';
+  statsDiv.innerHTML = '<div class="stat-card"><div class="stat-label">Score moyen</div><div class="stat-value" style="color:' + scoreColor + '">' + avgScore.toFixed(1) + '%</div><div class="stat-details">' + filtered.length + ' audit(s)</div></div><div class="stat-card"><div class="stat-label">Score min / max</div><div class="stat-value" style="font-size:1.3rem">' + minScore.toFixed(0) + '% / ' + maxScore.toFixed(0) + '%</div></div><div class="stat-card"><div class="stat-label">Points NOK total</div><div class="stat-value" style="color:var(--nok)">' + filtered.reduce((a, aud) => a + aud.sections.reduce((b, s) => b + s.items.filter(i => i.status === 'nok').length, 0), 0) + '</div></div>';
   content.appendChild(statsDiv);
 
-  // Per-section breakdown - built dynamically from actual audit data
+  // Per-audit score badges
+  if (filtered.length > 1) {
+    const auditBadges = document.createElement('div');
+    auditBadges.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px';
+    filtered.forEach((a, idx) => {
+      const sc = scores[idx];
+      const c = sc >= 80 ? '#22c55e' : sc >= 50 ? '#f59e0b' : '#ef4444';
+      const sn = allSites.find(s => s.id === a.siteId)?.name || a.siteId;
+      const b = document.createElement('div');
+      b.style.cssText = 'padding:8px 12px;border-radius:8px;border:1px solid ' + c + ';background:' + c + '11;font-size:.82rem;display:flex;align-items:center;gap:6px';
+      b.innerHTML = '<span style="font-weight:700;color:' + c + ';font-size:1.1rem">' + sc.toFixed(0) + '%</span><span style="color:var(--text2)">' + sn + '<br><span style="font-size:.7rem">' + (a.date || '') + '</span></span>';
+      auditBadges.appendChild(b);
+    });
+    content.appendChild(auditBadges);
+  }
+
+  // Per-section breakdown
   const sectionMap = {};
   filtered.forEach(audit => {
     audit.sections.forEach(s => {
@@ -1685,30 +1710,25 @@ let renderReport = async () => {
       });
     });
   });
-
   const sectionsDiv = document.createElement('div');
   Object.values(sectionMap).forEach(sec => {
     const sectionTotal = Object.values(sec.items).reduce((a, i) => a + i.ok + i.nok, 0);
     const sectionOk = Object.values(sec.items).reduce((a, i) => a + i.ok, 0);
     const sectionScore = sectionTotal === 0 ? null : Math.round(sectionOk / sectionTotal * 100);
     const sc = sectionScore === null ? '#64748b' : sectionScore >= 80 ? '#22c55e' : sectionScore >= 50 ? '#f59e0b' : '#ef4444';
-
-    const div = document.createElement('div'); div.className = 'report-section';
-    div.innerHTML = `
-      <div class="report-header" style="display:flex;justify-content:space-between;align-items:center">
-        <span>${sec.label}</span>
-        ${sectionScore !== null ? `<span style="color:${sc};font-weight:700">${sectionScore}%</span>` : ''}
-      </div>
-    `;
-    const table = document.createElement('table'); table.style.cssText = 'width:100%;border-collapse:collapse';
-    table.innerHTML = '<thead><tr style="background:var(--border)"><th style="padding:6px 8px;text-align:left;font-size:0.8rem">Point audité</th><th style="padding:6px 8px;text-align:center;font-size:0.8rem;color:var(--ok)">OK</th><th style="padding:6px 8px;text-align:center;font-size:0.8rem;color:var(--nok)">NOK</th><th style="padding:6px 8px;text-align:right;font-size:0.8rem">Score</th></tr></thead>';
+    const div = document.createElement('div');
+    div.className = 'report-section';
+    div.innerHTML = '<div class="report-header" style="display:flex;justify-content:space-between;align-items:center"><span>' + sec.label + '</span>' + (sectionScore !== null ? '<span style="background:' + sc + '18;color:' + sc + ';font-weight:700;padding:2px 10px;border-radius:12px;font-size:.85rem">' + sectionScore + '%</span>' : '') + '</div>';
+    const table = document.createElement('table');
+    table.style.cssText = 'width:100%;border-collapse:collapse';
+    table.innerHTML = '<thead><tr style="background:var(--border)"><th style="padding:6px 8px;text-align:left;font-size:0.8rem">Point audit\u00e9</th><th style="padding:6px 8px;text-align:center;font-size:0.8rem;color:var(--ok)">OK</th><th style="padding:6px 8px;text-align:center;font-size:0.8rem;color:var(--nok)">NOK</th><th style="padding:6px 8px;text-align:right;font-size:0.8rem">Score</th></tr></thead>';
     const tbody = document.createElement('tbody');
     Object.values(sec.items).forEach(i => {
       const total = i.ok + i.nok;
       const pct = total === 0 ? null : Math.round(i.ok / total * 100);
       const c = pct === null ? '#64748b' : pct >= 80 ? '#22c55e' : pct >= 50 ? '#f59e0b' : '#ef4444';
       const tr = document.createElement('tr');
-      tr.innerHTML = `<td style="padding:6px 8px;border-bottom:1px solid var(--border);font-size:0.85rem">${i.label}</td><td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:0.85rem;color:var(--ok)">${i.ok}</td><td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:0.85rem;color:var(--nok)">${i.nok}</td><td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:right;color:${c};font-weight:600;font-size:0.85rem">${pct !== null ? pct + '%' : '—'}</td>`;
+      tr.innerHTML = '<td style="padding:6px 8px;border-bottom:1px solid var(--border);font-size:0.85rem">' + i.label + '</td><td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:0.85rem;color:var(--ok)">' + i.ok + '</td><td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:0.85rem;color:var(--nok)">' + i.nok + '</td><td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:right;color:' + c + ';font-weight:600;font-size:0.85rem">' + (pct !== null ? pct + '%' : '\u2014') + '</td>';
       tbody.appendChild(tr);
     });
     table.appendChild(tbody);
@@ -1726,23 +1746,20 @@ let renderReport = async () => {
     }));
   });
   if (nokComments.length) {
-    const nokDiv = document.createElement('div'); nokDiv.className = 'report-section';
-    nokDiv.innerHTML = '<div class="report-header">💬 Commentaires</div>';
-    // Group by section
+    const nokDiv = document.createElement('div');
+    nokDiv.className = 'report-section';
+    nokDiv.innerHTML = '<div class="report-header">\ud83d\udcac Commentaires</div>';
     const grouped = {};
-    nokComments.forEach(x => {
-      if (!grouped[x.section]) grouped[x.section] = [];
-      grouped[x.section].push(x);
-    });
+    nokComments.forEach(x => { if (!grouped[x.section]) grouped[x.section] = []; grouped[x.section].push(x); });
     Object.entries(grouped).forEach(([secName, items]) => {
       const secDiv = document.createElement('div');
       secDiv.style.cssText = 'margin-bottom:12px';
       secDiv.innerHTML = '<div style="font-weight:700;font-size:0.9rem;padding:6px 0;border-bottom:1px solid var(--border);margin-bottom:6px">' + secName + '</div>';
       items.forEach(x => {
         const statusColor = x.status === 'ok' ? '#22c55e' : x.status === 'nok' ? '#ef4444' : '#f59e0b';
-        const statusIcon = x.status === 'ok' ? '\u2713' : x.status === 'nok' ? '\u2717' : '\u25CB';
+        const statusIcon = x.status === 'ok' ? '\u2713' : x.status === 'nok' ? '\u2717' : '\u25cb';
         const statusLabel = (x.status || 'na').toUpperCase();
-        const photoTag = x.hasPhotos ? ' \uD83D\uDCF7' : '';
+        const photoTag = x.hasPhotos ? ' \ud83d\udcf7' : '';
         const d = document.createElement('div');
         d.style.cssText = 'padding:6px 8px;margin:3px 0;border-radius:6px;border-left:3px solid ' + statusColor + ';background:var(--bg2)';
         d.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center"><span><b style="color:' + statusColor + '">' + statusIcon + ' ' + statusLabel + '</b> ' + x.label + photoTag + '</span><span style="color:var(--text3);font-size:0.75rem">' + x.site + ' ' + formatDateShort(x.date) + '</span></div><div style="color:var(--text2);font-size:0.83rem;margin-top:3px">' + x.comment + '</div>';
@@ -1751,72 +1768,68 @@ let renderReport = async () => {
       nokDiv.appendChild(secDiv);
     });
     content.appendChild(nokDiv);
+  }
 
-    // ── Actions correctives ──
-    if (typeof _actionsCache !== 'undefined' && _actionsCache.length > 0) {
-      const actDiv = document.createElement('div'); actDiv.className = 'report-section';
-      let actHtml = '<div class="report-header">\uD83D\uDCCB Actions Correctives</div>';
-      actHtml += '<table style="width:100%;border-collapse:collapse;font-size:0.85rem"><thead><tr>';
-      actHtml += '<th style="padding:6px 8px;text-align:left;border-bottom:2px solid var(--border)">Action</th>';
-      actHtml += '<th style="padding:6px 8px;text-align:left;border-bottom:2px solid var(--border)">Site</th>';
-      actHtml += '<th style="padding:6px 8px;text-align:center;border-bottom:2px solid var(--border)">Responsable</th>';
-      actHtml += '<th style="padding:6px 8px;text-align:center;border-bottom:2px solid var(--border)">Deadline</th>';
-      actHtml += '<th style="padding:6px 8px;text-align:center;border-bottom:2px solid var(--border)">Statut</th>';
-      actHtml += '</tr></thead><tbody>';
-      const sFilter = document.getElementById('report-site')?.value;
-      _actionsCache.filter(a => !sFilter || a.siteId === sFilter).forEach(a => {
-        const sName = (typeof allSites !== 'undefined' ? allSites : []).find(s => s.id === a.siteId)?.name || a.siteId || '-';
-        const stLabel = a.status === 'resolved' ? '\u2705 R\u00E9solu' : a.status === 'in_progress' ? '\uD83D\uDFE1 En cours' : '\uD83D\uDD34 Ouvert';
-        const overdue = a.deadline && new Date(a.deadline) < new Date() && a.status !== 'resolved';
-        actHtml += '<tr><td style="padding:6px 8px;border-bottom:1px solid var(--border)">' + a.title + (a.description ? '<br><span style=\"font-size:0.75rem;color:var(--text3)\">' + a.description + '</span>' : '') + '</td>';
-        actHtml += '<td style="padding:6px 8px;border-bottom:1px solid var(--border)">' + sName + '</td>';
-        actHtml += '<td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center">' + (a.assignee || '-') + '</td>';
-        actHtml += '<td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center;' + (overdue ? 'color:#ef4444;font-weight:600' : '') + '">' + (a.deadline || '-') + '</td>';
-        actHtml += '<td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center">' + stLabel + '</td></tr>';
-      });
-      actHtml += '</tbody></table>';
-      actDiv.innerHTML = actHtml;
-      content.appendChild(actDiv);
-    }
+  // Actions correctives (OUTSIDE nokComments block now)
+  if (typeof _actionsCache !== 'undefined' && _actionsCache.length > 0) {
+    const actDiv = document.createElement('div');
+    actDiv.className = 'report-section';
+    let actHtml = '<div class="report-header">\ud83d\udccb Actions Correctives</div>';
+    actHtml += '<table style="width:100%;border-collapse:collapse;font-size:0.85rem"><thead><tr>';
+    actHtml += '<th style="padding:6px 8px;text-align:left;border-bottom:2px solid var(--border)">Action</th>';
+    actHtml += '<th style="padding:6px 8px;text-align:left;border-bottom:2px solid var(--border)">Site</th>';
+    actHtml += '<th style="padding:6px 8px;text-align:center;border-bottom:2px solid var(--border)">Responsable</th>';
+    actHtml += '<th style="padding:6px 8px;text-align:center;border-bottom:2px solid var(--border)">Deadline</th>';
+    actHtml += '<th style="padding:6px 8px;text-align:center;border-bottom:2px solid var(--border)">Statut</th>';
+    actHtml += '</tr></thead><tbody>';
+    const sFilter = document.getElementById('report-site')?.value;
+    _actionsCache.filter(a => !sFilter || a.siteId === sFilter).forEach(a => {
+      const sName = (typeof allSites !== 'undefined' ? allSites : []).find(s => s.id === a.siteId)?.name || a.siteId || '-';
+      const stLabel = a.status === 'resolved' ? '\u2705 R\u00e9solu' : a.status === 'in_progress' ? '\ud83d\udfe1 En cours' : '\ud83d\udd34 Ouvert';
+      const overdue = a.deadline && new Date(a.deadline) < new Date() && a.status !== 'resolved';
+      actHtml += '<tr><td style="padding:6px 8px;border-bottom:1px solid var(--border)">' + a.title + (a.description ? '<br><span style="font-size:0.75rem;color:var(--text3)">' + a.description + '</span>' : '') + '</td>';
+      actHtml += '<td style="padding:6px 8px;border-bottom:1px solid var(--border)">' + sName + '</td>';
+      actHtml += '<td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center">' + (a.assignee || '-') + '</td>';
+      actHtml += '<td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center;' + (overdue ? 'color:#ef4444;font-weight:600' : '') + '">' + (a.deadline || '-') + '</td>';
+      actHtml += '<td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center">' + stLabel + '</td></tr>';
+    });
+    actHtml += '</tbody></table>';
+    actDiv.innerHTML = actHtml;
+    content.appendChild(actDiv);
+  }
 
-    // ── Galerie photos ──
-    const allPhotosArr = [];
-    if (historyCache) {
-      historyCache.forEach(audit => {
-        if (!audit.sections) return;
-        audit.sections.forEach(sec => {
-          sec.items.forEach(it => {
-            if (it.photos && it.photos.length > 0) {
-              it.photos.forEach(ph => {
-                allPhotosArr.push({ date: audit.date || '', auditor: audit.auditor || '', section: sec.label || '', item: it.label || '', src: ph });
-              });
-            }
+  // Galerie photos (OUTSIDE nokComments block - uses filtered audits)
+  const allPhotosArr = [];
+  filtered.forEach(audit => {
+    if (!audit.sections) return;
+    audit.sections.forEach(sec => {
+      sec.items.forEach(it => {
+        if (it.photos && it.photos.length > 0) {
+          it.photos.forEach(ph => {
+            allPhotosArr.push({ date: audit.date || '', auditor: audit.auditor || '', section: sec.label || '', item: it.label || '', src: ph });
           });
-        });
+        }
       });
-    }
-    if (allPhotosArr.length > 0) {
-      const photoSection = document.createElement('div');
-      photoSection.style.cssText = 'margin-top:20px;padding-top:16px;border-top:1px solid var(--border)';
-      let ph = '<h4 style="margin:0 0 12px;font-size:0.92rem;color:var(--text)">📷 Photos</h4>';
-      ph += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px">';
-      allPhotosArr.forEach(p => {
-        const lbl = (p.section + ' — ' + p.item).replace(/"/g,'&quot;');
-        ph += `<div style="background:var(--card);border-radius:8px;overflow:hidden;border:1px solid var(--border)"><img src="${p.src}" style="width:100%;height:100px;object-fit:cover;display:block"><div style="padding:6px;font-size:0.7rem;color:var(--text2)">${p.date}<br><span title="${lbl}" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block">${p.section} — ${p.item}</span></div></div>`;
-      });
-      ph += '</div>';
-      photoSection.innerHTML = ph;
-      content.appendChild(photoSection);
-    }
+    });
+  });
+  if (allPhotosArr.length > 0) {
+    const photoSection = document.createElement('div');
+    photoSection.style.cssText = 'margin-top:20px;padding-top:16px;border-top:1px solid var(--border)';
+    let ph = '<h4 style="margin:0 0 12px;font-size:0.92rem;color:var(--text)">\ud83d\udcf7 Photos (' + allPhotosArr.length + ')</h4>';
+    ph += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px">';
+    allPhotosArr.forEach(p => {
+      const lbl = (p.section + ' \u2014 ' + p.item).replace(/"/g,'&quot;');
+      ph += '<div style="background:var(--card);border-radius:8px;overflow:hidden;border:1px solid var(--border)"><img src="' + p.src + '" style="width:100%;height:100px;object-fit:cover;display:block"><div style="padding:6px;font-size:0.7rem;color:var(--text2)">' + p.date + '<br><span title="' + lbl + '" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block">' + p.section + ' \u2014 ' + p.item + '</span></div></div>';
+    });
+    ph += '</div>';
+    photoSection.innerHTML = ph;
+    content.appendChild(photoSection);
   }
 
   // Tampon d'audit
   const _stampScoreCalc = (() => {
     let tot = 0, ok = 0;
-    (historyCache || []).filter(a => {
-      const sel = document.getElementById('report-site');
-      return !sel || !sel.value || a.siteId === sel.value;
-    }).forEach(a => {
+    filtered.forEach(a => {
       if (!a.sections) return;
       a.sections.forEach(s => s.items.forEach(it => { if (it.status !== 'na') { tot++; if (it.status === 'ok') ok++; } }));
     });
@@ -1826,13 +1839,15 @@ let renderReport = async () => {
   const _stampSiteName = _stampSiteSel ? (_stampSiteSel.selectedOptions[0] || {}).textContent || '' : '';
   const _stampAuditor = currentUser ? (currentUser.name || currentUser.email || '') : '';
 
-  await loadCAData();
+  try { await loadCAData(); } catch(e) { console.warn('loadCAData error:', e); }
+
   // === KPI CA Summary in Report ===
+  try {
   if (typeof caData !== 'undefined' && Object.keys(caData).length > 0) {
     const kpiDiv = document.createElement('div');
     kpiDiv.className = 'report-kpi-section';
     kpiDiv.style.cssText = 'page-break-before:always;padding:20px 0';
-    let khtml = '<h2 style="margin:0 0 16px;font-size:1.2rem">\uD83D\uDCB0 Synth\u00E8se Chiffre d\'Affaires</h2>';
+    let khtml = '<h2 style="margin:0 0 16px;font-size:1.2rem">\ud83d\udcb0 Synth\u00e8se Chiffre d\'Affaires</h2>';
     const cw = getCurrentWeek();
     Object.keys(caData).forEach(siteId => {
       const sd = caData[siteId];
@@ -1846,50 +1861,48 @@ let renderReport = async () => {
       const currW = sd.weeks[cwKey];
       const prevW = sd.weeks[prevWKey];
       const n1W = sd.weeks[n1Key];
-      const currTotal = currW ? (currW.activites||0)+(currW.bar||0)+(currW.btob||0) : 0;
-      const prevTotal = prevW ? (prevW.activites||0)+(prevW.bar||0)+(prevW.btob||0) : 0;
-      const n1Total = n1W ? (n1W.activites||0)+(n1W.bar||0)+(n1W.btob||0) : 0;
-      khtml += '<div style="margin-bottom:16px;border:1px solid #ddd;border-radius:8px;padding:12px">';
+      const currTotal = currW ? (currW.activities||0)+(currW.bar||0)+(currW.btob||0) : 0;
+      const prevTotal = prevW ? (prevW.activities||0)+(prevW.bar||0)+(prevW.btob||0) : 0;
+      const n1Total = n1W ? (n1W.activities||0)+(n1W.bar||0)+(n1W.btob||0) : 0;
+     khtml += '<div style="margin-bottom:16px;border:1px solid #ddd;border-radius:8px;padding:12px">';
       khtml += '<h3 style="margin:0 0 8px;font-size:1rem">' + getSiteName(siteId) + '</h3>';
       khtml += '<table style="width:100%;border-collapse:collapse;font-size:.85rem">';
-      khtml += '<tr style="background:#f5f5f5"><th style="padding:6px;text-align:left">P\u00E9riode</th><th style="text-align:right;padding:6px">Activit\u00E9s</th><th style="text-align:right;padding:6px">Bar</th><th style="text-align:right;padding:6px">BtoB</th><th style="text-align:right;padding:6px">Total</th><th style="text-align:right;padding:6px">\u0394</th></tr>';
-      if (currW) {
-        khtml += '<tr><td style="padding:6px">Sem. ' + cwKey + (currW.holiday ? ' \uD83C\uDF34' : '') + '</td><td style="text-align:right;padding:6px">' + (currW.activites||0).toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px">' + (currW.bar||0).toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px">' + (currW.btob||0).toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px;font-weight:700">' + currTotal.toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px">-</td></tr>';
-      }
-      if (prevW) {
-        const d = prevTotal > 0 ? Math.round((currTotal-prevTotal)/prevTotal*100) : 0;
-        khtml += '<tr style="background:#f9f9f9"><td style="padding:6px">Sem. ' + prevWKey + (prevW.holiday ? ' \uD83C\uDF34' : '') + '</td><td style="text-align:right;padding:6px">' + (prevW.activites||0).toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px">' + (prevW.bar||0).toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px">' + (prevW.btob||0).toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px;font-weight:700">' + prevTotal.toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px;color:' + (d >= 0 ? '#22c55e' : '#ef4444') + '">' + (d >= 0 ? '+' : '') + d + '%</td></tr>';
-      }
-      if (n1W) {
-        const d2 = n1Total > 0 ? Math.round((currTotal-n1Total)/n1Total*100) : 0;
-        khtml += '<tr><td style="padding:6px">N-1 ' + n1Key + '</td><td style="text-align:right;padding:6px">' + (n1W.activites||0).toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px">' + (n1W.bar||0).toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px">' + (n1W.btob||0).toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px;font-weight:700">' + n1Total.toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px;color:' + (d2 >= 0 ? '#22c55e' : '#ef4444') + '">' + (d2 >= 0 ? '+' : '') + d2 + '%</td></tr>';
-      }
-      khtml += '<tr style="background:#e8f4fd;font-weight:700"><td style="padding:6px">Cumul</td><td style="text-align:right;padding:6px">' + totalAct.toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px">' + totalBar.toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px">' + totalBtob.toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px">' + grandTotal.toLocaleString('fr-FR') + ' \u20AC</td><td></td></tr>';
+      khtml += '<tr style="background:#f5f5f5"><th style="padding:6px;text-align:left">P\u00e9riode</th><th style="text-align:right;padding:6px">Activit\u00e9s</th><th style="text-align:right;padding:6px">Bar</th><th style="text-align:right;padding:6px">BtoB</th><th style="text-align:right;padding:6px">Total</th><th style="text-align:right;padding:6px">\u0394</th></tr>';
+      if (currW) { khtml += '<tr><td style="padding:6px">Sem. ' + cwKey + (currW.holiday ? ' \ud83c\udf34' : '') + '</td><td style="text-align:right;padding:6px">' + (currW.activities||0).toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px">' + (currW.bar||0).toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px">' + (currW.btob||0).toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px;font-weight:700">' + currTotal.toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px">-</td></tr>'; }
+      if (prevW) { const d = prevTotal > 0 ? Math.round((currTotal-prevTotal)/prevTotal*100) : 0; khtml += '<tr style="background:#f9f9f9"><td style="padding:6px">Sem. ' + prevWKey + (prevW.holiday ? ' \ud83c\udf34' : '') + '</td><td style="text-align:right;padding:6px">' + (prevW.activities||0).toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px">' + (prevW.bar||0).toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px">' + (prevW.btob||0).toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px;font-weight:700">' + prevTotal.toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px;color:' + (d >= 0 ? '#22c55e' : '#ef4444') + '">' + (d >= 0 ? '+' : '') + d + '%</td></tr>'; }
+      if (n1W) { const d2 = n1Total > 0 ? Math.round((currTotal-n1Total)/n1Total*100) : 0; khtml += '<tr><td style="padding:6px">N-1 ' + n1Key + '</td><td style="text-align:right;padding:6px">' + (n1W.activities||0).toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px">' + (n1W.bar||0).toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px">' + (n1W.btob||0).toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px;font-weight:700">' + n1Total.toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px;color:' + (d2 >= 0 ? '#22c55e' : '#ef4444') + '">' + (d2 >= 0 ? '+' : '') + d2 + '%</td></tr>'; }
+      khtml += '<tr style="background:#e8f4fd;font-weight:700"><td style="padding:6px">Cumul</td><td style="text-align:right;padding:6px">' + totalAct.toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px">' + totalBar.toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px">' + totalBtob.toLocaleString('fr-FR') + '</td><td style="text-align:right;padding:6px">' + grandTotal.toLocaleString('fr-FR') + ' \u20ac</td><td></td></tr>';
       khtml += '</table>';
       khtml += '<div style="display:flex;gap:8px;margin-top:8px;font-size:.75rem">';
-      khtml += '<span>\u25A0 Activit\u00E9s: ' + (grandTotal > 0 ? Math.round(totalAct/grandTotal*100) : 0) + '%</span>';
-      khtml += '<span>\u25A0 Bar: ' + (grandTotal > 0 ? Math.round(totalBar/grandTotal*100) : 0) + '%</span>';
-      khtml += '<span>\u25A0 BtoB: ' + (grandTotal > 0 ? Math.round(totalBtob/grandTotal*100) : 0) + '%</span>';
+      khtml += '<span>\u25a0 Activit\u00e9s: ' + (grandTotal > 0 ? Math.round(totalAct/grandTotal*100) : 0) + '%</span>';
+      khtml += '<span>\u25a0 Bar: ' + (grandTotal > 0 ? Math.round(totalBar/grandTotal*100) : 0) + '%</span>';
+      khtml += '<span>\u25a0 BtoB: ' + (grandTotal > 0 ? Math.round(totalBtob/grandTotal*100) : 0) + '%</span>';
       khtml += '</div></div>';
     });
     kpiDiv.innerHTML = khtml;
     content.appendChild(kpiDiv);
   }
-  // === Photo section for PDF only (hidden in print) ===
-  if (currentAudit && currentAudit.sections) {
-    let hasAnyPhotos = false;
-    currentAudit.sections.forEach(sec => {
-      sec.items?.forEach(item => { if (item.photos?.length) hasAnyPhotos = true; });
-    });
-    if (hasAnyPhotos) {
-      const photoDiv = document.createElement('div');
-      photoDiv.className = 'photo-in-report';
-      photoDiv.style.cssText = 'page-break-before:always;padding:20px 0';
-      let phtml = '<h2 style="margin:0 0 16px;font-size:1.2rem">\uD83D\uDCF7 Photos jointes</h2>';
-      currentAudit.sections.forEach(sec => {
+  } catch(e) { console.warn('KPI CA error in report:', e); }
+
+  // === Photo section from filtered audits ===
+  try {
+  let hasAnyFilteredPhotos = false;
+  filtered.forEach(audit => {
+    if (!audit.sections) return;
+    audit.sections.forEach(sec => { sec.items?.forEach(item => { if (item.photos?.length) hasAnyFilteredPhotos = true; }); });
+  });
+  if (hasAnyFilteredPhotos) {
+    const photoDiv = document.createElement('div');
+    photoDiv.className = 'photo-in-report';
+    photoDiv.style.cssText = 'page-break-before:always;padding:20px 0';
+    let phtml = '<h2 style="margin:0 0 16px;font-size:1.2rem">\ud83d\udcf7 Photos jointes</h2>';
+    filtered.forEach(audit => {
+      if (!audit.sections) return;
+      const auditSiteName = allSites.find(s => s.id === audit.siteId)?.name || audit.siteId;
+      audit.sections.forEach(sec => {
         sec.items?.forEach(item => {
           if (item.photos?.length) {
-            phtml += '<div style="margin-bottom:12px"><div style="font-weight:600;font-size:.9rem;margin-bottom:4px">' + (item.label || item.id) + '</div>';
+            phtml += '<div style="margin-bottom:12px"><div style="font-weight:600;font-size:.9rem;margin-bottom:4px">' + auditSiteName + ' \u2014 ' + sec.label + ' \u2014 ' + (item.label || item.id) + '</div>';
             phtml += '<div style="display:flex;gap:6px;flex-wrap:wrap">';
             item.photos.forEach(url => {
               phtml += '<img src="' + url + '" style="width:120px;height:90px;object-fit:cover;border-radius:4px;border:1px solid #ddd" crossorigin="anonymous">';
@@ -1898,15 +1911,17 @@ let renderReport = async () => {
           }
         });
       });
-      photoDiv.innerHTML = phtml;
-      content.appendChild(photoDiv);
-    }
+    });
+    photoDiv.innerHTML = phtml;
+    content.appendChild(photoDiv);
   }
+  } catch(e) { console.warn('Photo section error:', e); }
 
   if (typeof buildAuditStamp === 'function') {
     content.appendChild(buildAuditStamp(_stampScoreCalc, _stampSiteName, _stampAuditor));
   }
 };
+
 
 // ─── Score helper ─────────────────────────────────────────────────────────────
 let computeScore = (audit) => {
@@ -2140,27 +2155,92 @@ let renderTemplateEditor = () => {
   container.innerHTML = '';
   editingTemplateSections.forEach((sec, si) => {
     const secDiv = document.createElement('div');
-    secDiv.style.cssText = 'background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:10px';
+    secDiv.style.cssText = 'background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:10px;transition:opacity 0.2s';
+    secDiv.setAttribute('draggable', 'true');
+    secDiv.dataset.sectionIndex = si;
+    secDiv.addEventListener('dragstart', (e) => {
+      if (e.target.tagName === 'INPUT') return;
+      e.dataTransfer.setData('text/plain', JSON.stringify({type:'section', si}));
+      e.dataTransfer.effectAllowed = 'move';
+      secDiv.style.opacity = '0.4';
+    });
+    secDiv.addEventListener('dragend', () => { secDiv.style.opacity = '1'; });
+    secDiv.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      secDiv.style.borderTop = '3px solid var(--accent)';
+    });
+    secDiv.addEventListener('dragleave', () => { secDiv.style.borderTop = ''; });
+    secDiv.addEventListener('drop', (e) => {
+      e.preventDefault();
+      secDiv.style.borderTop = '';
+      try {
+        const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+        if (data.type === 'section') {
+          const from = data.si;
+          const to = si;
+          if (from !== to) {
+            const moved = editingTemplateSections.splice(from, 1)[0];
+            editingTemplateSections.splice(to, 0, moved);
+            renderTemplateEditor();
+          }
+        }
+      } catch(err) {}
+    });
     const secHeader = document.createElement('div');
     secHeader.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:10px';
-    secHeader.innerHTML = `
-      <input type="text" value="${sec.label}" style="flex:1;font-weight:600" onchange="editingTemplateSections[${si}].label = this.value" placeholder="Nom de la section">
-      <button class="btn btn-secondary btn-sm" onclick="addTemplateItem(${si})">+ Point</button>
-      <button class="btn btn-danger btn-sm" onclick="removeTemplateSection(${si})">✕ Section</button>
-    `;
+    secHeader.innerHTML = '<span style="cursor:grab;font-size:1.1rem;padding:0 4px" title="Glisser pour r\u00e9ordonner">\u2630</span>' +
+      '<input type="text" value="' + sec.label.replace(/"/g, '&quot;') + '" style="flex:1;font-weight:600" onchange="editingTemplateSections[' + si + '].label = this.value" placeholder="Nom de la section">' +
+      '<button class="btn btn-secondary btn-sm" onclick="addTemplateItem(' + si + ')">+ Point</button>' +
+      '<button class="btn btn-danger btn-sm" onclick="removeTemplateSection(' + si + ')">\u2715 Section</button>';
     secDiv.appendChild(secHeader);
+    const itemsContainer = document.createElement('div');
+    itemsContainer.dataset.sectionIdx = si;
     sec.items.forEach((item, ii) => {
       const itemRow = document.createElement('div');
-      itemRow.style.cssText = 'display:flex;gap:8px;align-items:center;margin-bottom:6px';
-      itemRow.innerHTML = `
-        <input type="text" value="${item.label}" style="flex:1;font-size:0.85rem" onchange="editingTemplateSections[${si}].items[${ii}].label = this.value" placeholder="Point audité">
-        <button class="btn btn-danger btn-sm" onclick="removeTemplateItem(${si},${ii})">✕</button>
-      `;
-      secDiv.appendChild(itemRow);
+      itemRow.style.cssText = 'display:flex;gap:8px;align-items:center;margin-bottom:6px;transition:opacity 0.2s';
+      itemRow.setAttribute('draggable', 'true');
+      itemRow.dataset.itemIndex = ii;
+      itemRow.addEventListener('dragstart', (e) => {
+        if (e.target.tagName === 'INPUT') return;
+        e.stopPropagation();
+        e.dataTransfer.setData('text/plain', JSON.stringify({type:'item', si, ii}));
+        e.dataTransfer.effectAllowed = 'move';
+        itemRow.style.opacity = '0.4';
+      });
+      itemRow.addEventListener('dragend', () => { itemRow.style.opacity = '1'; });
+      itemRow.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        e.dataTransfer.dropEffect = 'move';
+        itemRow.style.borderTop = '2px solid var(--accent)';
+      });
+      itemRow.addEventListener('dragleave', () => { itemRow.style.borderTop = ''; });
+      itemRow.addEventListener('drop', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        itemRow.style.borderTop = '';
+        try {
+          const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+          if (data.type === 'item') {
+            const fromSec = data.si, fromIdx = data.ii;
+            const toSec = si, toIdx = ii;
+            const moved = editingTemplateSections[fromSec].items.splice(fromIdx, 1)[0];
+            editingTemplateSections[toSec].items.splice(toIdx, 0, moved);
+            renderTemplateEditor();
+          }
+        } catch(err) {}
+      });
+      itemRow.innerHTML = '<span style="cursor:grab;font-size:.85rem;padding:0 2px;color:var(--text3)" title="Glisser pour r\u00e9ordonner">\u2630</span>' +
+        '<input type="text" value="' + item.label.replace(/"/g, '&quot;') + '" style="flex:1;font-size:0.85rem" onchange="editingTemplateSections[' + si + '].items[' + ii + '].label = this.value" placeholder="Point audit\u00e9">' +
+        '<button class="btn btn-danger btn-sm" onclick="removeTemplateItem(' + si + ',' + ii + ')">\u2715</button>';
+      itemsContainer.appendChild(itemRow);
     });
+    secDiv.appendChild(itemsContainer);
     container.appendChild(secDiv);
   });
 };
+
 
 let addTemplateSection = () => {
   editingTemplateSections.push({ id: 'sec_' + Date.now(), label: 'Nouvelle section', items: [{id: Date.now(), label: 'Nouveau point'}] });
