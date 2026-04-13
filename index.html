@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+  <link rel="manifest" href="manifest.json">
 <meta charset="UTF-8">
+  <meta name="theme-color" content="#0d1117">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Audit Manager</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -3758,6 +3762,16 @@ const initNewFeatures = () => {
 // Run after DOM ready + auth
 if (document.readyState === 'complete') setTimeout(initNewFeatures, 1000);
 else window.addEventListener('load', () => setTimeout(initNewFeatures, 1000));
+
+
+// ======== A6: PWA - Service Worker + Firestore Persistence ========
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').then(reg => {
+    console.log('SW registered:', reg.scope);
+  }).catch(err => console.log('SW registration failed:', err));
+}
+// Enable Firestore offline persistence
+try { db.enablePersistence({synchronizeTabs: true}).catch(e => {}); } catch(e) {}
 
 </script>
 </body>
