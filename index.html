@@ -397,6 +397,67 @@ h2,h3{margin:8px 0 4px!important;font-size:14px!important}
   .section-header span{font-size:0.8rem}
   .hamburger{width:36px;height:36px}
 }
+
+/* ======== A7: Accessibility ======== */
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+.sr-only { position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0; }
+[role="button"] { cursor: pointer; }
+/* ======== N1: Dashboard ======== */
+.dashboard-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:16px; margin:16px 0; }
+.dash-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:20px; transition:transform .15s,box-shadow .15s; }
+.dash-card:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,0.15); }
+.dash-card h3 { font-size:13px; color:var(--muted); margin:0 0 8px; text-transform:uppercase; letter-spacing:.5px; }
+.dash-score { font-size:32px; font-weight:700; }
+.dash-trend { font-size:13px; margin-top:4px; }
+.dash-trend.up { color:#22c55e; }
+.dash-trend.down { color:#ef4444; }
+.dash-trend.stable { color:var(--muted); }
+.dash-sparkline { height:40px; margin-top:10px; }
+/* ======== N3: Calendar ======== */
+.cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; }
+.cal-header { text-align:center; font-size:11px; color:var(--muted); padding:8px 0; font-weight:600; }
+.cal-day { min-height:70px; background:var(--card); border:1px solid var(--border); border-radius:6px; padding:4px 6px; font-size:11px; cursor:pointer; transition:background .15s; }
+.cal-day:hover { background:var(--hover); }
+.cal-day.today { border-color:var(--accent); }
+.cal-day.other-month { opacity:0.3; }
+.cal-event { font-size:10px; padding:2px 4px; border-radius:3px; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.cal-event.completed { background:#22c55e33; color:#22c55e; }
+.cal-event.planned { background:var(--accent-bg); color:var(--accent); }
+.cal-event.overdue { background:#ef444433; color:#ef4444; }
+.cal-nav { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+.cal-nav h2 { font-size:18px; margin:0; }
+/* ======== N2: Notifications ======== */
+.notif-panel { position:fixed; top:0; right:-380px; width:360px; height:100vh; background:var(--card); border-left:1px solid var(--border); z-index:9998; transition:right .3s ease; overflow-y:auto; padding:20px; }
+.notif-panel.open { right:0; }
+.notif-badge { position:absolute; top:-4px; right:-4px; background:#ef4444; color:#fff; font-size:10px; width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; }
+.notif-item { padding:12px; border-radius:10px; background:var(--bg); margin-bottom:8px; border-left:3px solid var(--accent); cursor:pointer; transition:background .15s; }
+.notif-item:hover { background:var(--hover); }
+.notif-item.unread { border-left-color:#ef4444; }
+.notif-item .notif-time { font-size:11px; color:var(--muted); margin-top:4px; }
+/* ======== Modal animation ======== */
+@keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
+/* ======== A9: Utility classes (replacing inline styles) ======== */
+.flex-center { display:flex; align-items:center; justify-content:center; }
+.flex-between { display:flex; align-items:center; justify-content:between; }
+.gap-sm { gap:8px; }
+.gap-md { gap:14px; }
+.gap-lg { gap:20px; }
+.text-muted { color:var(--muted); }
+.text-sm { font-size:13px; }
+.text-xs { font-size:11px; }
+.text-center { text-align:center; }
+.mt-sm { margin-top:8px; }
+.mt-md { margin-top:16px; }
+.mb-sm { margin-bottom:8px; }
+.mb-md { margin-bottom:16px; }
+.p-sm { padding:8px; }
+.p-md { padding:16px; }
+.rounded { border-radius:10px; }
+.rounded-lg { border-radius:14px; }
+.w-full { width:100%; }
+.hidden { display:none; }
+.font-bold { font-weight:600; }
 </style>
 </head>
 <body>
@@ -449,23 +510,27 @@ h2,h3{margin:8px 0 4px!important;font-size:14px!important}
   <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
 
   <div class="app-body">
-    <div class="sidebar" id="sidebar">
+    <div class="sidebar" role="navigation" aria-label="Menu principal" id="sidebar">
       <button class="sidebar-item active" data-tab="audit" onclick="switchTab('audit')">📋 Audit</button>
       <button class="sidebar-item" data-tab="history" onclick="switchTab('history')">📊 Historique</button>
       <button class="sidebar-item" data-tab="report" onclick="switchTab('report')">📈 Rapport</button>
       <button class="sidebar-item" data-tab="kpi" onclick="switchTab('kpi')">📉 KPI</button>
       <button class="sidebar-item" data-tab="alertes" onclick="switchTab('alertes')">🚨 Alertes</button>
       <button class="sidebar-item" data-tab="actions" onclick="switchTab('actions')">📋 Actions</button>
+      <button onclick="switchTab('dashboard')" class="tab-btn" role="button" aria-label="Tableau de bord"><span>📊</span> Dashboard</button>
+      <button onclick="switchTab('calendar')" class="tab-btn" role="button" aria-label="Calendrier"><span>📅</span> Calendrier</button>
       <button class="sidebar-item" data-tab="settings" onclick="switchTab('settings')">⚙️ Paramètres</button>
     </div>
 
-    <div class="main">
+    <div class="main" role="main">
       <div class="tabs">
         <button class="tab active" data-tab="audit" onclick="switchTab('audit')">Audit</button>
         <button class="tab" data-tab="history" onclick="switchTab('history')">Historique</button>
         <button class="tab" data-tab="report" onclick="switchTab('report')">Rapport</button>
         <button class="tab" data-tab="kpi" onclick="switchTab('kpi')">KPI</button>
-        <button class="tab" data-tab="settings" onclick="switchTab('settings')">Paramètres</button>
+        <button onclick="switchTab('dashboard')">Dashboard</button>
+          <button onclick="switchTab('calendar')">Calendrier</button>
+          <button class="tab" data-tab="settings" onclick="switchTab('settings')">Paramètres</button>
       </div>
 
       <div class="content">
@@ -492,7 +557,7 @@ h2,h3{margin:8px 0 4px!important;font-size:14px!important}
         </div>
 
         <!-- HISTORY TAB -->
-        <div id="history-tab" class="tab-panel">
+        <div id="history-tab" class="tab-panel" role="tabpanel" aria-label="history">
           <div class="btn-row" style="margin-bottom:14px">
             <input type="text" id="history-search" placeholder="Rechercher…" style="max-width:200px" oninput="filterHistory()">
             <select id="history-site-filter" onchange="filterHistory()">
@@ -508,7 +573,7 @@ h2,h3{margin:8px 0 4px!important;font-size:14px!important}
         </div>
 
         <!-- REPORT TAB -->
-        <div id="report-tab" class="tab-panel">
+        <div id="report-tab" class="tab-panel" role="tabpanel" aria-label="report">
           <div class="form-grid" style="margin-bottom:14px">
             <div class="form-group">
               <label>Site</label>
@@ -532,7 +597,7 @@ h2,h3{margin:8px 0 4px!important;font-size:14px!important}
         </div>
 
         <!-- KPI TAB -->
-        <div id="kpi-tab" class="tab-panel">
+        <div id="kpi-tab" class="tab-panel" role="tabpanel" aria-label="kpi">
           <div class="kpi-site-bar" id="kpi-site-bar">
             <span style="font-size:.78rem;color:#6b7280;align-self:center;margin-right:6px;font-weight:600">📍 Site :</span>
           </div>
@@ -552,13 +617,13 @@ h2,h3{margin:8px 0 4px!important;font-size:14px!important}
           </div>
         </div>
         <!-- SETTINGS TAB -->
-             <div id="alertes-tab" class="tab-panel">
+             <div id="alertes-tab" class="tab-panel" role="tabpanel" aria-label="alertes">
         <div style="padding:16px">
           <h2 style="margin:0 0 16px 0;font-size:1.3rem">🚨 Dashboard Alertes & Suivi Multi-sites</h2>
           <div id="alertes-content"><p style="color:var(--text2)">Chargement des alertes...</p></div>
         </div>
       </div>
-     <div id="actions-tab" class="tab-panel">
+     <div id="actions-tab" class="tab-panel" role="tabpanel" aria-label="actions">
         <div style="padding:16px">
           <h2 style="margin:0 0 16px 0;font-size:1.3rem">📋 Plan d'Action Corrective</h2>
           <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
@@ -573,7 +638,23 @@ h2,h3{margin:8px 0 4px!important;font-size:14px!important}
           <div id="actions-list"></div>
         </div>
       </div>
-<div id="settings-tab" class="tab-panel">
+
+      <!-- ======== N1: Dashboard Tab ======== -->
+      <div id="dashboard-tab" class="tab-panel" role="tabpanel" aria-label="Tableau de bord">
+        <h2 style="margin:0 0 16px">Tableau de bord</h2>
+        <div id="dashboard-content">
+          <p style="color:var(--muted)">Chargement du tableau de bord...</p>
+        </div>
+      </div>
+
+      <!-- ======== N3: Calendar Tab ======== -->
+      <div id="calendar-tab" class="tab-panel" role="tabpanel" aria-label="Calendrier des audits">
+        <h2 style="margin:0 0 4px">Calendrier des audits</h2>
+        <p style="color:var(--muted);margin:0 0 16px;font-size:13px">Planifiez et suivez vos audits</p>
+        <div id="calendar-content"></div>
+      </div>
+
+<div id="settings-tab" class="tab-panel" role="tabpanel" aria-label="settings">
           <div class="settings-section">
             <h3>Paramètres généraux</h3>
             <div class="form-grid">
@@ -620,7 +701,7 @@ h2,h3{margin:8px 0 4px!important;font-size:14px!important}
                 <input type="file" id="import-file" accept=".json">
                 <label for="import-file" class="file-input-label">📥 Importer</label>
               </div>
-              <button class="btn btn-danger" onclick="if(confirm('Supprimer toutes vos données cloud?')) clearAllData()">🗑️ Supprimer tout</button>
+              <button class="btn btn-danger" onclick="if(await showConfirm('Supprimer toutes vos données cloud?')) clearAllData()">🗑️ Supprimer tout</button>
             </div>
           </div>
         </div>
@@ -757,6 +838,104 @@ h2,h3{margin:8px 0 4px!important;font-size:14px!important}
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <script>
+// ======== A10: Global Error Monitoring ========
+const _errorLog = [];
+window.onerror = (msg, src, line, col, err) => {
+  const entry = {ts: new Date().toISOString(), msg, src, line, col, stack: err?.stack?.substring(0,500)};
+  _errorLog.push(entry);
+  if (_errorLog.length > 50) _errorLog.shift();
+  try {
+    const user = firebase?.auth()?.currentUser;
+    if (user) firebase.firestore().collection('errorLogs').add({...entry, uid: user.uid, ua: navigator.userAgent});
+  } catch(e) {}
+};
+window.onunhandledrejection = (e) => {
+  const entry = {ts: new Date().toISOString(), msg: 'UnhandledRejection: ' + String(e.reason), stack: e.reason?.stack?.substring(0,500)};
+  _errorLog.push(entry);
+  if (_errorLog.length > 50) _errorLog.shift();
+  try {
+    const user = firebase?.auth()?.currentUser;
+    if (user) firebase.firestore().collection('errorLogs').add({...entry, uid: user.uid, ua: navigator.userAgent});
+  } catch(e2) {}
+};
+// ======== A2: XSS Sanitization ========
+const _safeHTML = (str) => {
+  if (str === null || str === undefined) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+};
+const _safeHTMLKeepBr = (str) => {
+  if (str === null || str === undefined) return '';
+  const escaped = _safeHTML(str);
+  return escaped.replace(/&lt;br\s*\/?&gt;/gi, '<br>');
+};
+
+// ======== A4: Custom Modal System ========
+const _modalOverlay = document.createElement('div');
+_modalOverlay.id = 'custom-modal-overlay';
+_modalOverlay.style.cssText = 'display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:10000;justify-content:center;align-items:center;backdrop-filter:blur(3px)';
+const _modalBox = document.createElement('div');
+_modalBox.id = 'custom-modal-box';
+_modalBox.style.cssText = 'background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;max-width:420px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.4);animation:fadeUp .2s ease';
+_modalOverlay.appendChild(_modalBox);
+document.addEventListener('DOMContentLoaded', () => document.body.appendChild(_modalOverlay));
+
+let _modalResolve = null;
+const showModal = (title, message, opts = {}) => {
+  const type = opts.type || 'alert';
+  const confirmText = opts.confirmText || 'OK';
+  const cancelText = opts.cancelText || 'Annuler';
+  const inputDefault = opts.inputDefault || '';
+  return new Promise(resolve => {
+    _modalResolve = resolve;
+    let html = '<div style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:12px">' + _safeHTML(title) + '</div>';
+    html += '<div style="color:var(--muted);font-size:14px;margin-bottom:20px;line-height:1.5">' + _safeHTML(message) + '</div>';
+    if (type === 'prompt') html += '<input id="modal-input" type="text" value="' + _safeHTML(inputDefault) + '" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:14px;margin-bottom:16px;box-sizing:border-box">';
+    html += '<div style="display:flex;gap:10px;justify-content:flex-end">';
+    if (type !== 'alert') html += '<button onclick="_modalClose(false)" style="padding:8px 20px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;font-size:14px">' + _safeHTML(cancelText) + '</button>';
+    html += '<button onclick="_modalClose(true)" style="padding:8px 20px;border-radius:8px;border:none;background:var(--accent);color:#fff;cursor:pointer;font-size:14px;font-weight:600">' + _safeHTML(confirmText) + '</button>';
+    html += '</div>';
+    _modalBox.innerHTML = html;
+    _modalOverlay.style.display = 'flex';
+    const inp = document.getElementById('modal-input');
+    if (inp) { inp.focus(); inp.select(); inp.addEventListener('keydown', e => { if(e.key==='Enter') _modalClose(true); }); }
+  });
+};
+const _modalClose = (ok) => {
+  _modalOverlay.style.display = 'none';
+  const inp = document.getElementById('modal-input');
+  if (_modalResolve) {
+    if (inp) _modalResolve(ok ? inp.value : null);
+    else _modalResolve(ok);
+    _modalResolve = null;
+  }
+};
+const showAlert = (msg) => showModal('Information', msg, {type:'alert'});
+const showConfirm = (msg) => showModal('Confirmation', msg, {type:'confirm', confirmText:'Confirmer'});
+const showPrompt = (msg, def) => showModal('Saisie', msg, {type:'prompt', inputDefault:def||''});
+
+// ======== A4: Toast Notification System ========
+let _toastContainer = null;
+const ensureToastContainer = () => {
+  if (!_toastContainer) {
+    _toastContainer = document.createElement('div');
+    _toastContainer.style.cssText = 'position:fixed;top:20px;right:20px;z-index:10001;display:flex;flex-direction:column;gap:10px;pointer-events:none';
+    document.body.appendChild(_toastContainer);
+  }
+};
+const showToast = (msg, type = 'info', duration = 3000) => {
+  ensureToastContainer();
+  const t = document.createElement('div');
+  const colors = {info:'var(--accent)',success:'#22c55e',error:'#ef4444',warning:'#f59e0b'};
+  t.style.cssText = 'pointer-events:auto;padding:12px 20px;border-radius:10px;color:#fff;font-size:14px;max-width:360px;box-shadow:0 8px 24px rgba(0,0,0,0.3);animation:fadeUp .25s ease;background:' + (colors[type]||colors.info);
+  t.textContent = msg;
+  _toastContainer.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity .3s'; setTimeout(() => t.remove(), 300); }, duration);
+};
+
+
+
+
+
 // ─── Firebase ────────────────────────────────────────────────────────────────
 firebase.initializeApp({
   apiKey: "AIzaSyA1Hk8lPBL2Mnzs5gXa9CRti0rKrliBcwU",
@@ -1135,7 +1314,7 @@ let populateSiteDropdown = () => {
       // If site has custom template and user confirms, apply it
       const newSite = allSites.find(s => s.id === currentSite);
       if (newSite && newSite.sections && newSite.sections.length > 0 && currentSite !== oldSiteId) {
-        if (confirm(`Le site "${newSite.name}" a un template personnalisé. Appliquer ce template à l'audit en cours ? (Les données non sauvegardées seront perdues)`)) {
+        if (await showConfirm(`Le site "${newSite.name}" a un template personnalisé. Appliquer ce template à l'audit en cours ? (Les données non sauvegardées seront perdues)`)) {
           newBlankAudit();
           return;
         }
@@ -1170,7 +1349,7 @@ let readFormIntoAudit = () => {
   currentAudit.notes = document.getElementById('audit-notes')?.value || '';
 };
 
-let resetAudit = () => { if (confirm('Réinitialiser l\'audit en cours ?')) newBlankAudit(); };
+let resetAudit = () => { if (await showConfirm('Réinitialiser l\'audit en cours ?')) newBlankAudit(); };
 
 let fillAllOK = () => {
   currentAudit.sections.forEach(s => s.items.forEach(i => {
@@ -1428,12 +1607,12 @@ let addPhotos = async (itemId, files) => {
   for (let i = 0; i < fileArr.length; i++) {
     try {
       const blob = await compressImage(fileArr[i], 800, 0.6);
-      const base64 = await new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result);
-        reader.readAsDataURL(blob);
-      });
-      if (!item.photos.includes(base64)) item.photos.push(base64);
+      // A3: Upload to Firebase Storage instead of base64 in Firestore
+      const photoId = Date.now() + '_' + Math.random().toString(36).substring(2,8);
+      const storageRef = firebase.storage().ref('photos/' + siteId + '/' + photoId + '.jpg');
+      await storageRef.put(blob, {contentType: 'image/jpeg'});
+      const photoUrl = await storageRef.getDownloadURL();
+      if (!item.photos.includes(photoUrl)) item.photos.push(photoUrl);
       if (photoDiv) {
         const img = document.createElement('img');
         img.src = base64;
@@ -1479,7 +1658,7 @@ let renderPhotos = (itemId, container) => {
 };
 
 let deletePhoto = async (itemId, photoIdx) => {
-  if (!confirm('Supprimer cette photo ?')) return;
+  if (!await showConfirm('Supprimer cette photo ?')) return;
   const item = findItemById(itemId);
   if (!item || !item.photos) return;
   const url = item.photos[photoIdx];
@@ -1501,7 +1680,7 @@ let renderHistory = async () => {
   const list = document.getElementById('history-items');
   list.innerHTML = '<p style="color:var(--text2);padding:8px">Chargement…</p>';
   try {
-    const snap = await ((currentUser && (currentUser.role === 'admin' || currentUser.role === 'lecteur')) ? db.collection('auditHistory').get() : db.collection('auditHistory').where('userId', '==', currentUser.uid).get());
+    const snap = await ((currentUser && (currentUser.role === 'admin' || currentUser.role === 'lecteur')) ? db.collection('auditHistory').orderBy('date','desc').limit(50).get() : db.collection('auditHistory').where('userId', '==', currentUser.uid).orderBy('date','desc').limit(50).get());
     historyCache = snap.docs.map(d => d.data());
   } catch (e) { historyCache = []; }
   populateHistoryFilters();
@@ -1596,7 +1775,7 @@ let loadHistoryAudit = async (auditId) => {
 };
 
 let deleteHistoryItem = async (auditId) => {
-  if (confirm('Supprimer cet audit ?')) {
+  if (await showConfirm('Supprimer cet audit ?')) {
     try {
       await db.collection('auditHistory').doc(auditId).delete();
       if (historyCache) historyCache = historyCache.filter(a => a.id !== auditId);
@@ -1606,7 +1785,7 @@ let deleteHistoryItem = async (auditId) => {
 };
 
 let clearHistory = async () => {
-  if (confirm('Supprimer tout l\'historique ?')) {
+  if (await showConfirm('Supprimer tout l\'historique ?')) {
     try {
       const snap = await ((currentUser && (currentUser.role === 'admin' || currentUser.role === 'lecteur')) ? db.collection('auditHistory').get() : db.collection('auditHistory').where('userId', '==', currentUser.uid).get());
       const batch = db.batch();
@@ -1997,7 +2176,7 @@ let approveUser = async (uid) => {
 };
 
 let rejectUser = async (uid) => {
-  if (!confirm('Refuser l\'accès à cet utilisateur ?')) return;
+  if (!await showConfirm('Refuser l\'accès à cet utilisateur ?')) return;
   try {
     await db.collection('users').doc(uid).update({ status: 'rejected' });
     const u = allUsers.find(u=>u.uid===uid); if (u) u.status = 'rejected';
@@ -2024,19 +2203,19 @@ let openAddUserModal = () => {
 
 let saveNewUser = async () => {
   const email = document.getElementById('add-user-email').value.trim().toLowerCase();
-  if (!email) { alert('Veuillez entrer un email'); return; }
+  if (!email) { showAlert('Veuillez entrer un email'); return; }
   const role = document.getElementById('add-user-role').value;
   const cbs = document.querySelectorAll('#add-user-sites-checkboxes input[type="checkbox"]:checked');
   const allowedSites = Array.from(cbs).map(cb => cb.value);
   try {
     const existing = await db.collection('users').where('email', '==', email).get();
-    if (!existing.empty) { alert('Cet utilisateur existe d\u00e9j\u00e0'); closeModal('modal-add-user'); return; }
+    if (!existing.empty) { showAlert('Cet utilisateur existe d\u00e9j\u00e0'); closeModal('modal-add-user'); return; }
     await db.collection('preApproved').doc(email).set({ email, role, allowedSites, status: 'approved', createdBy: currentUser.email, createdAt: new Date().toISOString() });
-    alert('Utilisateur pr\u00e9-approuv\u00e9 ajout\u00e9. Il pourra se connecter avec Google.');
+    showAlert('Utilisateur pr\u00e9-approuv\u00e9 ajout\u00e9. Il pourra se connecter avec Google.');
     closeModal('modal-add-user');
   } catch (e) {
     console.error('Error adding user:', e);
-    alert('Erreur: ' + e.message);
+    showAlert('Erreur: ' + e.message);
   }
 };
 
@@ -2082,7 +2261,7 @@ let saveUserModal = async () => {
 
 let deleteUser = async () => {
   const uid = document.getElementById('modal-edit-email').getAttribute('data-uid');
-  if (confirm('Supprimer cet utilisateur ?')) {
+  if (await showConfirm('Supprimer cet utilisateur ?')) {
     try {
       await db.collection('users').doc(uid).delete();
       allUsers = allUsers.filter(u => u.uid !== uid);
@@ -2129,7 +2308,7 @@ let saveSiteModal = async () => {
 };
 
 let deleteSite = async (siteId) => {
-  if (confirm('Supprimer ce site ?')) {
+  if (await showConfirm('Supprimer ce site ?')) {
     allSites = allSites.filter(x => x.id !== siteId);
     await db.collection('sites').doc('main').set({ list: allSites });
     renderSitesList(); populateSiteDropdown();
@@ -2263,7 +2442,7 @@ let removeTemplateItem = (si, ii) => {
 };
 
 let resetTemplateToDefault = () => {
-  if (confirm('Réinitialiser le template par défaut ?')) {
+  if (await showConfirm('Réinitialiser le template par défaut ?')) {
     editingTemplateSections = JSON.parse(JSON.stringify(DEFAULT_SECTIONS));
     renderTemplateEditor();
   }
@@ -2322,7 +2501,7 @@ let renameSection = () => {
 
 let deleteSection = () => {
   const sectionId = document.getElementById('editor-section-select').value;
-  if (confirm('Supprimer cette section ?')) {
+  if (await showConfirm('Supprimer cette section ?')) {
     currentAudit.sections = currentAudit.sections.filter(s => s.id !== sectionId);
     autoSave(); populateEditorSelects(); renderItemEditor(); renderAuditItems();
   }
@@ -2353,7 +2532,7 @@ let removeEditorItem = (sectionId, itemId) => {
 };
 
 let resetItemsToDefault = () => {
-  if (confirm('Réinitialiser vers le template du site sélectionné (ou défaut) ?')) {
+  if (await showConfirm('Réinitialiser vers le template du site sélectionné (ou défaut) ?')) {
     const template = getSectionsForSite(currentAudit.siteId);
     currentAudit.sections = template.map(s => ({
       id: s.id, label: s.label,
@@ -2991,13 +3170,13 @@ let _buildNOKTable = (audits, siteId) => {
 let importKpiCSV = () => {
   const txt = (document.getElementById('kpi-paste-area') || {}).value || '';
   const lines = txt.trim().split('\n').filter(l => l.trim());
-  if (!lines.length) { alert('Aucune donn\u00e9e \u00e0 importer'); return; }
-  alert('\u2705 ' + lines.length + ' ligne(s) d\u00e9tect\u00e9e(s). Import CSV op\u00e9rationnel.');
+  if (!lines.length) { showAlert('Aucune donn\u00e9e \u00e0 importer'); return; }
+  showAlert('\u2705 ' + lines.length + ' ligne(s) d\u00e9tect\u00e9e(s). Import CSV op\u00e9rationnel.');
 };
 
 let exportKpiCSV = () => {
   const audits = historyCache || [];
-  if (!audits.length) { alert('Aucun audit en cache'); return; }
+  if (!audits.length) { showAlert('Aucun audit en cache'); return; }
   const rows = ['Date,Site,Score (%),Auditeur,Notes'];
   audits.forEach(a => { if (!a.sections) return; let tot=0,ok=0; a.sections.forEach(s=>s.items.forEach(it=>{if(it.status!=='na'){tot++;if(it.status==='ok')ok++;}})); const score=tot?Math.round(ok/tot*100):0; rows.push([a.date||'',a.siteId||'',(score+''),(a.auditor||'').replace(/,/g,' '),(a.notes||'').replace(/,/g,' ').replace(/\n/g,' ')].join(',')); });
   const blob = new Blob([rows.join('\n')], {type:'text/csv;charset=utf-8;'});
@@ -3021,8 +3200,8 @@ let printReport = () => {
 
 let exportPDF = () => {
   const reportEl = document.getElementById('report-content');
-  if (!reportEl || !reportEl.innerHTML.trim()) { alert('G\u00e9n\u00e9rez d\'abord un rapport.'); return; }
-  if (typeof html2pdf === 'undefined') { alert('Biblioth\u00e8que PDF non charg\u00e9e.'); return; }
+  if (!reportEl || !reportEl.innerHTML.trim()) { showAlert('G\u00e9n\u00e9rez d\'abord un rapport.'); return; }
+  if (typeof html2pdf === 'undefined') { showAlert('Biblioth\u00e8que PDF non charg\u00e9e.'); return; }
   const clone = reportEl.cloneNode(true);
   clone.querySelectorAll('button,.btn,.no-print').forEach(el => el.remove());
   clone.style.cssText = 'background:#fff;padding:0;font-family:Arial,sans-serif;font-size:12px;color:#111;max-width:none';
@@ -3068,9 +3247,9 @@ let buildAuditStamp = (score, siteName, auditorName, dateStr) => {
 
 // ── KPI PDF Export ──
 let exportKPIPDF = () => {
-  if (typeof html2pdf === 'undefined') { alert('Biblioth\u00E8que PDF non charg\u00E9e.'); return; }
+  if (typeof html2pdf === 'undefined') { showAlert('Biblioth\u00E8que PDF non charg\u00E9e.'); return; }
   const kpiPanel = document.getElementById('kpi-panel');
-  if (!kpiPanel) { alert('Aucun KPI \u00E0 exporter.'); return; }
+  if (!kpiPanel) { showAlert('Aucun KPI \u00E0 exporter.'); return; }
   const clone = kpiPanel.cloneNode(true);
   clone.querySelectorAll('button,.btn,.no-print,input').forEach(el => el.remove());
   clone.style.cssText = 'background:#fff;padding:0;color:#111;font-family:Arial,sans-serif;font-size:12px;max-width:none';
@@ -3227,7 +3406,7 @@ let showAddActionModal = () => {
 };
 let saveNewAction = async () => {
   const title = document.getElementById('action-title').value.trim();
-  if (!title) { alert('Titre requis'); return; }
+  if (!title) { showAlert('Titre requis'); return; }
   try {
     await db.collection('correctiveActions').add({
       title, description: document.getElementById('action-desc').value.trim(),
@@ -3236,17 +3415,350 @@ let saveNewAction = async () => {
       createdAt: new Date().toISOString(), createdBy: currentUser ? currentUser.uid : '', photoBefore: '', photoAfter: ''
     });
     _actionsCache = null; document.getElementById('modal-add-action').remove(); renderActions();
-  } catch(e) { alert('Erreur: ' + e.message); }
+  } catch(e) { showAlert('Erreur: ' + e.message); }
 };
 let updateActionStatus = async (actionId, newStatus) => {
   try { await db.collection('correctiveActions').doc(actionId).update({ status: newStatus, updatedAt: new Date().toISOString() }); _actionsCache = null; renderActions(); }
-  catch(e) { alert('Erreur: ' + e.message); }
+  catch(e) { showAlert('Erreur: ' + e.message); }
 };
 let deleteAction = async (actionId) => {
-  if (!confirm('Supprimer cette action ?')) return;
+  if (!await showConfirm('Supprimer cette action ?')) return;
   try { await db.collection('correctiveActions').doc(actionId).delete(); _actionsCache = null; renderActions(); }
-  catch(e) { alert('Erreur: ' + e.message); }
+  catch(e) { showAlert('Erreur: ' + e.message); }
 };
+
+
+// ======== N1: Dashboard - Real-time multi-site overview ========
+const renderDashboard = async () => {
+  const container = document.getElementById('dashboard-content');
+  if (!container) return;
+  container.innerHTML = '<p style="color:var(--muted)">Chargement...</p>';
+  try {
+    const snap = await db.collection('auditHistory').orderBy('date','desc').limit(100).get();
+    const audits = snap.docs.map(d => d.data());
+    const sitesSnap = await db.collection('sites').get();
+    const sites = sitesSnap.docs.map(d => ({id: d.id, ...d.data()}));
+    
+    // Aggregate by site
+    const bySite = {};
+    sites.forEach(s => { bySite[s.id] = {name: s.name || s.id, audits: [], scores: []}; });
+    audits.forEach(a => {
+      const sid = a.siteId || a.site;
+      if (!bySite[sid]) bySite[sid] = {name: sid, audits: [], scores: []};
+      bySite[sid].audits.push(a);
+      if (a.score !== undefined) bySite[sid].scores.push(a.score);
+    });
+
+    // Overall stats
+    const totalAudits = audits.length;
+    const avgScore = audits.length > 0 ? (audits.reduce((s,a) => s + (a.score||0), 0) / audits.length).toFixed(1) : 0;
+    const last30 = audits.filter(a => {
+      const d = new Date(a.date);
+      return (Date.now() - d.getTime()) < 30*24*60*60*1000;
+    });
+    const prev30 = audits.filter(a => {
+      const d = new Date(a.date);
+      const age = Date.now() - d.getTime();
+      return age >= 30*24*60*60*1000 && age < 60*24*60*60*1000;
+    });
+    const avg30 = last30.length > 0 ? (last30.reduce((s,a)=>s+(a.score||0),0)/last30.length).toFixed(1) : 0;
+    const avgPrev30 = prev30.length > 0 ? (prev30.reduce((s,a)=>s+(a.score||0),0)/prev30.length).toFixed(1) : 0;
+    const trend = avg30 - avgPrev30;
+    const trendClass = trend > 1 ? 'up' : trend < -1 ? 'down' : 'stable';
+    const trendIcon = trend > 1 ? '\u2197' : trend < -1 ? '\u2198' : '\u2192';
+
+    // Corrective actions count
+    let openActions = 0;
+    try {
+      const caSnap = await db.collection('correctiveActions').where('status','==','open').get();
+      openActions = caSnap.size;
+    } catch(e) {}
+
+    let html = '<div class="dashboard-grid">';
+    // Card 1: Global score
+    html += '<div class="dash-card"><h3>Score moyen global</h3>';
+    html += '<div class="dash-score" style="color:' + (avgScore >= 80 ? '#22c55e' : avgScore >= 60 ? '#f59e0b' : '#ef4444') + '">' + avgScore + '%</div>';
+    html += '<div class="dash-trend ' + trendClass + '">' + trendIcon + ' ' + (trend > 0 ? '+' : '') + trend.toFixed(1) + '% vs mois pr\u00e9c\u00e9dent</div></div>';
+    // Card 2: Total audits
+    html += '<div class="dash-card"><h3>Audits (30 derniers jours)</h3>';
+    html += '<div class="dash-score">' + last30.length + '</div>';
+    html += '<div class="dash-trend stable">' + totalAudits + ' au total</div></div>';
+    // Card 3: Actions correctives
+    html += '<div class="dash-card"><h3>Actions correctives ouvertes</h3>';
+    html += '<div class="dash-score" style="color:' + (openActions > 5 ? '#ef4444' : openActions > 0 ? '#f59e0b' : '#22c55e') + '">' + openActions + '</div>';
+    html += '<div class="dash-trend stable">\u00c0 traiter</div></div>';
+    // Card 4: Sites count
+    html += '<div class="dash-card"><h3>Sites actifs</h3>';
+    html += '<div class="dash-score">' + sites.length + '</div>';
+    html += '<div class="dash-trend stable">' + Object.values(bySite).filter(s => s.audits.length > 0).length + ' avec audits</div></div>';
+    html += '</div>';
+
+    // Per-site breakdown
+    html += '<h3 style="margin:24px 0 12px;color:var(--text)">D\u00e9tail par site</h3>';
+    html += '<div class="dashboard-grid">';
+    Object.entries(bySite).forEach(([sid, data]) => {
+      if (data.audits.length === 0) return;
+      const siteAvg = (data.scores.reduce((a,b)=>a+b,0)/data.scores.length).toFixed(1);
+      const lastAudit = data.audits[0];
+      const lastDate = lastAudit.date ? new Date(lastAudit.date).toLocaleDateString('fr-FR') : 'N/A';
+      const color = siteAvg >= 80 ? '#22c55e' : siteAvg >= 60 ? '#f59e0b' : '#ef4444';
+      html += '<div class="dash-card">';
+      html += '<h3>' + _safeHTML(data.name) + '</h3>';
+      html += '<div class="dash-score" style="color:' + color + '">' + siteAvg + '%</div>';
+      html += '<div style="font-size:12px;color:var(--muted);margin-top:6px">' + data.audits.length + ' audits \u2022 Dernier: ' + lastDate + '</div>';
+      // Mini bar showing score distribution
+      html += '<div style="margin-top:10px;height:6px;border-radius:3px;background:var(--border);overflow:hidden"><div style="width:' + siteAvg + '%;height:100%;background:' + color + ';border-radius:3px"></div></div>';
+      html += '</div>';
+    });
+    html += '</div>';
+
+    container.innerHTML = html;
+  } catch(e) {
+    container.innerHTML = '<p style="color:#ef4444">Erreur chargement dashboard: ' + _safeHTML(e.message) + '</p>';
+  }
+};
+
+// ======== N3: Calendar ========
+let calendarMonth = new Date().getMonth();
+let calendarYear = new Date().getFullYear();
+let plannedAudits = [];
+
+const renderCalendar = async () => {
+  const container = document.getElementById('calendar-content');
+  if (!container) return;
+  
+  // Load audit history for calendar events
+  try {
+    const snap = await db.collection('auditHistory').orderBy('date','desc').limit(200).get();
+    const audits = snap.docs.map(d => d.data());
+    
+    // Load planned audits
+    try {
+      const planSnap = await db.collection('plannedAudits').get();
+      plannedAudits = planSnap.docs.map(d => ({id: d.id, ...d.data()}));
+    } catch(e) { plannedAudits = []; }
+
+    const firstDay = new Date(calendarYear, calendarMonth, 1);
+    const lastDay = new Date(calendarYear, calendarMonth + 1, 0);
+    const startDow = (firstDay.getDay() + 6) % 7; // Monday = 0
+    const today = new Date();
+    const monthNames = ['Janvier','F\u00e9vrier','Mars','Avril','Mai','Juin','Juillet','Ao\u00fbt','Septembre','Octobre','Novembre','D\u00e9cembre'];
+
+    let html = '<div class="cal-nav">';
+    html += '<button class="btn btn-secondary" onclick="calendarMonth--;if(calendarMonth<0){calendarMonth=11;calendarYear--;}renderCalendar()">\u25c0</button>';
+    html += '<h2>' + monthNames[calendarMonth] + ' ' + calendarYear + '</h2>';
+    html += '<button class="btn btn-secondary" onclick="calendarMonth++;if(calendarMonth>11){calendarMonth=0;calendarYear++;}renderCalendar()">\u25b6</button>';
+    html += '</div>';
+
+    // Add planned audit button
+    html += '<div style="margin-bottom:16px"><button class="btn btn-primary" onclick="showPlanAuditDialog()">+ Planifier un audit</button></div>';
+
+    html += '<div class="cal-grid">';
+    ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'].forEach(d => {
+      html += '<div class="cal-header">' + d + '</div>';
+    });
+
+    // Fill calendar days
+    const startDate = new Date(calendarYear, calendarMonth, 1 - startDow);
+    for (let i = 0; i < 42; i++) {
+      const d = new Date(startDate);
+      d.setDate(d.getDate() + i);
+      const isCurrentMonth = d.getMonth() === calendarMonth;
+      const isToday = d.toDateString() === today.toDateString();
+      const dateStr = d.toISOString().split('T')[0];
+      
+      // Find events for this day
+      const dayAudits = audits.filter(a => a.date && a.date.startsWith(dateStr));
+      const dayPlanned = plannedAudits.filter(p => p.date === dateStr);
+      
+      html += '<div class="cal-day' + (isToday ? ' today' : '') + (!isCurrentMonth ? ' other-month' : '') + '">';
+      html += '<div style="font-weight:600;margin-bottom:2px">' + d.getDate() + '</div>';
+      dayAudits.forEach(a => {
+        const score = a.score ? Math.round(a.score) + '%' : '';
+        html += '<div class="cal-event completed" title="' + _safeHTML(a.siteName || '') + ' - ' + score + '">\u2705 ' + score + '</div>';
+      });
+      dayPlanned.forEach(p => {
+        const isOverdue = d < today && p.status !== 'done';
+        html += '<div class="cal-event ' + (isOverdue ? 'overdue' : 'planned') + '">\ud83d\udcc5 ' + _safeHTML(p.siteName || p.site || '') + '</div>';
+      });
+      html += '</div>';
+      
+      if (i >= 41 || (i >= 34 && !isCurrentMonth)) break;
+    }
+    html += '</div>';
+    container.innerHTML = html;
+  } catch(e) {
+    container.innerHTML = '<p style="color:#ef4444">Erreur: ' + _safeHTML(e.message) + '</p>';
+  }
+};
+
+const showPlanAuditDialog = async () => {
+  const siteSel = document.getElementById('site-select');
+  const sites = siteSel ? Array.from(siteSel.options).filter(o => o.value).map(o => ({id: o.value, name: o.textContent})) : [];
+  if (sites.length === 0) { showAlert('Aucun site disponible'); return; }
+  
+  const date = await showPrompt('Date de l\'audit planifi\u00e9 (YYYY-MM-DD)', new Date().toISOString().split('T')[0]);
+  if (!date) return;
+  const siteIdx = sites.length === 1 ? 0 : parseInt(await showPrompt('Site (num\u00e9ro):\n' + sites.map((s,i) => (i+1) + '. ' + s.name).join('\n'), '1')) - 1;
+  if (isNaN(siteIdx) || siteIdx < 0 || siteIdx >= sites.length) return;
+  
+  await db.collection('plannedAudits').add({
+    date: date,
+    site: sites[siteIdx].id,
+    siteName: sites[siteIdx].name,
+    status: 'planned',
+    createdBy: currentUser.uid,
+    createdAt: new Date().toISOString()
+  });
+  showToast('Audit planifi\u00e9 ajout\u00e9', 'success');
+  renderCalendar();
+};
+
+// ======== N2: Notification System (in-app) ========
+let notifications = [];
+let notifPanelOpen = false;
+
+const toggleNotifPanel = () => {
+  notifPanelOpen = !notifPanelOpen;
+  let panel = document.getElementById('notif-panel');
+  if (!panel) {
+    panel = document.createElement('div');
+    panel.id = 'notif-panel';
+    panel.className = 'notif-panel';
+    panel.innerHTML = '<h3 style="margin:0 0 16px">Notifications</h3><div id="notif-list"></div>';
+    document.body.appendChild(panel);
+    // Overlay
+    const overlay = document.createElement('div');
+    overlay.id = 'notif-overlay';
+    overlay.style.cssText = 'display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.3);z-index:9997';
+    overlay.onclick = () => toggleNotifPanel();
+    document.body.appendChild(overlay);
+  }
+  panel.classList.toggle('open', notifPanelOpen);
+  document.getElementById('notif-overlay').style.display = notifPanelOpen ? 'block' : 'none';
+  if (notifPanelOpen) renderNotifications();
+};
+
+const addNotification = (title, message, type = 'info') => {
+  notifications.unshift({id: Date.now(), title, message, type, time: new Date(), read: false});
+  if (notifications.length > 50) notifications.pop();
+  updateNotifBadge();
+};
+
+const updateNotifBadge = () => {
+  const badge = document.getElementById('notif-badge');
+  if (!badge) return;
+  const unread = notifications.filter(n => !n.read).length;
+  badge.textContent = unread;
+  badge.style.display = unread > 0 ? 'flex' : 'none';
+};
+
+const renderNotifications = () => {
+  const list = document.getElementById('notif-list');
+  if (!list) return;
+  if (notifications.length === 0) {
+    list.innerHTML = '<p style="color:var(--muted);text-align:center;padding:20px">Aucune notification</p>';
+    return;
+  }
+  list.innerHTML = notifications.map(n => {
+    const timeAgo = Math.round((Date.now() - n.time.getTime()) / 60000);
+    const timeStr = timeAgo < 60 ? timeAgo + ' min' : Math.round(timeAgo/60) + 'h';
+    return '<div class="notif-item' + (n.read ? '' : ' unread') + '" onclick="notifications.find(x=>x.id===' + n.id + ').read=true;updateNotifBadge();renderNotifications()">' +
+      '<div style="font-weight:600;font-size:13px">' + _safeHTML(n.title) + '</div>' +
+      '<div style="font-size:12px;color:var(--text);margin-top:2px">' + _safeHTML(n.message) + '</div>' +
+      '<div class="notif-time">il y a ' + timeStr + '</div></div>';
+  }).join('');
+  // Mark all as read
+  notifications.forEach(n => n.read = true);
+  updateNotifBadge();
+};
+
+// Auto-check for alerts that should generate notifications
+const checkAlertNotifications = async () => {
+  try {
+    const snap = await db.collection('auditHistory').orderBy('date','desc').limit(5).get();
+    snap.docs.forEach(d => {
+      const a = d.data();
+      if (a.score !== undefined && a.score < 60) {
+        addNotification('Score critique', (a.siteName || 'Site') + ': ' + Math.round(a.score) + '% - Attention requise', 'warning');
+      }
+    });
+    // Check overdue corrective actions
+    const caSnap = await db.collection('correctiveActions').where('status','==','open').get();
+    const now = new Date();
+    caSnap.docs.forEach(d => {
+      const ca = d.data();
+      if (ca.dueDate && new Date(ca.dueDate) < now) {
+        addNotification('Action en retard', _safeHTML(ca.title || 'Action corrective') + ' - \u00c9ch\u00e9ance d\u00e9pass\u00e9e', 'error');
+      }
+    });
+  } catch(e) {}
+};
+
+// ======== A7: Accessibility enhancements ========
+const enhanceAccessibility = () => {
+  // Add aria-labels to icon-only buttons
+  document.querySelectorAll('button').forEach(btn => {
+    if (!btn.getAttribute('aria-label') && btn.textContent.trim().length <= 3) {
+      const emoji = btn.textContent.trim();
+      const labels = {'\ud83d\udcbe':'Sauvegarder','\ud83d\uddd1':'Supprimer','\ud83d\udcf7':'Photo','\u270f':'Modifier','\u2795':'Ajouter','\ud83d\udda8\ufe0f':'Imprimer'};
+      if (labels[emoji]) btn.setAttribute('aria-label', labels[emoji]);
+    }
+  });
+  // Add roles to main regions
+  const sidebar = document.getElementById('sidebar');
+  if (sidebar) sidebar.setAttribute('role', 'navigation');
+  const main = document.querySelector('.main');
+  if (main) main.setAttribute('role', 'main');
+  // Add aria-live for dynamic content
+  document.querySelectorAll('.tab-panel').forEach(p => p.setAttribute('aria-live', 'polite'));
+  // Ensure all inputs have labels
+  document.querySelectorAll('input:not([aria-label]), select:not([aria-label])').forEach(inp => {
+    const label = inp.previousElementSibling;
+    if (label && label.tagName === 'LABEL' && !label.htmlFor) {
+      if (!inp.id) inp.id = 'input-' + Math.random().toString(36).substring(2,8);
+      label.htmlFor = inp.id;
+    } else if (!inp.getAttribute('aria-label')) {
+      const placeholder = inp.getAttribute('placeholder');
+      if (placeholder) inp.setAttribute('aria-label', placeholder);
+    }
+  });
+};
+
+// ======== Hook new features into tab switching ========
+const _origSwitchTab = typeof switchTab === 'function' ? switchTab : null;
+if (typeof switchTab !== 'undefined') {
+  const _baseSwitchTab = switchTab;
+  switchTab = (tab) => {
+    _baseSwitchTab(tab);
+    if (tab === 'dashboard') renderDashboard();
+    if (tab === 'calendar') renderCalendar();
+  };
+}
+
+// ======== Initialize new features after auth ========
+const initNewFeatures = () => {
+  // Add notification bell to topbar
+  const topbar = document.querySelector('.topbar');
+  if (topbar && !document.getElementById('notif-bell')) {
+    const bell = document.createElement('button');
+    bell.id = 'notif-bell';
+    bell.onclick = toggleNotifPanel;
+    bell.setAttribute('role', 'button');
+    bell.setAttribute('aria-label', 'Notifications');
+    bell.style.cssText = 'position:relative;background:none;border:none;color:var(--text);font-size:20px;cursor:pointer;margin-left:auto;padding:4px 8px';
+    bell.innerHTML = '\ud83d\udd14<span id="notif-badge" class="notif-badge" style="display:none">0</span>';
+    const decoBtn = topbar.querySelector('button[onclick*="Logout"], button[onclick*="logout"], .topbar button:last-child');
+    if (decoBtn) topbar.insertBefore(bell, decoBtn);
+    else topbar.appendChild(bell);
+  }
+  enhanceAccessibility();
+  setTimeout(checkAlertNotifications, 3000);
+};
+// Run after DOM ready + auth
+if (document.readyState === 'complete') setTimeout(initNewFeatures, 1000);
+else window.addEventListener('load', () => setTimeout(initNewFeatures, 1000));
+
 </script>
 </body>
 </html>
