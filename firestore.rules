@@ -1,0 +1,95 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper: get the current user's role
+    function getUserRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+    
+    // Helper: check if user is admin
+    function isAdmin() {
+      return getUserRole() == 'admin';
+    }
+    
+    // Helper: check if user is manager or admin
+    function isManagerOrAdmin() {
+      let role = getUserRole();
+      return role == 'admin' || role == 'manager';
+    }
+    
+    // Helper: check if user has access to a site
+    function hasSiteAccess(siteId) {
+      let userData = get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+      return !userData.keys().hasAny(['allowedSites']) || userData.allowedSites.hasAny([siteId]);
+    }
+
+    // Users collection - admin can write, users can read their own
+    match /users/{userId} {
+      allow read: if request.auth != null;
+      allow write: if isAdmin() || request.auth.uid == userId;
+    }
+
+    // Pre-approved invitations - admin only write
+    match /preApproved/{email} {
+      allow read: if request.auth != null;
+      allow write: if isAdmin();
+    }
+
+    // Sites - admin can manage, others can read
+    match /sites/{siteId} {
+      allow read: if request.auth != null;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Current audit - auditors+ can write their site, all auth can read
+    match /currentAudit/{docId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && getUserRole() != 'lecteur';
+    }
+
+    // Audit history - auditors+ can create, all auth can read
+    match /auditHistory/{docId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && getUserRole() != 'lecteur';
+      allow update, delete: if isManagerOrAdmin();
+    }
+
+    // Settings (templates) - admin/manager can write, all can read
+    match /settings/{docId} {
+      allow read: if request.auth != null;
+      allow write: if isManagerOrAdmin();
+    }
+
+    // KPI history - system/admin write, all read
+    match /kpiHistory/{docId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && getUserRole() != 'lecteur';
+    }
+
+    // App config - admin only write
+    match /appConfig/{docId} {
+      allow read: if request.auth != null;
+      allow write: if isAdmin();
+    }
+
+    // Corrective actions - auditors+ can create/update, admin can delete
+    match /correctiveActions/{docId} {
+      allow read: if request.auth != null;
+      allow create, update: if request.auth != null && getUserRole() != 'lecteur';
+      allow delete: if isManagerOrAdmin();
+    }
+
+    // Planned audits - auditors+ can manage
+    match /plannedAudits/{docId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && getUserRole() != 'lecteur';
+    }
+
+    // Error logs - any auth user can write (for monitoring)
+    match /errorLogs/{docId} {
+      allow create: if request.auth != null;
+      allow read: if isAdmin();
+    }
+  }
+}
