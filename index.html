@@ -1771,7 +1771,7 @@ let renderReport = async () => {
   }
 
   // Actions correctives (OUTSIDE nokComments block now)
-  if (typeof _actionsCache !== 'undefined' && _actionsCache.length > 0) {
+  if (typeof _actionsCache !== 'undefined' && _actionsCache && _actionsCache.length > 0) {
     const actDiv = document.createElement('div');
     actDiv.className = 'report-section';
     let actHtml = '<div class="report-header">\ud83d\udccb Actions Correctives</div>';
