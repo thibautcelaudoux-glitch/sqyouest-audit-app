@@ -1,4 +1,4 @@
-const CACHE_NAME = 'audit-manager-v1';
+const CACHE_NAME = 'audit-manager-v2';
 const ASSETS = [
   '/sqyouest-audit-app/',
   '/sqyouest-audit-app/index.html',
