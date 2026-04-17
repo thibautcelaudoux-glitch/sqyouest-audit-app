@@ -532,9 +532,9 @@ h2,h3{margin:8px 0 4px!important;font-size:14px!important}
         <button class="tab" data-tab="history" onclick="switchTab('history')">Historique</button>
         <button class="tab" data-tab="report" onclick="switchTab('report')">Rapport</button>
         <button class="tab" data-tab="kpi" onclick="switchTab('kpi')">KPI</button>
-        <button onclick="switchTab('dashboard')">Dashboard</button>
-          <button onclick="switchTab('calendar')">Calendrier</button>
-          <button class="tab" data-tab="settings" onclick="switchTab('settings')">Paramètres</button>
+        <button class="tab" data-tab="dashboard" onclick="switchTab('dashboard')">Dashboard</button>
+        <button class="tab" data-tab="calendar" onclick="switchTab('calendar')">Calendrier</button>
+        <button class="tab" data-tab="settings" onclick="switchTab('settings')">Paramètres</button>
       </div>
 
       <div class="content">
@@ -3292,7 +3292,8 @@ let renderAlertes = () => {
     let totalScore = 0, count = 0;
     sd.audits.forEach(a => {
       if (a.sections) a.sections.forEach(sec => { if (sec.items) sec.items.forEach(item => { if (item.status === 'nok') sd.nokCount++; }); });
-      if (a.score !== undefined) { totalScore += a.score; count++; }
+      const sc = (typeof a.score === 'number') ? a.score : (a.sections ? computeScore(a) : undefined);
+      if (sc !== undefined) { totalScore += sc; count++; }
     });
     sd.avgScore = count > 0 ? Math.round(totalScore / count) : 0;
     if (sd.audits.length >= 2) {
@@ -3305,8 +3306,9 @@ let renderAlertes = () => {
   const now = Date.now(), DAY = 86400000;
   Object.keys(siteData).forEach(sId => {
     const sd = siteData[sId];
-    const daysSince = sd.lastAudit ? Math.floor((now - new Date(sd.lastAudit).getTime()) / DAY) : 999;
-    if (daysSince > 30) alerts.push({ type: 'warning', site: sd.name, msg: 'Aucun audit depuis ' + daysSince + ' jours', priority: 2 });
+    const daysSince = sd.lastAudit ? Math.floor((now - new Date(sd.lastAudit).getTime()) / DAY) : null;
+    if (daysSince === null) alerts.push({ type: 'warning', site: sd.name, msg: 'Jamais audité', priority: 2 });
+    else if (daysSince > 30) alerts.push({ type: 'warning', site: sd.name, msg: 'Aucun audit depuis ' + daysSince + ' jours', priority: 2 });
     if (sd.avgScore > 0 && sd.avgScore < 50) alerts.push({ type: 'danger', site: sd.name, msg: 'Score moyen critique: ' + sd.avgScore + '%', priority: 3 });
     if (sd.nokCount > 5) alerts.push({ type: 'warning', site: sd.name, msg: sd.nokCount + ' points NOK r\u00E9currents', priority: 2 });
     if (sd.trend === 'down') alerts.push({ type: 'info', site: sd.name, msg: 'Tendance en baisse', priority: 1 });
@@ -3436,22 +3438,27 @@ const renderDashboard = async () => {
   try {
     const snap = await db.collection('auditHistory').orderBy('date','desc').limit(100).get();
     const audits = snap.docs.map(d => d.data());
-    const sitesSnap = await db.collection('sites').get();
-    const sites = sitesSnap.docs.map(d => ({id: d.id, ...d.data()}));
+    // Utilise la liste globale allSites (sites/main.list) au lieu d'une collection inexistante
+    const sites = (typeof allSites !== 'undefined' && Array.isArray(allSites)) ? allSites.slice() : [];
+    const scoreOf = (a) => (typeof a.score === 'number') ? a.score : (a.sections ? computeScore(a) : 0);
     
     // Aggregate by site
     const bySite = {};
     sites.forEach(s => { bySite[s.id] = {name: s.name || s.id, audits: [], scores: []}; });
     audits.forEach(a => {
       const sid = a.siteId || a.site;
-      if (!bySite[sid]) bySite[sid] = {name: sid, audits: [], scores: []};
+      if (!sid) return;
+      if (!bySite[sid]) {
+        const fallback = sites.find(s => s.id === sid);
+        bySite[sid] = {name: fallback ? fallback.name : (a.siteName || sid), audits: [], scores: []};
+      }
       bySite[sid].audits.push(a);
-      if (a.score !== undefined) bySite[sid].scores.push(a.score);
+      bySite[sid].scores.push(scoreOf(a));
     });
 
     // Overall stats
     const totalAudits = audits.length;
-    const avgScore = audits.length > 0 ? (audits.reduce((s,a) => s + (a.score||0), 0) / audits.length).toFixed(1) : 0;
+    const avgScore = audits.length > 0 ? (audits.reduce((s,a) => s + scoreOf(a), 0) / audits.length).toFixed(1) : 0;
     const last30 = audits.filter(a => {
       const d = new Date(a.date);
       return (Date.now() - d.getTime()) < 30*24*60*60*1000;
@@ -3461,8 +3468,9 @@ const renderDashboard = async () => {
       const age = Date.now() - d.getTime();
       return age >= 30*24*60*60*1000 && age < 60*24*60*60*1000;
     });
-    const avg30 = last30.length > 0 ? (last30.reduce((s,a)=>s+(a.score||0),0)/last30.length).toFixed(1) : 0;
-    const avgPrev30 = prev30.length > 0 ? (prev30.reduce((s,a)=>s+(a.score||0),0)/prev30.length).toFixed(1) : 0;
+    const avg30 = last30.length > 0 ? (last30.reduce((s,a)=>s+scoreOf(a),0)/last30.length).toFixed(1) : 0;
+    const avgPrev30 = prev30.length > 0 ? (prev30.reduce((s,a)=>s+scoreOf(a),0)/prev30.length).toFixed(1) : 0;
+
     const trend = avg30 - avgPrev30;
     const trendClass = trend > 1 ? 'up' : trend < -1 ? 'down' : 'stable';
     const trendIcon = trend > 1 ? '\u2197' : trend < -1 ? '\u2198' : '\u2192';
@@ -3498,7 +3506,7 @@ const renderDashboard = async () => {
     html += '<div class="dashboard-grid">';
     Object.entries(bySite).forEach(([sid, data]) => {
       if (data.audits.length === 0) return;
-      const siteAvg = (data.scores.reduce((a,b)=>a+b,0)/data.scores.length).toFixed(1);
+      const siteAvg = data.scores.length ? (data.scores.reduce((a,b)=>a+b,0)/data.scores.length).toFixed(1) : '0.0';
       const lastAudit = data.audits[0];
       const lastDate = lastAudit.date ? new Date(lastAudit.date).toLocaleDateString('fr-FR') : 'N/A';
       const color = siteAvg >= 80 ? '#22c55e' : siteAvg >= 60 ? '#f59e0b' : '#ef4444';
@@ -3593,9 +3601,13 @@ const renderCalendar = async () => {
 };
 
 const showPlanAuditDialog = async () => {
-  const siteSel = document.getElementById('site-select');
-  const sites = siteSel ? Array.from(siteSel.options).filter(o => o.value).map(o => ({id: o.value, name: o.textContent})) : [];
-  if (sites.length === 0) { showAlert('Aucun site disponible'); return; }
+  // Source primaire : allSites (sites/main.list). Fallback : dropdown #site-select si présent.
+  let sites = (typeof allSites !== 'undefined' && Array.isArray(allSites)) ? allSites.map(s => ({id: s.id, name: s.name})) : [];
+  if (!sites.length) {
+    const siteSel = document.getElementById('site-select');
+    if (siteSel) sites = Array.from(siteSel.options).filter(o => o.value).map(o => ({id: o.value, name: o.textContent}));
+  }
+  if (sites.length === 0) { showAlert('Aucun site disponible. Créez-en un depuis Paramètres → Sites.'); return; }
   
   const date = await showPrompt('Date de l\'audit planifi\u00e9 (YYYY-MM-DD)', new Date().toISOString().split('T')[0]);
   if (!date) return;
